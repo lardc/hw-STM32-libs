@@ -96,4 +96,7 @@ void PendSV_Handler() {}
 
 // This function handles SysTick Handler
 void SysTick_Handler() {}
+
+// This function handles Reset Handler
+void Reset_Handler() {}
 //--------------------------------------------
