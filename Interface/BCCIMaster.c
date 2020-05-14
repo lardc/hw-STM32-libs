@@ -130,12 +130,12 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 	while(*(Interface->pTimerCounter) < timeout)
 	{
 		// In case of error
-		if (Interface->IOConfig->IO_IsMessageReceived(Master_MBOX_ERR_A))
+		if (Interface->IOConfig->IO_IsMessageReceived(Master_MBOX_ERR_A, NULL))
 		{
 			Interface->IOConfig->IO_GetMessage(Master_MBOX_ERR_A, &message);
 			return message.HIGH.WORD.WORD_0;
 		}
-		else if (Interface->IOConfig->IO_IsMessageReceived(Mailbox))
+		else if (Interface->IOConfig->IO_IsMessageReceived(Mailbox, NULL))
 			return ERR_NO_ERROR;
 	}
 
