@@ -9,8 +9,8 @@ void SPI_Init(SPI_TypeDef* SPIx, uint32_t BR_bits, bool LSBFirst)
 	BR_bits &= 0x7;
 
 	if (SPIx == SPI1) RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
-	if (SPIx == SPI2) RCC->APB2ENR |= RCC_APB1ENR_SPI2EN;
-	if (SPIx == SPI3) RCC->APB2ENR |= RCC_APB1ENR_SPI3EN;
+	if (SPIx == SPI2) RCC->APB1ENR |= RCC_APB1ENR_SPI2EN;
+	if (SPIx == SPI3) RCC->APB1ENR |= RCC_APB1ENR_SPI3EN;
 
 	SPIx->CR1 |= (BR_bits << 3);
 	SPIx->CR1 |= SPI_CR1_MSTR;
