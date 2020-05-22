@@ -37,6 +37,23 @@ void SPI_WriteByte(SPI_TypeDef* SPIx, uint16_t Data)
 }
 //-----------------------------------------------
 
+uint16_t SPI_ReadByte(SPI_TypeDef* SPIx)
+{
+	while (SPIx->SR & SPI_SR_BSY);
+	SPIx->DR = 0;
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	while (SPIx->SR & SPI_SR_BSY);
+	while (!(SPIx->SR & SPI_SR_RXNE));
+
+	return SPIx->DR;
+}
+//-----------------------------------------------
+
 //######################### Устаревшие функции #################################
 
 void SPIx_Config(SPI_TypeDef* SPIx)
