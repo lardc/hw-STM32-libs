@@ -1,6 +1,7 @@
 // Includes
 //
 #include "ZwGPIO.h"
+#include "ZwRCC.h"
 
 // Настройка порта
 void GPIO_Config(GPIO_TypeDef* GPIOx, uint32_t Pin, uint32_t Mode, uint32_t OutType, uint32_t Speed, uint32_t Pull)
