@@ -91,7 +91,6 @@ void TIM_DMA(TIM_TypeDef* TIMx, uint32_t DMA_MODE)
 void TIM_Reset(TIM_TypeDef* TIMx)
 {
 	TIMx->CNT = 0;
-	if (TIM_StatusCheck(TIMx)) TIM_StatusClear(TIMx);
 }
 //-----------------------------------------------
 
