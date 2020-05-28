@@ -33,6 +33,28 @@ void GPIO_Bit_Rst(GPIO_TypeDef* GPIOx, uint32_t Pin)
 }
 //-----------------------------------------------
 
+// Функция-обёртка для работы с выходами GPIO
+void GPIO_SetState(GPIO_PortPinSetting PortPin, bool State)
+{
+	State ? GPIO_Bit_Set(PortPin.Port, PortPin.Pin) : GPIO_Bit_Rst(PortPin.Port, PortPin.Pin);
+}
+//-----------------------------------------------
+
+// Функция-обёртка для инициализации выходов GPIO
+void GPIO_InitPushPullOutput(GPIO_PortPinSetting PortPin)
+{
+	GPIO_Config(PortPin.Port, PortPin.Pin, Output, PushPull, HighSpeed, NoPull);
+}
+//-----------------------------------------------
+
+// Функция-обёртка для инициализации альтернативных функций GPIO
+void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc)
+{
+	GPIO_Config(PortPin.Port, PortPin.Pin, AltFn, PushPull, HighSpeed, NoPull);
+	GPIO_AltFn(PortPin.Port, PortPin.Pin, AltFunc);
+}
+//-----------------------------------------------
+
 // Изменение текущего состояния выхода на противоположное
 void GPIO_Bit_Toggle(GPIO_TypeDef* GPIOx, uint32_t Pin)
 {

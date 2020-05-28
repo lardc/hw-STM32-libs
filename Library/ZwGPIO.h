@@ -5,6 +5,8 @@
 //
 #include "stdinc.h"
 
+// Definitions
+//
 //---------Pin----------
 #define Pin_0  		0x00
 #define Pin_1  		0x01
@@ -40,11 +42,24 @@
 #define Pull_Down	0x02
 //----------------------
 
+// Types
+//
+typedef struct __GPIO_PortPinSetting
+{
+	GPIO_TypeDef *Port;
+	uint32_t Pin;
+} GPIO_PortPinSetting, GPIO_PS;
+
 void GPIO_Config(GPIO_TypeDef* GPIOx, uint32_t Pin, uint32_t Mode, uint32_t OutType, uint32_t Speed, uint32_t Pull);
-void GPIO_Bit_Set(GPIO_TypeDef* GPIOx, uint32_t Pin);
-void GPIO_Bit_Rst(GPIO_TypeDef* GPIOx, uint32_t Pin);
 void GPIO_Bit_Toggle(GPIO_TypeDef* GPIOx, uint32_t Pin);
 bool GPIO_Read_Bit(GPIO_TypeDef* GPIOx, uint32_t Pin);
-void GPIO_PinAction(GPIO_TypeDef* GPIOx, uint32_t Pin, bool Enable);
+void GPIO_SetState(GPIO_PortPinSetting PortPin, bool State);
+void GPIO_InitPushPullOutput(GPIO_PortPinSetting PortPin);
+void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc);
+
+// Устаревшие функции
+void GPIO_PinAction(GPIO_TypeDef* GPIOx, uint32_t Pin, bool Enable);	// Использовать GPIO_SetState
+void GPIO_Bit_Set(GPIO_TypeDef* GPIOx, uint32_t Pin);					// Использовать GPIO_SetState
+void GPIO_Bit_Rst(GPIO_TypeDef* GPIOx, uint32_t Pin);					// Использовать GPIO_SetState
 
 #endif // __ZW_GPIO_H
