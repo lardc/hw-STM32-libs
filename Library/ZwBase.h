@@ -41,14 +41,25 @@ typedef unsigned char		* pInt8U;
 //
 #ifdef bool
 #undef bool
+#undef true
+#undef false
 #endif
+
 typedef _Bool bool;
+typedef enum __bool_val
+{
+	false = 0,
+	true = 1
+} bool_val;
 
 #ifndef Boolean
 typedef bool				Boolean;
 typedef bool				* pBoolean;
-#define FALSE				false
-#define TRUE				true
+typedef enum __bool_val_c
+{
+	FALSE = 0,
+	TRUE = 1
+} bool_val_c;
 #endif
 
 #ifndef NULL
