@@ -48,12 +48,13 @@ typedef struct __GPIO_PortPinSetting
 {
 	GPIO_TypeDef *Port;
 	uint32_t Pin;
-} GPIO_PortPinSetting, GPIO_PS;
+} GPIO_PortPinSetting;
+#define GPIO_PortPinSettingMacro static const GPIO_PortPinSetting
 
 void GPIO_Config(GPIO_TypeDef* GPIOx, uint32_t Pin, uint32_t Mode, uint32_t OutType, uint32_t Speed, uint32_t Pull);
-void GPIO_Bit_Toggle(GPIO_TypeDef* GPIOx, uint32_t Pin);
-bool GPIO_Read_Bit(GPIO_TypeDef* GPIOx, uint32_t Pin);
+bool GPIO_GetState(GPIO_PortPinSetting PortPin);
 void GPIO_SetState(GPIO_PortPinSetting PortPin, bool State);
+void GPIO_Toggle(GPIO_PortPinSetting PortPin);
 void GPIO_InitPushPullOutput(GPIO_PortPinSetting PortPin);
 void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc);
 
@@ -61,5 +62,7 @@ void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc);
 void GPIO_PinAction(GPIO_TypeDef* GPIOx, uint32_t Pin, bool Enable);	// Использовать GPIO_SetState
 void GPIO_Bit_Set(GPIO_TypeDef* GPIOx, uint32_t Pin);					// Использовать GPIO_SetState
 void GPIO_Bit_Rst(GPIO_TypeDef* GPIOx, uint32_t Pin);					// Использовать GPIO_SetState
+bool GPIO_Read_Bit(GPIO_TypeDef* GPIOx, uint32_t Pin);					// Использовать GPIO_GetState
+void GPIO_Bit_Toggle(GPIO_TypeDef* GPIOx, uint32_t Pin);				// Использовать GPIO_Toggle
 
 #endif // __ZW_GPIO_H
