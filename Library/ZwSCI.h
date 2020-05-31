@@ -1,13 +1,8 @@
-// -----------------------------------------
-// API for SCI module
-// ----------------------------------------
-
 #ifndef __ZW_SCI_H
 #define __ZW_SCI_H
 
 // Include
-#include "SysConfig.h"
-#include "Global.h"
+#include "stdinc.h"
 
 void USART_Init(USART_TypeDef * USARTx, uint32_t SYS_clk, uint32_t BaudRate);
 void USART_Recieve_Interupt(USART_TypeDef * USARTx, uint32_t Priority, bool Enable);
@@ -23,4 +18,4 @@ bool ZwSCI_RecieveCheck(USART_TypeDef* USARTx);
 void ZwSCI_RecieveFlagClear(USART_TypeDef* USARTx);
 void ZwSCI_RegisterToFIFO(USART_TypeDef* USARTx);
 
-#endif // end __ZW_SCI_H
+#endif // __ZW_SCI_H

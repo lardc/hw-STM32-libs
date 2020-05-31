@@ -1,14 +1,11 @@
-// Header
-//
 #include "ZwSCI.h"
 #include "ZwRCC.h"
-
+#include "SysConfig.h"
 
 // Variables
 //
 static volatile uint8_t FIFO_RXcount = 0;		// —четчик байтов, прин€тых по USART
 static volatile uint8_t FIFO[USART_FIFOlen];	// USART FIFO
-
 
 // Functions
 //
