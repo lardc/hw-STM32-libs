@@ -59,6 +59,7 @@ bool GPIO_GetState(GPIO_PortPinSetting PortPin)
 void GPIO_InitPushPullOutput(GPIO_PortPinSetting PortPin)
 {
 	GPIO_Config(PortPin.Port, PortPin.Pin, Output, PushPull, HighSpeed, NoPull);
+	GPIO_Bit_Rst(PortPin.Port, PortPin.Pin);
 }
 //-----------------------------------------------
 
