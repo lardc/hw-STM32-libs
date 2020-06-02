@@ -71,6 +71,20 @@ void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc)
 }
 //-----------------------------------------------
 
+// Функция-обёртка для инициализации входов GPIO
+void GPIO_InitInput(GPIO_PortPinSetting PortPin, uint32_t PullUpSetting)
+{
+	GPIO_Config(PortPin.Port, PortPin.Pin, Input, PushPull, HighSpeed, PullUpSetting);
+}
+//-----------------------------------------------
+
+// Функция-обёртка для инициализации аналоговых GPIO
+void GPIO_InitAnalog(GPIO_PortPinSetting PortPin)
+{
+	GPIO_Config(PortPin.Port, PortPin.Pin, Analog, PushPull, HighSpeed, NoPull);
+}
+//-----------------------------------------------
+
 // Изменение текущего состояния выхода на противоположное
 void GPIO_Bit_Toggle(GPIO_TypeDef* GPIOx, uint32_t Pin)
 {

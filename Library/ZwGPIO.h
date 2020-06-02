@@ -57,6 +57,8 @@ void GPIO_SetState(GPIO_PortPinSetting PortPin, bool State);
 void GPIO_Toggle(GPIO_PortPinSetting PortPin);
 void GPIO_InitPushPullOutput(GPIO_PortPinSetting PortPin);
 void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc);
+void GPIO_InitInput(GPIO_PortPinSetting PortPin, uint32_t PullUpSetting);
+void GPIO_InitAnalog(GPIO_PortPinSetting PortPin);
 
 // Устаревшие функции
 void GPIO_PinAction(GPIO_TypeDef* GPIOx, uint32_t Pin, bool Enable);	// Использовать GPIO_SetState
