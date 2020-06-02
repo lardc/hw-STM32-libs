@@ -51,7 +51,8 @@ typedef struct __GPIO_PortPinSetting
 } GPIO_PortPinSetting;
 #define GPIO_PortPinSettingMacro static const GPIO_PortPinSetting
 
-void GPIO_Config(GPIO_TypeDef* GPIOx, uint32_t Pin, uint32_t Mode, uint32_t OutType, uint32_t Speed, uint32_t Pull);
+// Functions
+//
 bool GPIO_GetState(GPIO_PortPinSetting PortPin);
 void GPIO_SetState(GPIO_PortPinSetting PortPin, bool State);
 void GPIO_Toggle(GPIO_PortPinSetting PortPin);
@@ -61,6 +62,8 @@ void GPIO_InitInput(GPIO_PortPinSetting PortPin, uint32_t PullUpSetting);
 void GPIO_InitAnalog(GPIO_PortPinSetting PortPin);
 
 // Устаревшие функции
+// Вместо GPIO_Config использовать функции серии GPIO_Init*
+void GPIO_Config(GPIO_TypeDef* GPIOx, uint32_t Pin, uint32_t Mode, uint32_t OutType, uint32_t Speed, uint32_t Pull);
 void GPIO_PinAction(GPIO_TypeDef* GPIOx, uint32_t Pin, bool Enable);	// Использовать GPIO_SetState
 void GPIO_Bit_Set(GPIO_TypeDef* GPIOx, uint32_t Pin);					// Использовать GPIO_SetState
 void GPIO_Bit_Rst(GPIO_TypeDef* GPIOx, uint32_t Pin);					// Использовать GPIO_SetState
