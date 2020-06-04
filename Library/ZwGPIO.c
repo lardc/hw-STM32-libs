@@ -63,6 +63,14 @@ void GPIO_InitPushPullOutput(GPIO_PortPinSetting PortPin)
 }
 //-----------------------------------------------
 
+// Функция-обёртка для инициализации выходов GPIO c открытым коллектором
+void GPIO_InitOpenDrainOutput(GPIO_PortPinSetting PortPin, uint32_t Pull)
+{
+	GPIO_Config(PortPin.Port, PortPin.Pin, Output, OpenDrain, HighSpeed, Pull);
+	GPIO_Bit_Rst(PortPin.Port, PortPin.Pin);
+}
+//-----------------------------------------------
+
 // Функция-обёртка для инициализации альтернативных функций GPIO
 void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc)
 {
