@@ -5,6 +5,7 @@
 #include "stdinc.h"
 #include "Controller.h"
 #include "BoardConfig.h"
+#include "SysConfig.h"
 
 
 // Functions
