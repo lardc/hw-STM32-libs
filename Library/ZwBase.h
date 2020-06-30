@@ -68,6 +68,9 @@ typedef enum __bool_val_c
 
 // Limits
 //
+#define INT8U_MAX	255
+#define INT8S_MAX	127
+#define INT8S_MIN	(-INT8S_MAX-1)
 #define INT16U_MAX	65535
 #define INT16S_MAX	32767
 #define INT16S_MIN	(-INT16S_MAX-1)
