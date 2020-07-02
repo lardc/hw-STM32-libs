@@ -129,7 +129,8 @@ void NCAN_RecieveData()
 	// Поиск мэйлбокса
 	for (i = 0; i < MAILBOXmax; ++i)
 	{
-		if ((MsgID & (CAN_SLAVE_NID_MASK | CAN_FUNC_MASK)) == MailBox[i].MsgID)
+		if ((MsgID & (CAN_SLAVE_NID_MASK | CAN_FUNC_MASK)) == MailBox[i].MsgID ||
+			(MsgID & (CAN_MASTER_NID_MASK | CAN_FUNC_MASK)) == MailBox[i].MsgID)
 		{
 			InputMessage.HIGH.DWORD_0 = NCAN_WordSwap(CAN1->sFIFOMailBox[0].RDLR);
 			InputMessage.LOW.DWORD_1  = NCAN_WordSwap(CAN1->sFIFOMailBox[0].RDHR);
