@@ -20,31 +20,6 @@
 #define RESPONSE_MASK			BIT7
 
 
-// Constants
-//
-//
-enum SCCI_FunctionCodes
-{
-	FUNCTION_WRITE			= 1,
-	FUNCTION_READ			= 2,
-	FUNCTION_WRITE_BLOCK	= 3,
-	FUNCTION_READ_BLOCK		= 4,
-	FUNCTION_CALL			= 5,
-	FUNCTION_ERROR			= 6,
-	FUNCTION_FAST_READ_BLK  = 7
-};
-//
-enum SCCI_SubFunctionCodes
-{
-	SFUNC_NONE				= 0,
-	SFUNC_16				= 1,
-	SFUNC_32				= 2,
-	SFUNC_16_2				= 3,
-	SFUNC_REP_16			= 3,
-	SFUNC_REP_32			= 4
-};
-
-
 // Types
 //
 // Pointers for IO functions

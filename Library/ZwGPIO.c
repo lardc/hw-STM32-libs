@@ -59,6 +59,15 @@ bool GPIO_GetState(GPIO_PortPinSetting PortPin)
 void GPIO_InitPushPullOutput(GPIO_PortPinSetting PortPin)
 {
 	GPIO_Config(PortPin.Port, PortPin.Pin, Output, PushPull, HighSpeed, NoPull);
+	GPIO_Bit_Rst(PortPin.Port, PortPin.Pin);
+}
+//-----------------------------------------------
+
+// Функция-обёртка для инициализации выходов GPIO c открытым коллектором
+void GPIO_InitOpenDrainOutput(GPIO_PortPinSetting PortPin, uint32_t Pull)
+{
+	GPIO_Config(PortPin.Port, PortPin.Pin, Output, OpenDrain, HighSpeed, Pull);
+	GPIO_Bit_Rst(PortPin.Port, PortPin.Pin);
 }
 //-----------------------------------------------
 
@@ -67,6 +76,20 @@ void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc)
 {
 	GPIO_Config(PortPin.Port, PortPin.Pin, AltFn, PushPull, HighSpeed, NoPull);
 	GPIO_AltFn(PortPin.Port, PortPin.Pin, AltFunc);
+}
+//-----------------------------------------------
+
+// Функция-обёртка для инициализации входов GPIO
+void GPIO_InitInput(GPIO_PortPinSetting PortPin, uint32_t PullUpSetting)
+{
+	GPIO_Config(PortPin.Port, PortPin.Pin, Input, PushPull, HighSpeed, PullUpSetting);
+}
+//-----------------------------------------------
+
+// Функция-обёртка для инициализации аналоговых GPIO
+void GPIO_InitAnalog(GPIO_PortPinSetting PortPin)
+{
+	GPIO_Config(PortPin.Port, PortPin.Pin, Analog, PushPull, HighSpeed, NoPull);
 }
 //-----------------------------------------------
 
