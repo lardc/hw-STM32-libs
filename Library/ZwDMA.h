@@ -35,7 +35,7 @@ void DMA_Clk_Enable(uint32_t DMA_ClockEnable);
 void DMA_Reset(DMA_Channel_TypeDef * DMA_ChannelX);
 void DMA_Interrupt(DMA_Channel_TypeDef * DMA_ChannelX,uint32_t Interrupt,uint8_t Priority, bool Enable);
 void DMAChannelX_Config(DMA_Channel_TypeDef * DMA_ChannelX,uint32_t M2M,uint32_t PriorityLvl,uint32_t MemorySize,
-						uint32_t PeriphSize,uint32_t MemoryIncerment,uint32_t PeriphIncrement,uint32_t CircularMode,uint32_t DataDirect,uint32_t ChannelEnable);
+						uint32_t PeriphSize,uint32_t MemoryIncerment,uint32_t PeriphIncrement,uint32_t CircularMode,uint32_t DataDirect);
 void DMAChannelX_DataConfig(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t MemAddr, uint32_t PeripheralAddr, uint16_t Number);
 bool DMA_IsTransferComplete(DMA_TypeDef* DMA, uint32_t Channel);
 void DMA_TransferCompleteReset(DMA_TypeDef* DMA, uint32_t Channel);

@@ -56,10 +56,10 @@ void DMA_Interrupt(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t Interrupt, uint8_
 // Настройка DMA
 void DMAChannelX_Config(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t M2M, uint32_t PriorityLvl,
 	uint32_t MemorySize, uint32_t PeriphSize, uint32_t MemoryIncerment, uint32_t PeriphIncrement,
-	uint32_t CircularMode, uint32_t DataDirect, uint32_t ChannelEnable)
+	uint32_t CircularMode, uint32_t DataDirect)
 {
 	DMA_ChannelX->CCR |= (M2M | PriorityLvl | MemorySize | PeriphSize | MemoryIncerment
-		| PeriphIncrement | CircularMode | DataDirect | ChannelEnable);
+		| PeriphIncrement | CircularMode | DataDirect);
 }
 //-----------------------------------------------
 
