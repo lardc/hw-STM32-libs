@@ -28,7 +28,7 @@ uint16_t ADC_Read(ADC_TypeDef* ADCx)
 //-----------------------------------------------
 
 // Start ADC sampling
-void ADC_SamplingTrig(ADC_TypeDef* ADCx)
+void ADC_SamplingStart(ADC_TypeDef* ADCx)
 {
 	ADCx->CR |= ADC_CR_ADSTART;
 }

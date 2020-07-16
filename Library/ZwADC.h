@@ -87,7 +87,7 @@
 //
 uint16_t ADC_Measure(ADC_TypeDef * ADCx, uint32_t ChannelNumber);
 void ADC_WaitEndOfOperation(ADC_TypeDef* ADCx);
-void ADC_SamplingTrig(ADC_TypeDef* ADCx);
+void ADC_SamplingStart(ADC_TypeDef* ADCx);
 void ADC_SamplingStop(ADC_TypeDef* ADCx);
 void ADC_SoftTrigConfig(ADC_TypeDef * ADCx);
 void ADC_Calibration(ADC_TypeDef * ADCx);
