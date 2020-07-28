@@ -3,6 +3,7 @@
 
 // Includes
 #include "SysConfig.h"
+#include "ZwIWDG.h"
 
 // Definitions
 #define SYSCLK_MHZ		(SYSCLK / 1000000)
@@ -24,6 +25,10 @@ void __attribute__((optimize("O3"))) DELAY_US(uint32_t Delay)
 
 void __attribute__((optimize("O3"))) DELAY_MS(uint32_t Delay)
 {
-	DELAY_US(Delay * 1000);
+	while(Delay--)
+	{
+		DELAY_US(1000);
+		IWDG_Refresh();
+	}
 }
 //-----------------------------------------------
