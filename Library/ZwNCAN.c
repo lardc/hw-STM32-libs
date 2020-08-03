@@ -172,7 +172,7 @@ void NCAN_SendMessageX(Int16U mBox, pCANMessage Data, Boolean AlterMessageID, Bo
 	CAN1->sTxMailBox[0].TDHR = NCAN_WordSwap(Data->LOW.DWORD_1);
 
 	CAN1->sTxMailBox[0].TIR |= CAN_TI0R_TXRQ;
-	while (CAN1->TSR & CAN_TSR_TME0);
+	while (!(CAN1->TSR & CAN_TSR_TXOK0));
 }
 //-----------------------------------------------
 
