@@ -43,13 +43,13 @@ void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U Mess
 	Interface->pTimerCounter = pTimer;
 
 	// Setup messages
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16,		(CAN_MASTER_NID << CAN_MASTER_NID_MPY) + CAN_ID_R_16,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16_A,	(CAN_MASTER_NID << CAN_MASTER_NID_MPY) + CAN_ID_R_16 + 1,	4);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16,		(CAN_MASTER_NID << CAN_MASTER_NID_MPY) + CAN_ID_W_16,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16_A,	(CAN_MASTER_NID << CAN_MASTER_NID_MPY) + CAN_ID_W_16 + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C,		(CAN_MASTER_NID << CAN_MASTER_NID_MPY) + CAN_ID_CALL,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C_A,		(CAN_MASTER_NID << CAN_MASTER_NID_MPY) + CAN_ID_CALL + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_ERR_A,	(CAN_MASTER_NID << CAN_MASTER_NID_MPY) + CAN_ID_ERR,		4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16,		CAN_MASTER_FILTER_ID + CAN_ID_R_16,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16_A,	CAN_MASTER_FILTER_ID + CAN_ID_R_16 + 1,	4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16,		CAN_MASTER_FILTER_ID + CAN_ID_W_16,		4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16_A,	CAN_MASTER_FILTER_ID + CAN_ID_W_16 + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C,		CAN_MASTER_FILTER_ID + CAN_ID_CALL,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C_A,		CAN_MASTER_FILTER_ID + CAN_ID_CALL + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_ERR_A,	CAN_MASTER_FILTER_ID + CAN_ID_ERR,		4);
 }
 // ----------------------------------------
 
