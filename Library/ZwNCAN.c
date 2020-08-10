@@ -68,7 +68,7 @@ void NCAN_Init(uint32_t SystemFrequency, uint32_t Baudrate, bool AutoRetransmit)
 	// Запуск модуля
 	CAN1->BTR &= ~(CAN_BTR_SILM | CAN_BTR_LBKM);
 	CAN1->MCR &= ~CAN_MCR_INRQ;         // Нормальный режим работы
-	while (CAN1->MSR & CAN_MCR_INRQ);   // Ожидание переключения
+	while (CAN1->MSR & CAN_MSR_INAK);   // Ожидание переключения
 
 	// Ожидание готовности
 	while (!(CAN1->TSR & CAN_TSR_TME0));
@@ -172,7 +172,11 @@ void NCAN_SendMessageX(Int16U mBox, pCANMessage Data, Boolean AlterMessageID, Bo
 	CAN1->sTxMailBox[0].TDHR = NCAN_WordSwap(Data->LOW.DWORD_1);
 
 	CAN1->sTxMailBox[0].TIR |= CAN_TI0R_TXRQ;
-	while (CAN1->TSR & CAN_TSR_TME0);
+	while (!(CAN1->TSR & CAN_TSR_TXOK0))
+	{
+		if(CAN1->TSR & CAN_TSR_TERR0)
+			break;
+	}
 }
 //-----------------------------------------------
 

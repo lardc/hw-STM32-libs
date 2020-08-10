@@ -109,6 +109,7 @@ void DMA_ChannelEnable(DMA_Channel_TypeDef* DMA_ChannelX, bool Enable)
 // Перезагрузка канала для новой транзакции
 void DMA_ChannelReload(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t DataSize)
 {
+	DMA_ChannelEnable(DMA_ChannelX, false);
 	DMA_ChannelX->CNDTR = DataSize;
 }
 //-----------------------------------------------
