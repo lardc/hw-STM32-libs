@@ -22,6 +22,7 @@ typedef enum __SPI_SuncPolarity
 // Function
 //
 void SPI_Init(SPI_TypeDef* SPIx, uint32_t BR_bits, bool LSBFirst);
+void SPI_Init8b(SPI_TypeDef* SPIx, uint32_t BR_bits, bool LSBFirst);
 void SPI_WriteByte(SPI_TypeDef* SPIx, uint16_t Data);
 void SPI_WriteByte8b(SPI_TypeDef* SPIx, uint8_t Data);
 uint16_t SPI_ReadByte(SPI_TypeDef* SPIx);

@@ -22,6 +22,25 @@ void SPI_Init(SPI_TypeDef* SPIx, uint32_t BR_bits, bool LSBFirst)
 }
 //-----------------------------------------------
 
+void SPI_Init8b(SPI_TypeDef* SPIx, uint32_t BR_bits, bool LSBFirst)
+{
+	BR_bits &= 0x7;
+
+	if (SPIx == SPI1) RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+	if (SPIx == SPI2) RCC->APB1ENR |= RCC_APB1ENR_SPI2EN;
+	if (SPIx == SPI3) RCC->APB1ENR |= RCC_APB1ENR_SPI3EN;
+
+	SPIx->CR1 |= (BR_bits << 3);
+	SPIx->CR1 |= SPI_CR1_MSTR;
+	SPIx->CR1 |= SPI_CR1_SSI;
+	SPIx->CR1 |= SPI_CR1_SSM;
+	if (LSBFirst) SPIx->CR1 |= SPI_CR1_LSBFIRST;
+	SPIx->CR2 = 7 << 8;
+	SPIx->CR2 |= SPI_CR2_FRXTH;
+	SPIx->CR1 |= SPI_CR1_SPE;
+}
+//-----------------------------------------------
+
 void SPI_SetSyncPolarity(SPI_TypeDef* SPIx, SPI_SyncPolarityEnum Polarity)
 {
 	switch (Polarity)
@@ -55,7 +74,7 @@ void SPI_WriteByte(SPI_TypeDef* SPIx, uint16_t Data)
 void SPI_WriteByte8b(SPI_TypeDef* SPIx, uint8_t Data)
 {
 	while (SPIx->SR & SPI_SR_BSY);
-	*(uint8_t *)SPIx->DR = Data;
+	*(uint8_t *)(&SPIx->DR) = Data;
 	asm("nop");
 	asm("nop");
 	asm("nop");
