@@ -1,4 +1,4 @@
-// Includes
+п»ї// Includes
 //
 #include "ZwNCAN.h"
 #include "ZwRCC.h"
@@ -19,7 +19,7 @@ typedef struct __CANMailboxItem
 
 // Definitions
 //
-#define MAILBOXmax		36		// Количество MailBox
+#define MAILBOXmax		36		// РљРѕР»РёС‡РµСЃС‚РІРѕ MailBox
 
 
 // Variables
@@ -40,11 +40,11 @@ void NCAN_Init(uint32_t SystemFrequency, uint32_t Baudrate, bool AutoRetransmit)
 	float BitTime, SystemClockTime, tq, tbs1, tbs2;
 	uint32_t TS1, TS2, BRP;
 
-	// Сброс модуля CAN
+	// РЎР±СЂРѕСЃ РјРѕРґСѓР»СЏ CAN
 	RCC->APB1RSTR |= RCC_APB1RSTR_CAN1RST;
 	RCC->APB1RSTR &= ~RCC_APB1RSTR_CAN1RST;
 
-	// Расчёт параметров работы
+	// Р Р°СЃС‡С‘С‚ РїР°СЂР°РјРµС‚СЂРѕРІ СЂР°Р±РѕС‚С‹
 	SystemClockTime = 1.0f / SystemFrequency;
 	BitTime = 1.0f / Baudrate;
 	tq = BitTime / 10;
@@ -55,22 +55,22 @@ void NCAN_Init(uint32_t SystemFrequency, uint32_t Baudrate, bool AutoRetransmit)
 	TS1 = (uint32_t)(tbs1 / tq - 1);
 	TS2 = (uint32_t)(tbs2 / tq - 1);
 
-    // Без автоматической ретрансляции, запрос инициализации
+    // Р‘РµР· Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕР№ СЂРµС‚СЂР°РЅСЃР»СЏС†РёРё, Р·Р°РїСЂРѕСЃ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё
 	CAN1->MCR = CAN_MCR_INRQ;
 	if (AutoRetransmit)
 		CAN1->MCR |= CAN_MCR_NART;
 
-	// Настройка скорости CAN
+	// РќР°СЃС‚СЂРѕР№РєР° СЃРєРѕСЂРѕСЃС‚Рё CAN
 	CAN1->BTR  = TS2 << 20; // 4 TS2
 	CAN1->BTR |= TS1 << 16; // 9 TS1
 	CAN1->BTR |= BRP;       // 3 BRP
 
-	// Запуск модуля
+	// Р—Р°РїСѓСЃРє РјРѕРґСѓР»СЏ
 	CAN1->BTR &= ~(CAN_BTR_SILM | CAN_BTR_LBKM);
-	CAN1->MCR &= ~CAN_MCR_INRQ;         // Нормальный режим работы
-	while (CAN1->MSR & CAN_MSR_INAK);   // Ожидание переключения
+	CAN1->MCR &= ~CAN_MCR_INRQ;         // РќРѕСЂРјР°Р»СЊРЅС‹Р№ СЂРµР¶РёРј СЂР°Р±РѕС‚С‹
+	while (CAN1->MSR & CAN_MSR_INAK);   // РћР¶РёРґР°РЅРёРµ РїРµСЂРµРєР»СЋС‡РµРЅРёСЏ
 
-	// Ожидание готовности
+	// РћР¶РёРґР°РЅРёРµ РіРѕС‚РѕРІРЅРѕСЃС‚Рё
 	while (!(CAN1->TSR & CAN_TSR_TME0));
 }
 //-----------------------------------------------
@@ -99,23 +99,23 @@ void NCAN_FilterInit(uint16_t FilterNumber, uint32_t FilterExtID, uint32_t Filte
 	else
 		FilterNumberBit = 1 << FilterNumber;
 
-	// Сдвиг старших бит ID, маски и добавление бита IDE
+	// РЎРґРІРёРі СЃС‚Р°СЂС€РёС… Р±РёС‚ ID, РјР°СЃРєРё Рё РґРѕР±Р°РІР»РµРЅРёРµ Р±РёС‚Р° IDE
 	FilterExtID		= ((FilterExtID		& 0x0003FFFF) << 3) | CAN_TI0R_IDE;
 	FilterExtIDMask	= ((FilterExtIDMask	& 0x0003FFFF) << 3) | CAN_TI0R_IDE;
 
-	CAN1->FMR |= CAN_FMR_FINIT;			// Разблокировать инициализацию фильтров
-	CAN1->FA1R &= ~FilterNumberBit;		// Деактивация выбранного фильтра
+	CAN1->FMR |= CAN_FMR_FINIT;			// Р Р°Р·Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЋ С„РёР»СЊС‚СЂРѕРІ
+	CAN1->FA1R &= ~FilterNumberBit;		// Р”РµР°РєС‚РёРІР°С†РёСЏ РІС‹Р±СЂР°РЅРЅРѕРіРѕ С„РёР»СЊС‚СЂР°
 
-	// Параметры фильтрации
-	CAN1->FS1R |= FilterNumberBit;		// 32-битный режим регистра фильтров
-	CAN1->FM1R &= ~FilterNumberBit;		// Режим ID/Mask
-	CAN1->FFA1R &= ~FilterNumberBit;	// Сообщение сохраняется в FIFO0
+	// РџР°СЂР°РјРµС‚СЂС‹ С„РёР»СЊС‚СЂР°С†РёРё
+	CAN1->FS1R |= FilterNumberBit;		// 32-Р±РёС‚РЅС‹Р№ СЂРµР¶РёРј СЂРµРіРёСЃС‚СЂР° С„РёР»СЊС‚СЂРѕРІ
+	CAN1->FM1R &= ~FilterNumberBit;		// Р РµР¶РёРј ID/Mask
+	CAN1->FFA1R &= ~FilterNumberBit;	// РЎРѕРѕР±С‰РµРЅРёРµ СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ РІ FIFO0
 
 	CAN1->sFilterRegister[FilterNumber].FR1 = FilterExtID;
 	CAN1->sFilterRegister[FilterNumber].FR2 = FilterExtIDMask;
 
-	CAN1->FA1R |= FilterNumberBit;		// Активировать выбранный фильтр
-	CAN1->FMR &= ~CAN_FMR_FINIT;    	// Заблокировать инициализацию фильтров
+	CAN1->FA1R |= FilterNumberBit;		// РђРєС‚РёРІРёСЂРѕРІР°С‚СЊ РІС‹Р±СЂР°РЅРЅС‹Р№ С„РёР»СЊС‚СЂ
+	CAN1->FMR &= ~CAN_FMR_FINIT;    	// Р—Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЋ С„РёР»СЊС‚СЂРѕРІ
 }
 //-----------------------------------------------
 
@@ -126,7 +126,7 @@ void NCAN_RecieveData()
 
 	MsgID = CAN1->sFIFOMailBox[0].RIR >> 3;
 
-	// Поиск мэйлбокса
+	// РџРѕРёСЃРє РјСЌР№Р»Р±РѕРєСЃР°
 	for (i = 0; i < MAILBOXmax; ++i)
 	{
 		if ((MsgID & (CAN_SLAVE_NID_MASK | CAN_FUNC_MASK)) == MailBox[i].MsgID ||

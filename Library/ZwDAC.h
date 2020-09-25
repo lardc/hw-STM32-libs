@@ -1,4 +1,4 @@
-#ifndef __ZW_DAC_H
+п»ї#ifndef __ZW_DAC_H
 #define __ZW_DAC_H
 
 // Includes
@@ -38,37 +38,37 @@
 #define BUFF1					DAC_CR_BOFF1
 #define BUFF2					DAC_CR_BOFF2
 
-// Сброс регистров ЦАПа
+// РЎР±СЂРѕСЃ СЂРµРіРёСЃС‚СЂРѕРІ Р¦РђРџР°
 void DAC_Reset(DAC_TypeDef *DACx);
 
-// Разрешение тактирования ЦАПа
+// Р Р°Р·СЂРµС€РµРЅРёРµ С‚Р°РєС‚РёСЂРѕРІР°РЅРёСЏ Р¦РђРџР°
 void DAC_ClkEnable(DAC_TypeDef *DACx);
 
-// Конфигурация триггера ЦАПа
+// РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ С‚СЂРёРіРіРµСЂР° Р¦РђРџР°
 void DAC_TriggerConfigCh1(DAC_TypeDef *DACx, uint32_t TrigMask, uint32_t TrigEnableBit);
 void DAC_TriggerConfigCh2(DAC_TypeDef *DACx, uint32_t TrigMask, uint32_t TrigEnableBit);
 
-// Включение ЦАП
+// Р’РєР»СЋС‡РµРЅРёРµ Р¦РђРџ
 void DAC_EnableCh1(DAC_TypeDef *DACx);
 void DAC_EnableCh2(DAC_TypeDef *DACx);
 
-// Вкл/выкл выходного буффера
+// Р’РєР»/РІС‹РєР» РІС‹С…РѕРґРЅРѕРіРѕ Р±СѓС„С„РµСЂР°
 void DAC_BufferCh1(DAC_TypeDef *DACx, bool Enable);
 void DAC_BufferCh2(DAC_TypeDef *DACx, bool Enable);
 
-// Установка значения
+// РЈСЃС‚Р°РЅРѕРІРєР° Р·РЅР°С‡РµРЅРёСЏ
 void DAC_SetValueCh1(DAC_TypeDef *DACx, uint16_t Value);
 void DAC_SetValueCh2(DAC_TypeDef *DACx, uint16_t Value);
 
-// Форсирование программного триггера
+// Р¤РѕСЂСЃРёСЂРѕРІР°РЅРёРµ РїСЂРѕРіСЂР°РјРјРЅРѕРіРѕ С‚СЂРёРіРіРµСЂР°
 void DAC_ForceSWTrigCh1(DAC_TypeDef *DACx);
 void DAC_ForceSWTrigCh2(DAC_TypeDef *DACx);
 
-// Разрешение работы модуля DMA
+// Р Р°Р·СЂРµС€РµРЅРёРµ СЂР°Р±РѕС‚С‹ РјРѕРґСѓР»СЏ DMA
 void DAC_DMAConfigCh1(DAC_TypeDef *DACx, bool DMAEnable, bool DMAUnderrunIntEnable);
 void DAC_DMAConfigCh2(DAC_TypeDef *DACx, bool DMAEnable, bool DMAUnderrunIntEnable);
 
-//############## Устаревшие функции для работы только с DAC1 ###################
+//############## РЈСЃС‚Р°СЂРµРІС€РёРµ С„СѓРЅРєС†РёРё РґР»СЏ СЂР°Р±РѕС‚С‹ С‚РѕР»СЊРєРѕ СЃ DAC1 ###################
 void DACx_Reset(void);
 void DACx_Enable(uint32_t DACx);
 void DACx_Clk_Enable(uint32_t DACx);

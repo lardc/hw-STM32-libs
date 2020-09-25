@@ -1,4 +1,4 @@
-#ifndef __RCC_H
+п»ї#ifndef __RCC_H
 #define __RCC_H
 
 // Includes
@@ -6,7 +6,7 @@
 #include "stdinc.h"
 #include "ZwGPIO.h"
 
-// Совместимость TrueSTUDIO и IAR
+// РЎРѕРІРјРµСЃС‚РёРјРѕСЃС‚СЊ TrueSTUDIO Рё IAR
 #ifndef RCC_APB1ENR_CAN1EN
 	#define RCC_APB1ENR_CAN1EN RCC_APB1ENR_CANEN
 #endif
@@ -44,7 +44,7 @@
 #define USART_3_ClkEN	RCC_APB1ENR_USART3EN
 #define DAC_1_ClkEN		RCC_APB1ENR_DAC1EN
 #define DAC_2_ClkEN		RCC_APB1ENR_DAC2EN
-#define DMA_ClkEN		RCC_AHBENR_DMA1EN	// устаревшее определение
+#define DMA_ClkEN		RCC_AHBENR_DMA1EN	// СѓСЃС‚Р°СЂРµРІС€РµРµ РѕРїСЂРµРґРµР»РµРЅРёРµ
 #define DMA1_ClkEN		RCC_AHBENR_DMA1EN
 #define DMA2_ClkEN		RCC_AHBENR_DMA2EN
 #define WWDG_ClkEN		RCC_APB1ENR_WWDGEN

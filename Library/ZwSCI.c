@@ -1,21 +1,21 @@
-#include "ZwSCI.h"
+п»ї#include "ZwSCI.h"
 #include "ZwRCC.h"
 #include "SysConfig.h"
 
 // Variables
 //
-static volatile uint8_t FIFO_RXcount = 0;		// Счетчик байтов, принятых по USART
+static volatile uint8_t FIFO_RXcount = 0;		// РЎС‡РµС‚С‡РёРє Р±Р°Р№С‚РѕРІ, РїСЂРёРЅСЏС‚С‹С… РїРѕ USART
 static volatile uint8_t FIFO[USART_FIFOlen];	// USART FIFO
 
 // Functions
 //
 void USART_Init(USART_TypeDef* USARTx, uint32_t SYS_clk, uint32_t BaudRate)
 {
-	RCC_USART_Clk_EN(USART_1_ClkEN);		// Включение тактирования UART1.
+	RCC_USART_Clk_EN(USART_1_ClkEN);		// Р’РєР»СЋС‡РµРЅРёРµ С‚Р°РєС‚РёСЂРѕРІР°РЅРёСЏ UART1.
 
-	USARTx->BRR = SYS_clk / BaudRate;		// Скорость
-	USARTx->CR1 |= (USART_CR1_TE | USART_CR1_RE); // Разрешаем прием и передачу
-	USARTx->CR1 |= USART_CR1_UE;			// Включение USART1
+	USARTx->BRR = SYS_clk / BaudRate;		// РЎРєРѕСЂРѕСЃС‚СЊ
+	USARTx->CR1 |= (USART_CR1_TE | USART_CR1_RE); // Р Р°Р·СЂРµС€Р°РµРј РїСЂРёРµРј Рё РїРµСЂРµРґР°С‡Сѓ
+	USARTx->CR1 |= USART_CR1_UE;			// Р’РєР»СЋС‡РµРЅРёРµ USART1
 }
 //-----------------------------------------
 
@@ -30,7 +30,7 @@ void USART_Recieve_Interupt(USART_TypeDef* USARTx, uint32_t Priority, bool Enabl
 	if (Enable)
 	{
 		USARTx->CR1 |= USART_CR1_RXNEIE;
-		// Изменение приоритета по умолчанию не требуется
+		// РР·РјРµРЅРµРЅРёРµ РїСЂРёРѕСЂРёС‚РµС‚Р° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ
 		//NVIC_SetPriority(USARTXinterupt, Priority);
 		NVIC_EnableIRQ(USARTXinterupt);
 	}

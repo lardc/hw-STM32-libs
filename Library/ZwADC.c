@@ -1,9 +1,9 @@
-// Includes
+п»ї// Includes
 //
 #include "ZwADC.h"
 
 
-// Совместимость TrueSTUDIO и IAR
+// РЎРѕРІРјРµСЃС‚РёРјРѕСЃС‚СЊ TrueSTUDIO Рё IAR
 #ifndef ADC1_2
 	#define ADC1_2 ADC1_2_COMMON
 #endif
@@ -65,29 +65,29 @@ void ADC_Calibration(ADC_TypeDef* ADCx)
 	else
 		ADC3_4->CCR |= ADC12_CCR_CKMODE_0;
 
-	// Отключение АЦП
+	// РћС‚РєР»СЋС‡РµРЅРёРµ РђР¦Рџ
 	ADC_Disable(ADCx);
 
-	// Проверка работы регулятора напряжения
+	// РџСЂРѕРІРµСЂРєР° СЂР°Р±РѕС‚С‹ СЂРµРіСѓР»СЏС‚РѕСЂР° РЅР°РїСЂСЏР¶РµРЅРёСЏ
 	if ((ADCx->CR & ADC_CR_ADVREGEN_0) == 0)
 	{
-		// Включение регулятора
+		// Р’РєР»СЋС‡РµРЅРёРµ СЂРµРіСѓР»СЏС‚РѕСЂР°
 		ADCx->CR &= ~ADC_CR_ADVREGEN;
 		ADCx->CR |= ADC_CR_ADVREGEN_0;
 
-		// После запуска регулятора необходимо выждать не менее 10мкс
-		// ожидаем с запасом
+		// РџРѕСЃР»Рµ Р·Р°РїСѓСЃРєР° СЂРµРіСѓР»СЏС‚РѕСЂР° РЅРµРѕР±С…РѕРґРёРјРѕ РІС‹Р¶РґР°С‚СЊ РЅРµ РјРµРЅРµРµ 10РјРєСЃ
+		// РѕР¶РёРґР°РµРј СЃ Р·Р°РїР°СЃРѕРј
 		uint32_t counter = 10000;
 		while (--counter);
 	}
 
-	// Запуск калибровки
+	// Р—Р°РїСѓСЃРє РєР°Р»РёР±СЂРѕРІРєРё
 	ADCx->CR |= ADC_CR_ADCAL;
 	while (ADCx->CR & ADC_CR_ADCAL);
 }
 //-----------------------------------------------
 
-// Конфигурация АЦП (режим программного запуска)
+// РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ РђР¦Рџ (СЂРµР¶РёРј РїСЂРѕРіСЂР°РјРјРЅРѕРіРѕ Р·Р°РїСѓСЃРєР°)
 void ADC_SoftTrigConfig(ADC_TypeDef* ADCx)
 {
 	ADC_TrigConfig(ADCx, 0, 0);
@@ -134,10 +134,10 @@ void ADC_ChannelSeqReset(ADC_TypeDef* ADCx)
 }
 //-----------------------------------------------
 
-// Устаревшая функция
+// РЈСЃС‚Р°СЂРµРІС€Р°СЏ С„СѓРЅРєС†РёСЏ
 void ADC_ChannelSet_Sequence1_4(ADC_TypeDef* ADCx, uint32_t Channel, uint32_t Sequence)
 {
-	// Ограничение значения, чтобы не превышало размер поля
+	// РћРіСЂР°РЅРёС‡РµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ, С‡С‚РѕР±С‹ РЅРµ РїСЂРµРІС‹С€Р°Р»Рѕ СЂР°Р·РјРµСЂ РїРѕР»СЏ
 	Channel &= 0x1F;
 	ADC_WaitEndOfOperation(ADCx);
 
@@ -153,7 +153,7 @@ void ADC_ChannelSet_Sequence1_4(ADC_TypeDef* ADCx, uint32_t Channel, uint32_t Se
 
 void ADC_ChannelSet_Sequence(ADC_TypeDef* ADCx, uint32_t Channel, uint32_t Sequence)
 {
-	// Ограничение значения, чтобы не превышало размер поля
+	// РћРіСЂР°РЅРёС‡РµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ, С‡С‚РѕР±С‹ РЅРµ РїСЂРµРІС‹С€Р°Р»Рѕ СЂР°Р·РјРµСЂ РїРѕР»СЏ
 	Channel &= 0x1F;
 	ADC_WaitEndOfOperation(ADCx);
 
@@ -184,7 +184,7 @@ void ADC_ChannelSet_Sequence(ADC_TypeDef* ADCx, uint32_t Channel, uint32_t Seque
 
 void ADC_ChannelSet_SampleTime(ADC_TypeDef* ADCx, uint32_t Channel, uint32_t Time)
 {
-	// Ограничение значения, чтобы не превышало размер поля
+	// РћРіСЂР°РЅРёС‡РµРЅРёРµ Р·РЅР°С‡РµРЅРёСЏ, С‡С‚РѕР±С‹ РЅРµ РїСЂРµРІС‹С€Р°Р»Рѕ СЂР°Р·РјРµСЂ РїРѕР»СЏ
 	Time &= 0x7;
 	ADC_WaitEndOfOperation(ADCx);
 
@@ -229,13 +229,13 @@ void ADC_Disable(ADC_TypeDef* ADCx)
 {
 	if (ADCx->CR & ADC_CR_ADEN)
 	{
-		// Ожидание окончания текущей операции
+		// РћР¶РёРґР°РЅРёРµ РѕРєРѕРЅС‡Р°РЅРёСЏ С‚РµРєСѓС‰РµР№ РѕРїРµСЂР°С†РёРё
 		ADC_WaitEndOfOperation(ADCx);
 
 		ADCx->CR |= ADC_CR_ADDIS;
 		while (ADCx->CR & ADC_CR_ADDIS);
 
-		// Очистка флага
+		// РћС‡РёСЃС‚РєР° С„Р»Р°РіР°
 		if (ADCx->ISR & ADRDY) ADCx->ISR |= ADRDY;
 	}
 }
@@ -250,7 +250,7 @@ void ADC_Interrupt(ADC_TypeDef* ADCx, uint32_t InterruptSource, uint32_t Priorit
 	else
 		ADCx->IER &= ~InterruptSource;
 
-	// Изменение приоритета по умолчанию не требуется
+	// РР·РјРµРЅРµРЅРёРµ РїСЂРёРѕСЂРёС‚РµС‚Р° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ
 	if ((ADCx == ADC1) || (ADCx == ADC2))
 	{
 		// NVIC_SetPriority(ADC1_2_IRQn, Priority);
@@ -279,7 +279,7 @@ void ADC_InterruptClearFlag(ADC_TypeDef* ADCx, uint32_t Flag)
 
 void ADC1_2_SetDualMode(bool Enable)
 {
-	// Отключение обоих АЦП
+	// РћС‚РєР»СЋС‡РµРЅРёРµ РѕР±РѕРёС… РђР¦Рџ
 	ADC_Disable(ADC1);
 	ADC_Disable(ADC2);
 
@@ -291,7 +291,7 @@ void ADC1_2_SetDualMode(bool Enable)
 
 void ADC3_4_SetDualMode(bool Enable)
 {
-	// Отключение обоих АЦП
+	// РћС‚РєР»СЋС‡РµРЅРёРµ РѕР±РѕРёС… РђР¦Рџ
 	ADC_Disable(ADC3);
 	ADC_Disable(ADC4);
 

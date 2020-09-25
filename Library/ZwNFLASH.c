@@ -1,4 +1,4 @@
-// Include
+﻿// Include
 //
 #include "ZwNFLASH.h"
 

@@ -1,4 +1,4 @@
-#ifndef __BCCIM_HIGH_LEVEL_H
+﻿#ifndef __BCCIM_HIGH_LEVEL_H
 #define __BCCIM_HIGH_LEVEL_H
 
 // Includes

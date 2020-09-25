@@ -1,4 +1,4 @@
-#ifndef __ZW_ADC_H
+п»ї#ifndef __ZW_ADC_H
 #define __ZW_ADC_H
 
 // Includes
@@ -96,7 +96,7 @@ void ADC_WatchDogStatusClear(ADC_TypeDef *ADCx);
 void ADC_TrigConfig(ADC_TypeDef *ADCx, uint32_t Trigger, uint32_t Edge);
 void ADC_ChannelSeqLen(ADC_TypeDef *ADCx,uint32_t Length);
 void ADC_ChannelSeqReset(ADC_TypeDef* ADCx);
-void ADC_ChannelSet_Sequence1_4(ADC_TypeDef *ADCx, uint32_t Channel, uint32_t Sequence); // Устаревшая функция
+void ADC_ChannelSet_Sequence1_4(ADC_TypeDef *ADCx, uint32_t Channel, uint32_t Sequence); // РЈСЃС‚Р°СЂРµРІС€Р°СЏ С„СѓРЅРєС†РёСЏ
 void ADC_ChannelSet_Sequence(ADC_TypeDef* ADCx, uint32_t Channel, uint32_t Sequence);
 void ADC_ChannelSet_SampleTime(ADC_TypeDef* ADCx, uint32_t Channel, uint32_t Time);
 void ADC_DMAConfig(ADC_TypeDef *ADCx);

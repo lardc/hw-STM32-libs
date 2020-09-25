@@ -1,17 +1,17 @@
-// Includes
+ï»¿// Includes
 //
 #include "ZwRCC.h"
 #include "ZwDAC.h"
 
 
-// Ñáðîñ ðåãèñòðîâ ÖÀÏà
+// Ð¡Ð±Ñ€Ð¾Ñ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð¾Ð² Ð¦ÐÐŸÐ°
 void DAC_Reset(DAC_TypeDef *DACx)
 {
 	DACx->CR = 0;
 }
 //-----------------------------------------------
 
-// Ðàçðåøåíèå òàêòèðîâàíèÿ ÖÀÏà
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¦ÐÐŸÐ°
 void DAC_ClkEnable(DAC_TypeDef *DACx)
 {
 	if (DACx == DAC1)
@@ -21,7 +21,7 @@ void DAC_ClkEnable(DAC_TypeDef *DACx)
 }
 //-----------------------------------------------
 
-// Êîíôèãóðàöèÿ òðèããåðà ÖÀÏà êàíàë 1
+// ÐšÐ¾Ð½Ñ„Ð¸Ð³ÑƒÑ€Ð°Ñ†Ð¸Ñ Ñ‚Ñ€Ð¸Ð³Ð³ÐµÑ€Ð° Ð¦ÐÐŸÐ° ÐºÐ°Ð½Ð°Ð» 1
 void DAC_TriggerConfigCh1(DAC_TypeDef *DACx, uint32_t TrigMask, uint32_t TrigEnableBit)
 {
 	DACx->CR &= ~DAC_CR_TSEL1;
@@ -32,7 +32,7 @@ void DAC_TriggerConfigCh1(DAC_TypeDef *DACx, uint32_t TrigMask, uint32_t TrigEna
 }
 //-----------------------------------------------
 
-// Êîíôèãóðàöèÿ òðèããåðà ÖÀÏà êàíàë 2
+// ÐšÐ¾Ð½Ñ„Ð¸Ð³ÑƒÑ€Ð°Ñ†Ð¸Ñ Ñ‚Ñ€Ð¸Ð³Ð³ÐµÑ€Ð° Ð¦ÐÐŸÐ° ÐºÐ°Ð½Ð°Ð» 2
 void DAC_TriggerConfigCh2(DAC_TypeDef *DACx, uint32_t TrigMask, uint32_t TrigEnableBit)
 {
 	DACx->CR &= ~DAC_CR_TSEL2;
@@ -43,21 +43,21 @@ void DAC_TriggerConfigCh2(DAC_TypeDef *DACx, uint32_t TrigMask, uint32_t TrigEna
 }
 //-----------------------------------------------
 
-// Âêëþ÷åíèå ÖÀÏ êàíàë 1
+// Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð¦ÐÐŸ ÐºÐ°Ð½Ð°Ð» 1
 void DAC_EnableCh1(DAC_TypeDef *DACx)
 {
 	DACx->CR |= DAC_CR_EN1;
 }
 //-----------------------------------------------
 
-// Âêëþ÷åíèå ÖÀÏ êàíàë 2
+// Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð¦ÐÐŸ ÐºÐ°Ð½Ð°Ð» 2
 void DAC_EnableCh2(DAC_TypeDef *DACx)
 {
 	DACx->CR |= DAC_CR_EN2;
 }
 //-----------------------------------------------
 
-// Âêë/âûêë âûõîäíîãî áóôôåðà êàíàë 1
+// Ð’ÐºÐ»/Ð²Ñ‹ÐºÐ» Ð²Ñ‹Ñ…Ð¾Ð´Ð½Ð¾Ð³Ð¾ Ð±ÑƒÑ„Ñ„ÐµÑ€Ð° ÐºÐ°Ð½Ð°Ð» 1
 void DAC_BufferCh1(DAC_TypeDef *DACx, bool Enable)
 {
 	if (Enable)
@@ -67,7 +67,7 @@ void DAC_BufferCh1(DAC_TypeDef *DACx, bool Enable)
 }
 //-----------------------------------------------
 
-// Âêë/âûêë âûõîäíîãî áóôôåðà êàíàë 2
+// Ð’ÐºÐ»/Ð²Ñ‹ÐºÐ» Ð²Ñ‹Ñ…Ð¾Ð´Ð½Ð¾Ð³Ð¾ Ð±ÑƒÑ„Ñ„ÐµÑ€Ð° ÐºÐ°Ð½Ð°Ð» 2
 void DAC_BufferCh2(DAC_TypeDef *DACx, bool Enable)
 {
 	if (Enable)
@@ -77,35 +77,35 @@ void DAC_BufferCh2(DAC_TypeDef *DACx, bool Enable)
 }
 //-----------------------------------------------
 
-// Ôîðñèðîâàíèå ïðîãðàììíîãî òðèããåðà êàíàëà 1 ÖÀÏà
+// Ð¤Ð¾Ñ€ÑÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð½Ð¾Ð³Ð¾ Ñ‚Ñ€Ð¸Ð³Ð³ÐµÑ€Ð° ÐºÐ°Ð½Ð°Ð»Ð° 1 Ð¦ÐÐŸÐ°
 void DAC_ForceSWTrigCh1(DAC_TypeDef *DACx)
 {
 	DACx->SWTRIGR = DAC_SWTRIGR_SWTRIG1;
 }
 //-----------------------------------------------
 
-// Ôîðñèðîâàíèå ïðîãðàììíîãî òðèããåðà êàíàëà 2 ÖÀÏà
+// Ð¤Ð¾Ñ€ÑÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð½Ð¾Ð³Ð¾ Ñ‚Ñ€Ð¸Ð³Ð³ÐµÑ€Ð° ÐºÐ°Ð½Ð°Ð»Ð° 2 Ð¦ÐÐŸÐ°
 void DAC_ForceSWTrigCh2(DAC_TypeDef *DACx)
 {
 	DACx->SWTRIGR = DAC_SWTRIGR_SWTRIG2;
 }
 //-----------------------------------------------
 
-// Óñòàíîâêà çíà÷åíèÿ êàíàëà 1 ÖÀÏà
+// Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ ÐºÐ°Ð½Ð°Ð»Ð° 1 Ð¦ÐÐŸÐ°
 void DAC_SetValueCh1(DAC_TypeDef *DACx, uint16_t Value)
 {
 	DACx->DHR12R1 = Value;
 }
 //-----------------------------------------------
 
-// Óñòàíîâêà çíà÷åíèÿ êàíàëà 2 ÖÀÏà
+// Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ ÐºÐ°Ð½Ð°Ð»Ð° 2 Ð¦ÐÐŸÐ°
 void DAC_SetValueCh2(DAC_TypeDef *DACx, uint16_t Value)
 {
 	DACx->DHR12R2 = Value;
 }
 //-----------------------------------------------
 
-// Ðàçðåøåíèå ðàáîòû ìîäóëÿ DMA íà êàíàëå 1
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ð¼Ð¾Ð´ÑƒÐ»Ñ DMA Ð½Ð° ÐºÐ°Ð½Ð°Ð»Ðµ 1
 void DAC_DMAConfigCh1(DAC_TypeDef *DACx, bool DMAEnable, bool DMAUnderrunIntEnable)
 {
 	if (DMAEnable)
@@ -126,7 +126,7 @@ void DAC_DMAConfigCh1(DAC_TypeDef *DACx, bool DMAEnable, bool DMAUnderrunIntEnab
 }
 //-----------------------------------------------
 
-// Ðàçðåøåíèå ðàáîòû ìîäóëÿ DMA íà êàíàëå 2
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ð¼Ð¾Ð´ÑƒÐ»Ñ DMA Ð½Ð° ÐºÐ°Ð½Ð°Ð»Ðµ 2
 void DAC_DMAConfigCh2(DAC_TypeDef *DACx, bool DMAEnable, bool DMAUnderrunIntEnable)
 {
 	if (DMAEnable)
@@ -148,17 +148,17 @@ void DAC_DMAConfigCh2(DAC_TypeDef *DACx, bool DMAEnable, bool DMAUnderrunIntEnab
 //-----------------------------------------------
 
 
-//############## Óñòàðåâøèå ôóíêöèè äëÿ ðàáîòû òîëüêî ñ DAC1 ###################
+//############## Ð£ÑÑ‚Ð°Ñ€ÐµÐ²ÑˆÐ¸Ðµ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ Ð´Ð»Ñ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ñ DAC1 ###################
 
 
-// Ñáðîñ ðåãèñòðîâ ÖÀÏà
+// Ð¡Ð±Ñ€Ð¾Ñ Ñ€ÐµÐ³Ð¸ÑÑ‚Ñ€Ð¾Ð² Ð¦ÐÐŸÐ°
 void DACx_Reset(void)
 {
 	DAC->CR = 0;
 }
 //-----------------------------------------------
 
-// Ðåæèì èñòî÷íèêà ñèãíàëîâ
+// Ð ÐµÐ¶Ð¸Ð¼ Ð¸ÑÑ‚Ð¾Ñ‡Ð½Ð¸ÐºÐ° ÑÐ¸Ð³Ð½Ð°Ð»Ð¾Ð²
 void DAC_Wave_Config(uint32_t MAMPx_Config, uint32_t WAVEx_Config)
 {
 	DAC->CR |= MAMPx_Config;
@@ -166,7 +166,7 @@ void DAC_Wave_Config(uint32_t MAMPx_Config, uint32_t WAVEx_Config)
 }
 //-----------------------------------------------
 
-// Êîíôèãóðàöèÿ òðèããåðà ÖÀÏà
+// ÐšÐ¾Ð½Ñ„Ð¸Ð³ÑƒÑ€Ð°Ñ†Ð¸Ñ Ñ‚Ñ€Ð¸Ð³Ð³ÐµÑ€Ð° Ð¦ÐÐŸÐ°
 void DAC_Trigger_Config(uint32_t TriggerSelect, uint32_t TriggerEnable)
 {
 	DAC->CR |= TriggerSelect;
@@ -174,7 +174,7 @@ void DAC_Trigger_Config(uint32_t TriggerSelect, uint32_t TriggerEnable)
 }
 //-----------------------------------------------
 
-// Ðàçðåøåíèå ðàáîòû ìîäóëÿ DMA
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ð¼Ð¾Ð´ÑƒÐ»Ñ DMA
 void DACx_DMA_Config(uint32_t DMAEnable, uint32_t DMAUdInt)
 {
 	SYSCFG->CFGR1 |= SYSCFG_CFGR1_TIM6DAC1Ch1_DMA_RMP;
@@ -185,21 +185,21 @@ void DACx_DMA_Config(uint32_t DMAEnable, uint32_t DMAUdInt)
 }
 //-----------------------------------------------
 
-// Ðàçðåøåíèå òàêòèðîâàíèÿ ÖÀÏà
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¦ÐÐŸÐ°
 void DACx_Clk_Enable(uint32_t DACx)
 {
 	RCC_DAC_Clk_EN(DACx);
 }
 //-----------------------------------------------
 
-// Âêëþ÷åíèå ÖÀÏ 1 èëè 2
+// Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð¦ÐÐŸ 1 Ð¸Ð»Ð¸ 2
 void DACx_Enable(uint32_t DACx)
 {
 	DAC->CR |= DACx;
 }
 //-----------------------------------------------
 
-// Âêëþ÷åíèå ïðîãðàììíîãî òðèããåðà
+// Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð½Ð¾Ð³Ð¾ Ñ‚Ñ€Ð¸Ð³Ð³ÐµÑ€Ð°
 bool DAC_SoftTrigEnable(uint32_t SoftTrigXEnable)
 {
 	DAC->SWTRIGR |= SoftTrigXEnable;
@@ -209,7 +209,7 @@ bool DAC_SoftTrigEnable(uint32_t SoftTrigXEnable)
 }
 //-----------------------------------------------
 
-// Âêë/âûêë âûõîäíîãî áóôôåðà
+// Ð’ÐºÐ»/Ð²Ñ‹ÐºÐ» Ð²Ñ‹Ñ…Ð¾Ð´Ð½Ð¾Ð³Ð¾ Ð±ÑƒÑ„Ñ„ÐµÑ€Ð°
 void DAC_Buff(uint32_t BUFFx, bool EN)
 {
 	if (EN == true)
@@ -219,14 +219,14 @@ void DAC_Buff(uint32_t BUFFx, bool EN)
 }
 //-----------------------------------------------
 
-// Óñòàíîâêà çíà÷åíèÿ êàíàëà 1 ÖÀÏà
+// Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ ÐºÐ°Ð½Ð°Ð»Ð° 1 Ð¦ÐÐŸÐ°
 void DAC_CH1_SetValue(uint16_t Value)
 {
 	DAC->DHR12R1 = Value;
 }
 //-----------------------------------------------
 
-// Óñòàíîâêà çíà÷åíèÿ êàíàëà 2 ÖÀÏà
+// Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ ÐºÐ°Ð½Ð°Ð»Ð° 2 Ð¦ÐÐŸÐ°
 void DAC_CH2_SetValue(uint16_t Value)
 {
 	DAC->DHR12R2 = Value;

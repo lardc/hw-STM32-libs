@@ -1,44 +1,44 @@
-// Includes
+ï»¿// Includes
 //
 #include "ZwRCC.h"
 
 
-// Ðàçðåøåíèå òàòèðîâàíèÿ WWDG
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°Ñ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ WWDG
 void RCC_WWDG_Clk_EN(uint32_t WWDG_ClockEnable)
 {
 	RCC->APB1ENR |= WWDG_ClockEnable;
 }
 //-------------------------------------------------
 
-// Ðàçðåøåíèå òàêòèðîâàíèÿ DMA
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ DMA
 void RCC_DMA_Clk_EN(uint32_t DMA_ClockEnable)
 {
 	RCC->AHBENR |= DMA_ClockEnable;
 }
 //-------------------------------------------------
 
-// Ðàçðåøåíèå òàêòèðîâàíèÿ ÖÀÏà
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¦ÐÐŸÐ°
 void RCC_DAC_Clk_EN(uint32_t DACx)
 {
 	RCC->APB1ENR |= DACx;
 }
 //-------------------------------------------------
 
-// Ðàçðåøåíèå òàêòèðîâàíèÿ ïîðòà
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¿Ð¾Ñ€Ñ‚Ð°
 void RCC_GPIO_Clk_EN(uint32_t GPIOx)
 {
 	RCC->AHBENR |= GPIOx;
 }
 //-------------------------------------------------
 
-// Ðàçðåøåíèå òàêòèðîâàíèÿ CAN ìîäóëÿ
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ CAN Ð¼Ð¾Ð´ÑƒÐ»Ñ
 void RCC_CAN_Clk_EN(uint32_t CAN_x)
 {
 	RCC->APB1ENR |= CAN_x;
 }
 //-------------------------------------------------
 
-// Ðàçðåøåíèå òàêòèðîâàíèÿ UART ìîäóëÿ
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ UART Ð¼Ð¾Ð´ÑƒÐ»Ñ
 void RCC_USART_Clk_EN(uint32_t USART_x)
 {
 	switch (USART_x)
@@ -58,14 +58,14 @@ void RCC_USART_Clk_EN(uint32_t USART_x)
 }
 //-------------------------------------------------
 
-// Ðàçðåøåíèå òàêòèðîâàíèå ìîäóëÿ SYSCONFIG
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¼Ð¾Ð´ÑƒÐ»Ñ SYSCONFIG
 void RCC_SysCfg_Clk_EN()
 {
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
 }
 //-------------------------------------------------
 
-// Ðàçðåøåíèå òàêòèðîâàíèÿ òàéìåðîâ
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ñ‚Ð°Ð¹Ð¼ÐµÑ€Ð¾Ð²
 void RCC_TIM_Clk_EN(uint32_t TIM_x)
 {
 	switch (TIM_x)
@@ -109,7 +109,7 @@ void RCC_TIM_Clk_EN(uint32_t TIM_x)
 }
 //-------------------------------------------------
 
-// Ðàçðåøåíèå òàêòèðîâàíèÿ ÀÖÏ
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ ÐÐ¦ÐŸ
 void RCC_ADC_Clk_EN(uint32_t ADC_xx)
 {
 	RCC->AHBENR |= ADC_xx;
@@ -118,14 +118,14 @@ void RCC_ADC_Clk_EN(uint32_t ADC_xx)
 
 Boolean RCC_PLL_HSI_Config(uint32_t Pll_Mull)
 {
-	RCC->CR |= RCC_CR_HSION; //Âêëþ÷åíèå âíóòðåííèé ãåíåðàòîð íà 8ÌÃö
-	while (!(RCC->CR & RCC_CR_HSIRDY)); //Îæèäàíèå âêëþ÷åíèÿ âíóòðåííåãî ãåíåðàòîðà
+	RCC->CR |= RCC_CR_HSION; //Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð²Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½Ð¸Ð¹ Ð³ÐµÐ½ÐµÑ€Ð°Ñ‚Ð¾Ñ€ Ð½Ð° 8ÐœÐ“Ñ†
+	while (!(RCC->CR & RCC_CR_HSIRDY)); //ÐžÐ¶Ð¸Ð´Ð°Ð½Ð¸Ðµ Ð²ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ Ð²Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½ÐµÐ³Ð¾ Ð³ÐµÐ½ÐµÑ€Ð°Ñ‚Ð¾Ñ€Ð°
 
-	RCC->CFGR = 0; //Ñáðîñ êsîíôèãóðàöèè
-	RCC->CFGR |= Pll_Mull; //Êîýôôèöèåíò óìíîæåíèÿ 6
+	RCC->CFGR = 0; //Ð¡Ð±Ñ€Ð¾Ñ ÐºsÐ¾Ð½Ñ„Ð¸Ð³ÑƒÑ€Ð°Ñ†Ð¸Ð¸
+	RCC->CFGR |= Pll_Mull; //ÐšÐ¾ÑÑ„Ñ„Ð¸Ñ†Ð¸ÐµÐ½Ñ‚ ÑƒÐ¼Ð½Ð¾Ð¶ÐµÐ½Ð¸Ñ 6
 	RCC->CFGR |= RCC_CFGR_PLLSRC_HSI_DIV2;
-	RCC->CR |= RCC_CR_PLLON; //Âêëþ÷àåì PLL
-	while (!(RCC->CR & RCC_CR_PLLRDY)); //Æäåì ãîòîâíîñòü PLL
+	RCC->CR |= RCC_CR_PLLON; //Ð’ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ PLL
+	while (!(RCC->CR & RCC_CR_PLLRDY)); //Ð–Ð´ÐµÐ¼ Ð³Ð¾Ñ‚Ð¾Ð²Ð½Ð¾ÑÑ‚ÑŒ PLL
 
 	FLASH->ACR &= ~FLASH_ACR_LATENCY;
 	if (Pll_Mull < PLL_3)
@@ -134,8 +134,8 @@ Boolean RCC_PLL_HSI_Config(uint32_t Pll_Mull)
 		FLASH->ACR = FLASH_ACR_LATENCY_1;
 
 	RCC->CFGR &= ~RCC_CFGR_SW;
-	RCC->CFGR |= RCC_CFGR_SW_PLL; //Ïåðåêëþ÷àåìñÿ íà PLL
-	while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL); //Îæèäàíèå ïåðåêëþ÷åíèÿ íà PLL
+	RCC->CFGR |= RCC_CFGR_SW_PLL; //ÐŸÐµÑ€ÐµÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ÑÑ Ð½Ð° PLL
+	while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL); //ÐžÐ¶Ð¸Ð´Ð°Ð½Ð¸Ðµ Ð¿ÐµÑ€ÐµÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ Ð½Ð° PLL
 
 	return TRUE;
 }
@@ -145,17 +145,17 @@ Boolean RCC_PLL_HSE_Config(uint32_t Fhse, uint32_t PreDiv, uint32_t PllMull)
 {
 	float Fsys = (((float)Fhse) / (PreDiv + 1)) * ((PllMull >> 18) + 2);
 	RCC->CR |= RCC_CR_HSEON;
-	while (!(RCC->CR & RCC_CR_HSERDY)); //Îæèäàíèå âêëþ÷åíèÿ âíåøíåãî ãåíåðàòîðà
+	while (!(RCC->CR & RCC_CR_HSERDY)); //ÐžÐ¶Ð¸Ð´Ð°Ð½Ð¸Ðµ Ð²ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ Ð²Ð½ÐµÑˆÐ½ÐµÐ³Ð¾ Ð³ÐµÐ½ÐµÑ€Ð°Ñ‚Ð¾Ñ€Ð°
 
-	//Ñáðîñ êsîíôèãóðàöèè
+	//Ð¡Ð±Ñ€Ð¾Ñ ÐºsÐ¾Ð½Ñ„Ð¸Ð³ÑƒÑ€Ð°Ñ†Ð¸Ð¸
 	RCC->CFGR = 0;
 	RCC->CFGR2 = 0;
 
-	RCC->CFGR |= PllMull; //Êîýôôèöèåíò óìíîæåíèÿ
+	RCC->CFGR |= PllMull; //ÐšÐ¾ÑÑ„Ñ„Ð¸Ñ†Ð¸ÐµÐ½Ñ‚ ÑƒÐ¼Ð½Ð¾Ð¶ÐµÐ½Ð¸Ñ
 	RCC->CFGR |= RCC_CFGR_PLLSRC_PREDIV1;
 	RCC->CFGR2 |= PreDiv;
-	RCC->CR |= RCC_CR_PLLON; //Âêëþ÷àåì PLL
-	while (!(RCC->CR & RCC_CR_PLLRDY)); //Æäåì ãîòîâíîñòü PLL
+	RCC->CR |= RCC_CR_PLLON; //Ð’ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ PLL
+	while (!(RCC->CR & RCC_CR_PLLRDY)); //Ð–Ð´ÐµÐ¼ Ð³Ð¾Ñ‚Ð¾Ð²Ð½Ð¾ÑÑ‚ÑŒ PLL
 
 	FLASH->ACR &= ~FLASH_ACR_LATENCY;
 	if ((Fsys > 24000000) && (Fsys <= 48000000))
@@ -164,8 +164,8 @@ Boolean RCC_PLL_HSE_Config(uint32_t Fhse, uint32_t PreDiv, uint32_t PllMull)
 		FLASH->ACR |= FLASH_ACR_LATENCY_1;
 
 	RCC->CFGR &= ~RCC_CFGR_SW;
-	RCC->CFGR |= RCC_CFGR_SW_PLL; //Ïåðåêëþ÷àåìñÿ íà PLL
-	while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL); //Îæèäàíèå ïåðåêëþ÷åíèÿ íà PLL
+	RCC->CFGR |= RCC_CFGR_SW_PLL; //ÐŸÐµÑ€ÐµÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ÑÑ Ð½Ð° PLL
+	while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL); //ÐžÐ¶Ð¸Ð´Ð°Ð½Ð¸Ðµ Ð¿ÐµÑ€ÐµÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ Ð½Ð° PLL
 
 	return TRUE;
 }
@@ -174,12 +174,12 @@ Boolean RCC_PLL_HSE_Config(uint32_t Fhse, uint32_t PreDiv, uint32_t PllMull)
 void RCC_HSI_Config()
 {
 	RCC->CR = 0;
-	RCC->CR |= RCC_CR_HSION; //Âêëþ÷åíèå âíóòðåííèé ãåíåðàòîð íà 8ÌÃö
-	while (!(RCC->CR & RCC_CR_HSIRDY)); //Îæèäàíèå âêëþ÷åíèÿ âíóòðåííåãî ãåíåðàòîðà
+	RCC->CR |= RCC_CR_HSION; //Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð²Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½Ð¸Ð¹ Ð³ÐµÐ½ÐµÑ€Ð°Ñ‚Ð¾Ñ€ Ð½Ð° 8ÐœÐ“Ñ†
+	while (!(RCC->CR & RCC_CR_HSIRDY)); //ÐžÐ¶Ð¸Ð´Ð°Ð½Ð¸Ðµ Ð²ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ Ð²Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½ÐµÐ³Ð¾ Ð³ÐµÐ½ÐµÑ€Ð°Ñ‚Ð¾Ñ€Ð°
 	
 	RCC->CFGR = 0;
-	RCC->CFGR |= RCC_CFGR_SW_HSI; //Ïåðåêëþ÷åíèå ñèñòåìû òàêòèðîâàíèÿ íà âíóòðåííèé ãåíåðàòîð
-	while ((RCC->CFGR & ~(RCC_CFGR_SWS)) != RCC_CFGR_SWS_HSI); //Îæèäàíèå ïåðåêëþ÷åíèÿ
+	RCC->CFGR |= RCC_CFGR_SW_HSI; //ÐŸÐµÑ€ÐµÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ ÑÐ¸ÑÑ‚ÐµÐ¼Ñ‹ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð½Ð° Ð²Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½Ð¸Ð¹ Ð³ÐµÐ½ÐµÑ€Ð°Ñ‚Ð¾Ñ€
+	while ((RCC->CFGR & ~(RCC_CFGR_SWS)) != RCC_CFGR_SWS_HSI); //ÐžÐ¶Ð¸Ð´Ð°Ð½Ð¸Ðµ Ð¿ÐµÑ€ÐµÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ñ
 }
 //-------------------------------------------------
 
@@ -195,7 +195,7 @@ void RCC_HSE_Config()
 }
 //-------------------------------------------------
 
-// Íàñòðîéêà àëüòåðíàòèâíîé ôóíêöèè ïîðòà
+// ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° Ð°Ð»ÑŒÑ‚ÐµÑ€Ð½Ð°Ñ‚Ð¸Ð²Ð½Ð¾Ð¹ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ Ð¿Ð¾Ñ€Ñ‚Ð°
 void GPIO_AltFn(GPIO_TypeDef* GPIOx, uint8_t Pin, uint8_t AltFn_Num)
 {
 	if (Pin > Pin_7)
@@ -209,7 +209,7 @@ void GPIO_AltFn(GPIO_TypeDef* GPIOx, uint8_t Pin, uint8_t AltFn_Num)
 }
 //-------------------------------------------------
 
-// Âêëþ÷åíèå LSI ãåíåðàòîðà
+// Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ LSI Ð³ÐµÐ½ÐµÑ€Ð°Ñ‚Ð¾Ñ€Ð°
 void RCC_LSI_Config()
 {
 	RCC->CSR |= RCC_CSR_LSION;

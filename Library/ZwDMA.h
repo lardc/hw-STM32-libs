@@ -1,4 +1,4 @@
-#ifndef __ZW_DMA_H
+п»ї#ifndef __ZW_DMA_H
 #define __ZW_DMA_H
 
 // Includes
@@ -43,7 +43,7 @@ uint16_t DMA_ReadDataCount(DMA_Channel_TypeDef * DMA_ChannelX);
 void DMA_ChannelEnable(DMA_Channel_TypeDef* DMA_ChannelX, bool Enable);
 void DMA_ChannelReload(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t DataSize);
 
-//############## Устаревшие функции для работы только с DMA1 ###################
+//############## РЈСЃС‚Р°СЂРµРІС€РёРµ С„СѓРЅРєС†РёРё РґР»СЏ СЂР°Р±РѕС‚С‹ С‚РѕР»СЊРєРѕ СЃ DMA1 ###################
 
 void DMA1ChannelX_Config(DMA_Channel_TypeDef * DMA1_ChannelX,uint32_t M2M,uint32_t PriorityLvl,uint32_t MemorySize,
 						uint32_t PeriphSize,uint32_t MemoryIncerment,uint32_t PeriphIncrement,uint32_t CircularMode,uint32_t DataDirect,uint32_t ChannelEnable);

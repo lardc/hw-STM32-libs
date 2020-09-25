@@ -1,4 +1,4 @@
-#ifndef __ZW_SCI_H
+﻿#ifndef __ZW_SCI_H
 #define __ZW_SCI_H
 
 // Include

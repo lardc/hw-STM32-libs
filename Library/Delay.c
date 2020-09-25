@@ -1,4 +1,4 @@
-// Header
+п»ї// Header
 #include "Delay.h"
 
 // Includes
@@ -18,7 +18,7 @@ void __attribute__((optimize("O0"))) __DELAY(uint32_t Delay)
 
 void __attribute__((optimize("O3"))) DELAY_US(uint32_t Delay)
 {
-	// Исполнение одного цикла __DELAY занимает 11 тактов
+	// РСЃРїРѕР»РЅРµРЅРёРµ РѕРґРЅРѕРіРѕ С†РёРєР»Р° __DELAY Р·Р°РЅРёРјР°РµС‚ 11 С‚Р°РєС‚РѕРІ
 	__DELAY(Delay * SYSCLK_MHZ / 11);
 }
 //-----------------------------------------------

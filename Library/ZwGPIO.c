@@ -1,18 +1,18 @@
-// Includes
+ï»¿// Includes
 //
 #include "ZwGPIO.h"
 #include "ZwRCC.h"
 
-// Íàñòðîéêà ïîðòà
+// ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° Ð¿Ð¾Ñ€Ñ‚Ð°
 void GPIO_Config(GPIO_TypeDef* GPIOx, uint32_t Pin, uint32_t Mode, uint32_t OutType, uint32_t Speed, uint32_t Pull)
 {
-	// Íàñòðîéêà ïîðòà íà âõîä èëè âûõîä
+	// ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° Ð¿Ð¾Ñ€Ñ‚Ð° Ð½Ð° Ð²Ñ…Ð¾Ð´ Ð¸Ð»Ð¸ Ð²Ñ‹Ñ…Ð¾Ð´
 	GPIOx->MODER = (GPIOx->MODER & (~((uint32_t)0x3 << (Pin << 1)))) | (Mode << (Pin << 1));
 	
 	// PushPull, OpenDrain
 	GPIOx->OTYPER = (GPIOx->OTYPER & (~((uint32_t)0x1 << Pin))) | (OutType << Pin);
 	
-	// Íàñòðîéêà ñêîðîñòè òàêòèðîâàíèÿ ïîðòà
+	// ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° ÑÐºÐ¾Ñ€Ð¾ÑÑ‚Ð¸ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¿Ð¾Ñ€Ñ‚Ð°
 	GPIOx->OSPEEDR = (GPIOx->OSPEEDR & (~((uint32_t)0x1 << (Pin << 1)))) | (Speed << (Pin << 1));
 	
 	// No Pull, Pull-Up, Pull-Down
@@ -20,42 +20,42 @@ void GPIO_Config(GPIO_TypeDef* GPIOx, uint32_t Pin, uint32_t Mode, uint32_t OutT
 }
 //-----------------------------------------------
 
-// Óñòàíîâêè áèòà ïîðòà â 1
+// Ð£ÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ¸ Ð±Ð¸Ñ‚Ð° Ð¿Ð¾Ñ€Ñ‚Ð° Ð² 1
 void GPIO_Bit_Set(GPIO_TypeDef* GPIOx, uint32_t Pin)
 {
 	GPIOx->ODR |= ((uint32_t)0x1 << Pin);
 }
 //-----------------------------------------------
 
-// Ñáðîñ áèòà ïîðòà â 0
+// Ð¡Ð±Ñ€Ð¾Ñ Ð±Ð¸Ñ‚Ð° Ð¿Ð¾Ñ€Ñ‚Ð° Ð² 0
 void GPIO_Bit_Rst(GPIO_TypeDef* GPIOx, uint32_t Pin)
 {
 	GPIOx->ODR &= ~((uint32_t)0x1 << Pin);
 }
 //-----------------------------------------------
 
-// Ôóíêöèÿ-îá¸ðòêà äëÿ óñòàíîâêè âûõîäà GPIO
+// Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ-Ð¾Ð±Ñ‘Ñ€Ñ‚ÐºÐ° Ð´Ð»Ñ ÑƒÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ¸ Ð²Ñ‹Ñ…Ð¾Ð´Ð° GPIO
 void GPIO_SetState(GPIO_PortPinSetting PortPin, bool State)
 {
 	State ? GPIO_Bit_Set(PortPin.Port, PortPin.Pin) : GPIO_Bit_Rst(PortPin.Port, PortPin.Pin);
 }
 //-----------------------------------------------
 
-// Ôóíêöèÿ-îá¸ðòêà äëÿ èçìåíåíèå òåêóùåãî ñîñòîÿíèÿ âûõîäà íà ïðîòèâîïîëîæíîå
+// Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ-Ð¾Ð±Ñ‘Ñ€Ñ‚ÐºÐ° Ð´Ð»Ñ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ Ñ‚ÐµÐºÑƒÑ‰ÐµÐ³Ð¾ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ñ Ð²Ñ‹Ñ…Ð¾Ð´Ð° Ð½Ð° Ð¿Ñ€Ð¾Ñ‚Ð¸Ð²Ð¾Ð¿Ð¾Ð»Ð¾Ð¶Ð½Ð¾Ðµ
 void GPIO_Toggle(GPIO_PortPinSetting PortPin)
 {
 	GPIO_Bit_Toggle(PortPin.Port, PortPin.Pin);
 }
 //-----------------------------------------------
 
-// Ôóíêöèÿ-îá¸ðòêà äëÿ ÷òåíèÿ ñîñòîÿíèÿ ïèíà GPIO
+// Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ-Ð¾Ð±Ñ‘Ñ€Ñ‚ÐºÐ° Ð´Ð»Ñ Ñ‡Ñ‚ÐµÐ½Ð¸Ñ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ñ Ð¿Ð¸Ð½Ð° GPIO
 bool GPIO_GetState(GPIO_PortPinSetting PortPin)
 {
 	return GPIO_Read_Bit(PortPin.Port, PortPin.Pin);
 }
 //-----------------------------------------------
 
-// Ôóíêöèÿ-îá¸ðòêà äëÿ èíèöèàëèçàöèè âûõîäîâ GPIO
+// Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ-Ð¾Ð±Ñ‘Ñ€Ñ‚ÐºÐ° Ð´Ð»Ñ Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð²Ñ‹Ñ…Ð¾Ð´Ð¾Ð² GPIO
 void GPIO_InitPushPullOutput(GPIO_PortPinSetting PortPin)
 {
 	GPIO_Config(PortPin.Port, PortPin.Pin, Output, PushPull, HighSpeed, NoPull);
@@ -63,7 +63,7 @@ void GPIO_InitPushPullOutput(GPIO_PortPinSetting PortPin)
 }
 //-----------------------------------------------
 
-// Ôóíêöèÿ-îá¸ðòêà äëÿ èíèöèàëèçàöèè âûõîäîâ GPIO c îòêðûòûì êîëëåêòîðîì
+// Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ-Ð¾Ð±Ñ‘Ñ€Ñ‚ÐºÐ° Ð´Ð»Ñ Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð²Ñ‹Ñ…Ð¾Ð´Ð¾Ð² GPIO c Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚Ñ‹Ð¼ ÐºÐ¾Ð»Ð»ÐµÐºÑ‚Ð¾Ñ€Ð¾Ð¼
 void GPIO_InitOpenDrainOutput(GPIO_PortPinSetting PortPin, uint32_t Pull)
 {
 	GPIO_Config(PortPin.Port, PortPin.Pin, Output, OpenDrain, HighSpeed, Pull);
@@ -71,7 +71,7 @@ void GPIO_InitOpenDrainOutput(GPIO_PortPinSetting PortPin, uint32_t Pull)
 }
 //-----------------------------------------------
 
-// Ôóíêöèÿ-îá¸ðòêà äëÿ èíèöèàëèçàöèè àëüòåðíàòèâíûõ ôóíêöèé GPIO
+// Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ-Ð¾Ð±Ñ‘Ñ€Ñ‚ÐºÐ° Ð´Ð»Ñ Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð°Ð»ÑŒÑ‚ÐµÑ€Ð½Ð°Ñ‚Ð¸Ð²Ð½Ñ‹Ñ… Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¹ GPIO
 void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc)
 {
 	GPIO_Config(PortPin.Port, PortPin.Pin, AltFn, PushPull, HighSpeed, NoPull);
@@ -79,21 +79,21 @@ void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc)
 }
 //-----------------------------------------------
 
-// Ôóíêöèÿ-îá¸ðòêà äëÿ èíèöèàëèçàöèè âõîäîâ GPIO
+// Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ-Ð¾Ð±Ñ‘Ñ€Ñ‚ÐºÐ° Ð´Ð»Ñ Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð²Ñ…Ð¾Ð´Ð¾Ð² GPIO
 void GPIO_InitInput(GPIO_PortPinSetting PortPin, uint32_t PullUpSetting)
 {
 	GPIO_Config(PortPin.Port, PortPin.Pin, Input, PushPull, HighSpeed, PullUpSetting);
 }
 //-----------------------------------------------
 
-// Ôóíêöèÿ-îá¸ðòêà äëÿ èíèöèàëèçàöèè àíàëîãîâûõ GPIO
+// Ð¤ÑƒÐ½ÐºÑ†Ð¸Ñ-Ð¾Ð±Ñ‘Ñ€Ñ‚ÐºÐ° Ð´Ð»Ñ Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð°Ð½Ð°Ð»Ð¾Ð³Ð¾Ð²Ñ‹Ñ… GPIO
 void GPIO_InitAnalog(GPIO_PortPinSetting PortPin)
 {
 	GPIO_Config(PortPin.Port, PortPin.Pin, Analog, PushPull, HighSpeed, NoPull);
 }
 //-----------------------------------------------
 
-// Èçìåíåíèå òåêóùåãî ñîñòîÿíèÿ âûõîäà íà ïðîòèâîïîëîæíîå
+// Ð˜Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ Ñ‚ÐµÐºÑƒÑ‰ÐµÐ³Ð¾ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ñ Ð²Ñ‹Ñ…Ð¾Ð´Ð° Ð½Ð° Ð¿Ñ€Ð¾Ñ‚Ð¸Ð²Ð¾Ð¿Ð¾Ð»Ð¾Ð¶Ð½Ð¾Ðµ
 void GPIO_Bit_Toggle(GPIO_TypeDef* GPIOx, uint32_t Pin)
 {
 	if (GPIOx->ODR & ((uint32_t)0x1 << Pin))
@@ -103,14 +103,14 @@ void GPIO_Bit_Toggle(GPIO_TypeDef* GPIOx, uint32_t Pin)
 }
 //-----------------------------------------------
 
-// ×òåíèå áèòà ïîðòà
+// Ð§Ñ‚ÐµÐ½Ð¸Ðµ Ð±Ð¸Ñ‚Ð° Ð¿Ð¾Ñ€Ñ‚Ð°
 bool GPIO_Read_Bit(GPIO_TypeDef* GPIOx, uint32_t Pin)
 {
 	return (bool)(GPIOx->IDR & ((uint32_t)0x1 << Pin));
 }
 //-----------------------------------------------
 
-// Îïåðàöèÿ íàä âûõîäíûì ïèíîì
+// ÐžÐ¿ÐµÑ€Ð°Ñ†Ð¸Ñ Ð½Ð°Ð´ Ð²Ñ‹Ñ…Ð¾Ð´Ð½Ñ‹Ð¼ Ð¿Ð¸Ð½Ð¾Ð¼
 void GPIO_PinAction(GPIO_TypeDef* GPIOx, uint32_t Pin, bool Enable)
 {
   	Enable ? GPIO_Bit_Set(GPIOx, Pin) : GPIO_Bit_Rst(GPIOx, Pin);

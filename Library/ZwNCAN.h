@@ -1,4 +1,4 @@
-// -----------------------------------------
+п»ї// -----------------------------------------
 // CAN high-level interface functions
 // ----------------------------------------
 
@@ -12,7 +12,7 @@
 #include "BCCITypes.h"
 
 
-// Совместимость TrueSTUDIO и IAR
+// РЎРѕРІРјРµСЃС‚РёРјРѕСЃС‚СЊ TrueSTUDIO Рё IAR
 #ifndef CAN1
 	#define CAN1 CAN
 #endif

@@ -1,4 +1,4 @@
-#ifndef __ZW_TIM_H
+﻿#ifndef __ZW_TIM_H
 #define __ZW_TIM_H
 
 // Includes

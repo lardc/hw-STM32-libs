@@ -1,23 +1,23 @@
-// Includes
+ï»¿// Includes
 //
 #include "ZwRCC.h"
 #include "ZwDMA.h"
 
-// Ðàçðåøåíèå òàêòèðîâàíèÿ DMA
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ DMA
 void DMA_Clk_Enable(uint32_t DMA_ClockEnable)
 {
 	RCC_DMA_Clk_EN(DMA_ClockEnable);
 }
 //-----------------------------------------------
 
-// Ñáðîñ ïàðàìåòðîâ DMA
+// Ð¡Ð±Ñ€Ð¾Ñ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð² DMA
 void DMA_Reset(DMA_Channel_TypeDef* DMA_ChannelX)
 {
 	DMA_ChannelX->CCR = 0;
 }
 //-----------------------------------------------
 
-// Ïðåðûâàíèå DMA
+// ÐŸÑ€ÐµÑ€Ñ‹Ð²Ð°Ð½Ð¸Ðµ DMA
 void DMA_Interrupt(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t Interrupt, uint8_t Priority, bool Enable)
 {
 	IRQn_Type Channelx;
@@ -41,7 +41,7 @@ void DMA_Interrupt(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t Interrupt, uint8_
 	if (Enable)
 	{
 		DMA_ChannelX->CCR |= Interrupt;
-		// Èçìåíåíèå ïðèîðèòåòà ïî óìîë÷àíèþ íå òðåáóåòñÿ
+		// Ð˜Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ Ð¿Ñ€Ð¸Ð¾Ñ€Ð¸Ñ‚ÐµÑ‚Ð° Ð¿Ð¾ ÑƒÐ¼Ð¾Ð»Ñ‡Ð°Ð½Ð¸ÑŽ Ð½Ðµ Ñ‚Ñ€ÐµÐ±ÑƒÐµÑ‚ÑÑ
 		//NVIC_SetPriority(Channelx, Priority);
 		NVIC_EnableIRQ(Channelx);
 	}
@@ -53,7 +53,7 @@ void DMA_Interrupt(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t Interrupt, uint8_
 }
 //-----------------------------------------------
 
-// Íàñòðîéêà DMA
+// ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° DMA
 void DMAChannelX_Config(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t M2M, uint32_t PriorityLvl,
 	uint32_t MemorySize, uint32_t PeriphSize, uint32_t MemoryIncerment, uint32_t PeriphIncrement,
 	uint32_t CircularMode, uint32_t DataDirect)
@@ -63,7 +63,7 @@ void DMAChannelX_Config(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t M2M, uint32_
 }
 //-----------------------------------------------
 
-// Èñòî÷íèê è ïðèåìíèê äàííûõ
+// Ð˜ÑÑ‚Ð¾Ñ‡Ð½Ð¸Ðº Ð¸ Ð¿Ñ€Ð¸ÐµÐ¼Ð½Ð¸Ðº Ð´Ð°Ð½Ð½Ñ‹Ñ…
 void DMAChannelX_DataConfig(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t MemAddr, uint32_t PeripheralAddr, uint16_t Number)
 {
 	DMA_ChannelX->CMAR = MemAddr;
@@ -72,14 +72,14 @@ void DMAChannelX_DataConfig(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t MemAddr,
 }
 //-----------------------------------------------
 
-// ×òåíèå êîëè÷åñòâà äàííûõ
+// Ð§Ñ‚ÐµÐ½Ð¸Ðµ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð° Ð´Ð°Ð½Ð½Ñ‹Ñ…
 uint16_t DMA_ReadDataCount(DMA_Channel_TypeDef* DMA_ChannelX)
 {
 	return DMA_ChannelX->CNDTR;
 }
 //-----------------------------------------------
 
-// Ïðîâåðêà îêîí÷àíèÿ òðàíçàêöèè
+// ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð¾ÐºÐ¾Ð½Ñ‡Ð°Ð½Ð¸Ñ Ñ‚Ñ€Ð°Ð½Ð·Ð°ÐºÑ†Ð¸Ð¸
 bool DMA_IsTransferComplete(DMA_TypeDef* DMA, uint32_t Channel)
 {
 	if (DMA->ISR & Channel)
@@ -89,14 +89,14 @@ bool DMA_IsTransferComplete(DMA_TypeDef* DMA, uint32_t Channel)
 }
 //-----------------------------------------------
 
-// Ñáðîñ ôëàãà îêîí÷àíèÿ òðàíçàêöèè
+// Ð¡Ð±Ñ€Ð¾Ñ Ñ„Ð»Ð°Ð³Ð° Ð¾ÐºÐ¾Ð½Ñ‡Ð°Ð½Ð¸Ñ Ñ‚Ñ€Ð°Ð½Ð·Ð°ÐºÑ†Ð¸Ð¸
 void DMA_TransferCompleteReset(DMA_TypeDef* DMA, uint32_t Channel)
 {
 	DMA->IFCR |= Channel;
 }
 //-----------------------------------------------
 
-// Àêòèâàöèÿ - äåàêòèâàöèÿ êàíàëà
+// ÐÐºÑ‚Ð¸Ð²Ð°Ñ†Ð¸Ñ - Ð´ÐµÐ°ÐºÑ‚Ð¸Ð²Ð°Ñ†Ð¸Ñ ÐºÐ°Ð½Ð°Ð»Ð°
 void DMA_ChannelEnable(DMA_Channel_TypeDef* DMA_ChannelX, bool Enable)
 {
 	if (Enable)
@@ -106,7 +106,7 @@ void DMA_ChannelEnable(DMA_Channel_TypeDef* DMA_ChannelX, bool Enable)
 }
 //-----------------------------------------------
 
-// Ïåðåçàãðóçêà êàíàëà äëÿ íîâîé òðàíçàêöèè
+// ÐŸÐµÑ€ÐµÐ·Ð°Ð³Ñ€ÑƒÐ·ÐºÐ° ÐºÐ°Ð½Ð°Ð»Ð° Ð´Ð»Ñ Ð½Ð¾Ð²Ð¾Ð¹ Ñ‚Ñ€Ð°Ð½Ð·Ð°ÐºÑ†Ð¸Ð¸
 void DMA_ChannelReload(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t DataSize)
 {
 	DMA_ChannelEnable(DMA_ChannelX, false);
@@ -114,9 +114,9 @@ void DMA_ChannelReload(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t DataSize)
 }
 //-----------------------------------------------
 
-//############## Óñòàðåâøèå ôóíêöèè äëÿ ðàáîòû òîëüêî ñ DMA1 ###################
+//############## Ð£ÑÑ‚Ð°Ñ€ÐµÐ²ÑˆÐ¸Ðµ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸ Ð´Ð»Ñ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ñ DMA1 ###################
 
-// Íàñòðîéêà DMA
+// ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° DMA
 void DMA1ChannelX_Config(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t M2M, uint32_t PriorityLvl,
 	uint32_t MemorySize, uint32_t PeriphSize, uint32_t MemoryIncerment, uint32_t PeriphIncrement,
 	uint32_t CircularMode, uint32_t DataDirect, uint32_t ChannelEnable)
@@ -126,7 +126,7 @@ void DMA1ChannelX_Config(DMA_Channel_TypeDef* DMA_ChannelX, uint32_t M2M, uint32
 }
 //-----------------------------------------------
 
-// Èñòî÷íèê è ïðèåìíèê äàííûõ
+// Ð˜ÑÑ‚Ð¾Ñ‡Ð½Ð¸Ðº Ð¸ Ð¿Ñ€Ð¸ÐµÐ¼Ð½Ð¸Ðº Ð´Ð°Ð½Ð½Ñ‹Ñ…
 void DMA1ChannelX_DataConfig(
 	DMA_Channel_TypeDef* DMA_ChannelX, uint32_t Source, uint32_t Destination, uint16_t Number)
 {
@@ -136,14 +136,14 @@ void DMA1ChannelX_DataConfig(
 }
 //-----------------------------------------------
 
-// ×òåíèå êîëè÷åñòâà äàííûõ
+// Ð§Ñ‚ÐµÐ½Ð¸Ðµ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð° Ð´Ð°Ð½Ð½Ñ‹Ñ…
 uint32_t DMA1ReadDataCount(DMA_Channel_TypeDef* DMA_ChannelX)
 {
 	return DMA_ChannelX->CNDTR;
 }
 //-----------------------------------------------
 
-// Ïðîâåðêà îêîí÷àíèÿ òðàíçàêöèè
+// ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð¾ÐºÐ¾Ð½Ñ‡Ð°Ð½Ð¸Ñ Ñ‚Ñ€Ð°Ð½Ð·Ð°ÐºÑ†Ð¸Ð¸
 bool DMA_TransferCompleteCheck(uint32_t Channel)
 {
 	if (DMA1->ISR & Channel)
@@ -153,7 +153,7 @@ bool DMA_TransferCompleteCheck(uint32_t Channel)
 }
 //-----------------------------------------------
 
-// Ñáðîñ ôëàãà îêîí÷àíèÿ òðàíçàêöèè
+// Ð¡Ð±Ñ€Ð¾Ñ Ñ„Ð»Ð°Ð³Ð° Ð¾ÐºÐ¾Ð½Ñ‡Ð°Ð½Ð¸Ñ Ñ‚Ñ€Ð°Ð½Ð·Ð°ÐºÑ†Ð¸Ð¸
 void DMA_TransferCompleteFlagReset(uint32_t Channel)
 {
 	DMA1->IFCR |= Channel;

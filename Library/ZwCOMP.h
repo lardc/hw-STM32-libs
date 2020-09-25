@@ -1,4 +1,4 @@
-#ifndef __ZW_COMP_H
+﻿#ifndef __ZW_COMP_H
 #define __ZW_COMP_H
 
 // Includes

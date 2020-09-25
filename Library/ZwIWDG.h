@@ -1,4 +1,4 @@
-#ifndef __ZW_IWDG_H
+﻿#ifndef __ZW_IWDG_H
 #define __ZW_IWDG_H
 
 // Includes

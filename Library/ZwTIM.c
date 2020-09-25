@@ -1,16 +1,16 @@
-// Includes
+ï»¿// Includes
 //
 #include "ZwTIM.h"
 #include "ZwRCC.h"
 
-// Íàñòðîéêà òàéìåðà
+// ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° Ñ‚Ð°Ð¹Ð¼ÐµÑ€Ð°
 void TIM_Config(TIM_TypeDef* TIMx, float SystemClock, float Period)
 {
 	uint32_t PSC_TEMP = (uint32_t)(SystemClock / 1000000 * Period / 65536);
 	uint32_t ARR_TEMP = (uint32_t)((SystemClock / ((PSC_TEMP + 1) * 1000000)) * Period);
 
-	TIMx->PSC = PSC_TEMP;	//Çíà÷åíèå ïðåääåëèòåëÿ
-	TIMx->ARR = ARR_TEMP;	//Çíà÷åíèå äî êîòîðîãî ñ÷èòàåò ñ÷åò÷èê
+	TIMx->PSC = PSC_TEMP;	//Ð—Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ Ð¿Ñ€ÐµÐ´Ð´ÐµÐ»Ð¸Ñ‚ÐµÐ»Ñ
+	TIMx->ARR = ARR_TEMP;	//Ð—Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ Ð´Ð¾ ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾Ð³Ð¾ ÑÑ‡Ð¸Ñ‚Ð°ÐµÑ‚ ÑÑ‡ÐµÑ‚Ñ‡Ð¸Ðº
 	TIMx->EGR |= TIM_EGR_UG;
 	TIMx->SR &= ~TIM_SR_UIF;
 }
@@ -21,8 +21,8 @@ void TIM15_16_17_PWM_CH1_Config(TIM_TypeDef* TIMx, float SystemClock, float Peri
 	uint32_t PSC_TEMP = (uint32_t)(SystemClock / 1000000 * Period / 65536);
 	uint32_t ARR_TEMP = (uint32_t)((SystemClock / ((PSC_TEMP + 1) * 1000000)) * Period);
 
-	TIMx->PSC = PSC_TEMP;	//Çíà÷åíèå ïðåääåëèòåëÿ
-	TIMx->ARR = ARR_TEMP;	//Çíà÷åíèå äî êîòîðîãî ñ÷èòàåò ñ÷åò÷èê
+	TIMx->PSC = PSC_TEMP;	//Ð—Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ Ð¿Ñ€ÐµÐ´Ð´ÐµÐ»Ð¸Ñ‚ÐµÐ»Ñ
+	TIMx->ARR = ARR_TEMP;	//Ð—Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ Ð´Ð¾ ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾Ð³Ð¾ ÑÑ‡Ð¸Ñ‚Ð°ÐµÑ‚ ÑÑ‡ÐµÑ‚Ñ‡Ð¸Ðº
 	TIMx->EGR |= TIM_EGR_UG;
 	TIMx->SR &= ~TIM_SR_UIF;
 
@@ -39,21 +39,21 @@ void TIM15_16_17_PWM_CH1_SetValue(TIM_TypeDef* TIMx, uint16_t PWM_Value)
 }
 //-----------------------------------------------
 
-// Âêëþ÷åíèå òàêòèðîâàíèÿ òàéìåðà
+// Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ñ‚Ð°Ð¹Ð¼ÐµÑ€Ð°
 void TIM_Clock_En(uint32_t TIM_x)
 {
 	RCC_TIM_Clk_EN(TIM_x);
 }
 //-----------------------------------------------
 
-// Íàòñðîéêà ðåæèìà ìàñòåðà
+// ÐÐ°Ñ‚ÑÑ€Ð¾Ð¹ÐºÐ° Ñ€ÐµÐ¶Ð¸Ð¼Ð° Ð¼Ð°ÑÑ‚ÐµÑ€Ð°
 void TIM_MasterMode(TIM_TypeDef* TIMx, uint32_t MMS)
 {
 	TIMx->CR2 = MMS;
 }
 //-----------------------------------------------
 
-// Íàñòðîéêà ïðåðûâàíèÿ òàéìåðà
+// ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° Ð¿Ñ€ÐµÑ€Ñ‹Ð²Ð°Ð½Ð¸Ñ Ñ‚Ð°Ð¹Ð¼ÐµÑ€Ð°
 void TIM_Interupt(TIM_TypeDef* TIMx, uint8_t Priority, bool EN)
 {
 	IRQn_Type TIMXinterupt;
@@ -68,7 +68,7 @@ void TIM_Interupt(TIM_TypeDef* TIMx, uint8_t Priority, bool EN)
 	if (EN)
 	{
 		TIMx->DIER |= TIM_DIER_UIE;
-		// Èçìåíåíèå ïðèîðèòåòà ïî óìîë÷àíèþ íå òðåáóåòñÿ
+		// Ð˜Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ Ð¿Ñ€Ð¸Ð¾Ñ€Ð¸Ñ‚ÐµÑ‚Ð° Ð¿Ð¾ ÑƒÐ¼Ð¾Ð»Ñ‡Ð°Ð½Ð¸ÑŽ Ð½Ðµ Ñ‚Ñ€ÐµÐ±ÑƒÐµÑ‚ÑÑ
 		// NVIC_SetPriority(TIMXinterupt, Priority);
 		NVIC_EnableIRQ(TIMXinterupt);
 	}
@@ -80,28 +80,28 @@ void TIM_Interupt(TIM_TypeDef* TIMx, uint8_t Priority, bool EN)
 }
 //-----------------------------------------------
 
-// Ðàçðåøåíèå ðàáîòû DMA
+// Ð Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸Ðµ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ DMA
 void TIM_DMA(TIM_TypeDef* TIMx, uint32_t DMA_MODE)
 {
 	TIMx->DIER |= DMA_MODE;
 }
 //-----------------------------------------------
 
-// Ñáðîñ çíà÷åíèÿ òàéìåðà
+// Ð¡Ð±Ñ€Ð¾Ñ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ Ñ‚Ð°Ð¹Ð¼ÐµÑ€Ð°
 void TIM_Reset(TIM_TypeDef* TIMx)
 {
 	TIMx->CNT = 0;
 }
 //-----------------------------------------------
 
-// Òàéìåð ñòîï
+// Ð¢Ð°Ð¹Ð¼ÐµÑ€ ÑÑ‚Ð¾Ð¿
 void TIM_Stop(TIM_TypeDef* TIMx)
 {
 	TIMx->CR1 &= ~TIM_CR1_CEN;
 }
 //-----------------------------------------------
 
-// Òàéìåð ñòàðò
+// Ð¢Ð°Ð¹Ð¼ÐµÑ€ ÑÑ‚Ð°Ñ€Ñ‚
 void TIM_Start(TIM_TypeDef* TIMx)
 {
 	TIMx->CR1 |= TIM_CR1_CEN;
@@ -109,14 +109,14 @@ void TIM_Start(TIM_TypeDef* TIMx)
 }
 //-----------------------------------------------
 
-// Ñòàòóñ òàéìåðà
+// Ð¡Ñ‚Ð°Ñ‚ÑƒÑ Ñ‚Ð°Ð¹Ð¼ÐµÑ€Ð°
 bool TIM_StatusCheck(TIM_TypeDef* TIMx)
 {
 	return (TIMx->SR & TIM_SR_UIF);
 }
 //-----------------------------------------------
 
-// Î÷èñòêà ñòàòóñà
+// ÐžÑ‡Ð¸ÑÑ‚ÐºÐ° ÑÑ‚Ð°Ñ‚ÑƒÑÐ°
 void TIM_StatusClear(TIM_TypeDef* TIMx)
 {
 	TIMx->SR &= ~TIM_SR_UIF;

@@ -1,4 +1,4 @@
-#ifndef __ZW_GPIO_H
+п»ї#ifndef __ZW_GPIO_H
 #define __ZW_GPIO_H
 
 // Includes
@@ -62,13 +62,13 @@ void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc);
 void GPIO_InitInput(GPIO_PortPinSetting PortPin, uint32_t PullUpSetting);
 void GPIO_InitAnalog(GPIO_PortPinSetting PortPin);
 
-// Устаревшие функции
-// Вместо GPIO_Config использовать функции серии GPIO_Init*
+// РЈСЃС‚Р°СЂРµРІС€РёРµ С„СѓРЅРєС†РёРё
+// Р’РјРµСЃС‚Рѕ GPIO_Config РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ С„СѓРЅРєС†РёРё СЃРµСЂРёРё GPIO_Init*
 void GPIO_Config(GPIO_TypeDef* GPIOx, uint32_t Pin, uint32_t Mode, uint32_t OutType, uint32_t Speed, uint32_t Pull);
-void GPIO_PinAction(GPIO_TypeDef* GPIOx, uint32_t Pin, bool Enable);	// Использовать GPIO_SetState
-void GPIO_Bit_Set(GPIO_TypeDef* GPIOx, uint32_t Pin);					// Использовать GPIO_SetState
-void GPIO_Bit_Rst(GPIO_TypeDef* GPIOx, uint32_t Pin);					// Использовать GPIO_SetState
-bool GPIO_Read_Bit(GPIO_TypeDef* GPIOx, uint32_t Pin);					// Использовать GPIO_GetState
-void GPIO_Bit_Toggle(GPIO_TypeDef* GPIOx, uint32_t Pin);				// Использовать GPIO_Toggle
+void GPIO_PinAction(GPIO_TypeDef* GPIOx, uint32_t Pin, bool Enable);	// РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ GPIO_SetState
+void GPIO_Bit_Set(GPIO_TypeDef* GPIOx, uint32_t Pin);					// РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ GPIO_SetState
+void GPIO_Bit_Rst(GPIO_TypeDef* GPIOx, uint32_t Pin);					// РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ GPIO_SetState
+bool GPIO_Read_Bit(GPIO_TypeDef* GPIOx, uint32_t Pin);					// РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ GPIO_GetState
+void GPIO_Bit_Toggle(GPIO_TypeDef* GPIOx, uint32_t Pin);				// РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ GPIO_Toggle
 
 #endif // __ZW_GPIO_H
