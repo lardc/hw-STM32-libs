@@ -58,8 +58,9 @@ void TIM_Interupt(TIM_TypeDef* TIMx, uint8_t Priority, bool EN)
 {
 	IRQn_Type TIMXinterupt;
 
-	if (TIMx == TIM3)	TIMXinterupt = TIM3_IRQn;
+	if (TIMx == TIM1)	TIMXinterupt = TIM1_UP_TIM16_IRQn;
 	if (TIMx == TIM2)	TIMXinterupt = TIM2_IRQn;
+	if (TIMx == TIM3)	TIMXinterupt = TIM3_IRQn;
 	if (TIMx == TIM4)	TIMXinterupt = TIM4_IRQn;
 	if (TIMx == TIM6)	TIMXinterupt = TIM6_DAC_IRQn;
 	if (TIMx == TIM7)	TIMXinterupt = TIM7_IRQn;
