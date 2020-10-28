@@ -41,21 +41,6 @@ void SPI_Init8b(SPI_TypeDef* SPIx, uint32_t BR_bits, bool LSBFirst)
 }
 //-----------------------------------------------
 
-void SPI_SetSyncPolarity(SPI_TypeDef* SPIx, SPI_SyncPolarityEnum Polarity)
-{
-	switch (Polarity)
-	{
-	case FALL_Edge:
-		SPIx->CR1 &=~ SPI_CR1_CPOL;
-		break;
-
-	case RISE_Edge:
-		SPIx->CR1 |= SPI_CR1_CPOL;
-		break;
-	}
-}
-//-----------------------------------------------
-
 void SPI_WriteByte(SPI_TypeDef* SPIx, uint16_t Data)
 {
 	while (SPIx->SR & SPI_SR_BSY);
@@ -103,6 +88,16 @@ uint16_t SPI_ReadByte(SPI_TypeDef* SPIx)
 }
 //-----------------------------------------------
 
+void SPI_InvertClockPolarity(SPI_TypeDef* SPIx, bool Invert)
+{
+	while (SPIx->SR & SPI_SR_BSY);
+	if(Invert)
+		SPIx->CR1 |= SPI_CR1_CPOL;
+	else
+		SPIx->CR1 &=~ SPI_CR1_CPOL;
+}
+//-----------------------------------------------
+
 //######################### Устаревшие функции #################################
 
 void SPIx_Config(SPI_TypeDef* SPIx)
@@ -119,6 +114,22 @@ void SPIx_Config(SPI_TypeDef* SPIx)
 	SPIx->CR1 |= SPI_CR1_SSM;
 	// SPIx->CR1 |= SPI_CR1_LSBFIRST;
 	SPIx->CR1 |= SPI_CR1_SPE;
+}
+//-----------------------------------------------
+
+void SPI_SetSyncPolarity(SPI_TypeDef* SPIx, SPI_SyncPolarityEnum Polarity)
+{
+	while (SPIx->SR & SPI_SR_BSY);
+	switch (Polarity)
+	{
+		case FALL_Edge:
+			SPIx->CR1 &=~ SPI_CR1_CPOL;
+			break;
+
+		case RISE_Edge:
+			SPIx->CR1 |= SPI_CR1_CPOL;
+			break;
+	}
 }
 //-----------------------------------------------
 
