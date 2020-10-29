@@ -28,6 +28,8 @@
 #define Master_MBOX_RB_16			12
 #define Master_MBOX_RB_16_A			13
 
+#define MIN(a, b) 					(((a) < (b)) ? (a) : (b))
+
 
 // Forward functions
 //
