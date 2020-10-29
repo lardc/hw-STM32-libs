@@ -66,6 +66,25 @@ bool BHL_WriteRegister(uint16_t NodeID, uint16_t Address, uint16_t Data)
 }
 // ----------------------------------------
 
+bool HLI_CAN_ReadArray16(uint16_t Node, uint16_t Endpoint, uint16_t* Data, uint16_t DataSize, uint16_t* DataRead)
+{
+	uint16_t err;
+	err = BCCIM_ReadBlock16(MASTER_CAN_Interface, Node, Endpoint);
+
+	if (err == ERR_NO_ERROR)
+	{
+		BCCIM_ReadBlock16Load(Data, DataSize, DataRead);
+		return TRUE;
+	}
+	else
+	{
+		*DataRead = 0;
+		BHL_LoadError(err, Node, FUNCTION_CALL, Endpoint);
+		return FALSE;
+	}
+}
+// ----------------------------------------
+
 BHLError BHL_GetError()
 {
 	return BHL_Error;
