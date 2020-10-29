@@ -12,6 +12,11 @@
 #include "BCCITypes.h"
 
 
+// Definitions
+//
+#define READ_BLOCK_16_BUFFER_SIZE	2000
+
+
 // Types
 //
 // BCCI instance state
@@ -29,6 +34,8 @@ void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U Mess
 Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, pInt16U Data);
 Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, Int16U Data);
 Int16U BCCIM_Call(pBCCIM_Interface Interface, Int16U Node, Int16U Action);
+Int16U BCCIM_ReadBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint);
+void BCCIM_ReadBlock16Load(pInt16U DataArray, Int16U DataSize, pInt16U DataRead);
 
 
 #endif // __BCCI_MASTER_H

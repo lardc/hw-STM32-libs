@@ -25,12 +25,22 @@
 #define Master_MBOX_C				9
 #define Master_MBOX_C_A				10
 #define Master_MBOX_ERR_A			11
+#define Master_MBOX_RB_16			12
+#define Master_MBOX_RB_16_A			13
 
 
 // Forward functions
 //
 void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node, Int16U Command);
 Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox);
+void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
+Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface);
+
+
+// Variables
+//
+static Int16U ReadBlock16Buffer[READ_BLOCK_16_BUFFER_SIZE];
+static Int16U ReadBlock16BufferCounter, ReadBlock16SavedEndpoint, ReadBlock16SavedNode;
 
 
 // Functions
@@ -50,6 +60,8 @@ void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U Mess
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C,		CAN_MASTER_FILTER_ID + CAN_ID_CALL,		2);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C_A,		CAN_MASTER_FILTER_ID + CAN_ID_CALL + 1,	2);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_ERR_A,	CAN_MASTER_FILTER_ID + CAN_ID_ERR,		4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16,	CAN_MASTER_FILTER_ID + CAN_ID_RB_16,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16_A,	CAN_MASTER_FILTER_ID + CAN_ID_RB_16 + 1,8);
 }
 // ----------------------------------------
 
@@ -110,6 +122,87 @@ Int16U BCCIM_Call(pBCCIM_Interface Interface, Int16U Node, Int16U Action)
 
 	// Get response
 	return BCCIM_WaitResponse(Interface, Master_MBOX_C_A);
+}
+// ----------------------------------------
+
+Int16U BCCIM_ReadBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint)
+{
+	Int16U ret;
+	Int64U timeout;
+	BCCIM_ReadBlock16Subfunction(Interface, Node, Endpoint, TRUE);
+
+	timeout = Interface->TimeoutValueTicks + *(Interface->pTimerCounter);
+	while(*(Interface->pTimerCounter) < timeout)
+	{
+		// Get response
+		if ((ret = BCCIM_WaitResponse(Interface, Master_MBOX_RB_16_A)) == ERR_NO_ERROR)
+		{
+			if (BCCIM_HandleReadBlock16(Interface))
+				return ERR_NO_ERROR;
+		}
+		else
+			return ret;
+	}
+
+	return ERR_TIMEOUT;
+}
+// ----------------------------------------
+
+void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start)
+{
+	CANMessage message;
+
+	if(Start)
+	{
+		// Clear input mailboxes
+		Interface->IOConfig->IO_GetMessage(Master_MBOX_ERR_A, NULL);
+		Interface->IOConfig->IO_GetMessage(Master_MBOX_RB_16_A, NULL);
+
+		ReadBlock16SavedEndpoint = Endpoint;
+		ReadBlock16SavedNode = Node;
+		ReadBlock16BufferCounter = 0;
+	}
+
+	message.HIGH.WORD.WORD_0 = Endpoint;
+	BCCIM_SendFrame(Interface, Master_MBOX_RB_16, &message, Node, CAN_ID_RB_16);
+}
+// ----------------------------------------
+
+Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
+{
+	CANMessage CANInput;
+	Interface->IOConfig->IO_GetMessage(Master_MBOX_RB_16_A, &CANInput);
+
+	if(ReadBlock16BufferCounter >= READ_BLOCK_16_BUFFER_SIZE)
+		return TRUE;
+
+	switch(CANInput.DLC)
+	{
+		case 8:
+			ReadBlock16Buffer[ReadBlock16BufferCounter + 3] = CANInput.LOW.WORD.WORD_3;
+		case 6:
+			ReadBlock16Buffer[ReadBlock16BufferCounter + 2] = CANInput.LOW.WORD.WORD_2;
+		case 4:
+			ReadBlock16Buffer[ReadBlock16BufferCounter + 1] = CANInput.HIGH.WORD.WORD_1;
+		case 2:
+			ReadBlock16Buffer[ReadBlock16BufferCounter] = CANInput.HIGH.WORD.WORD_0;
+			ReadBlock16BufferCounter += CANInput.DLC / 2;
+			BCCIM_ReadBlock16Subfunction(Interface, ReadBlock16SavedNode, ReadBlock16SavedEndpoint, FALSE);
+			return FALSE;
+		default:
+			return TRUE;
+	}
+}
+// ----------------------------------------
+
+void BCCIM_ReadBlock16Load(pInt16U DataArray, Int16U DataSize, pInt16U DataRead)
+{
+	Int16U i, Counter = MIN(DataSize, ReadBlock16BufferCounter);
+
+	for (i = 0; i < Counter; ++i)
+		DataArray[i] = ReadBlock16Buffer[i];
+
+	*DataRead = Counter;
 }
 // ----------------------------------------
 
