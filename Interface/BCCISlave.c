@@ -35,7 +35,7 @@
 
 // Forward functions
 //
-void BCCI_SendErrorFrame(pBCCI_Interface Interface, Int16U ErrorCode, Int16U Details);
+void BCCI_SendErrorFrame(pBCCI_Interface Interface, CANMessage CANInput, Int16U ErrorCode, Int16U Details);
 void BCCI_SendResponseFrame(pBCCI_Interface Interface, Int16U Mailbox, pCANMessage Message);
 void BCCI_SendResponseFrameEx(pBCCI_Interface Interface, Int16U Mailbox, pCANMessage Message, Int16U MessageLength);
 //
@@ -86,14 +86,14 @@ void BCCI_Init(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxCCI_Service
 
 void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 {
-	CANMessage dummy;
+	CANMessage CANInput;
 
 	if (Interface->IOConfig->IO_IsMessageReceived(Slave_MBOX_W_16, NULL))
 	{
 		if (MaskStateChangeOperations)
 		{
-			Interface->IOConfig->IO_GetMessage(Slave_MBOX_W_16, &dummy);
-			BCCI_SendErrorFrame(Interface, ERR_BLOCKED, 0);
+			Interface->IOConfig->IO_GetMessage(Slave_MBOX_W_16, &CANInput);
+			BCCI_SendErrorFrame(Interface, CANInput, ERR_BLOCKED, 0);
 		}
 		else
 			BCCI_HandleWrite16(Interface);
@@ -105,8 +105,8 @@ void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 	{
 		if (MaskStateChangeOperations)
 		{
-			Interface->IOConfig->IO_GetMessage(Slave_MBOX_R_16, &dummy);
-			BCCI_SendErrorFrame(Interface, ERR_BLOCKED, 0);
+			Interface->IOConfig->IO_GetMessage(Slave_MBOX_R_16, &CANInput);
+			BCCI_SendErrorFrame(Interface, CANInput, ERR_BLOCKED, 0);
 		}
 		else
 			BCCI_HandleRead16(Interface);
@@ -118,8 +118,8 @@ void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 	{
 		if (MaskStateChangeOperations)
 		{
-			Interface->IOConfig->IO_GetMessage(Slave_MBOX_C, &dummy);
-			BCCI_SendErrorFrame(Interface, ERR_BLOCKED, 0);
+			Interface->IOConfig->IO_GetMessage(Slave_MBOX_C, &CANInput);
+			BCCI_SendErrorFrame(Interface, CANInput, ERR_BLOCKED, 0);
 		}
 		else
 			BCCI_HandleCall(Interface);
@@ -131,8 +131,8 @@ void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 	{
 		if (MaskStateChangeOperations)
 		{
-			Interface->IOConfig->IO_GetMessage(Slave_MBOX_RB_16, &dummy);
-			BCCI_SendErrorFrame(Interface, ERR_BLOCKED, 0);
+			Interface->IOConfig->IO_GetMessage(Slave_MBOX_RB_16, &CANInput);
+			BCCI_SendErrorFrame(Interface, CANInput, ERR_BLOCKED, 0);
 		}
 		else
 			BCCI_HandleReadBlock16(Interface);
@@ -144,8 +144,8 @@ void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 	{
 		if (MaskStateChangeOperations)
 		{
-			Interface->IOConfig->IO_GetMessage(Slave_MBOX_WB_16, &dummy);
-			BCCI_SendErrorFrame(Interface, ERR_BLOCKED, 0);
+			Interface->IOConfig->IO_GetMessage(Slave_MBOX_WB_16, &CANInput);
+			BCCI_SendErrorFrame(Interface, CANInput, ERR_BLOCKED, 0);
 		}
 		else
 			BCCI_HandleWriteBlock16(Interface);
@@ -165,7 +165,7 @@ void BCCI_HandleRead16(pBCCI_Interface Interface)
 
 	if (addr >= Interface->DataTableSize)
 	{
-		BCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_INVALID_ADDESS, addr);
 	}
 	else
 	{
@@ -190,16 +190,16 @@ void BCCI_HandleWrite16(pBCCI_Interface Interface)
 
 	if(addr >= Interface->DataTableSize)
 	{
-		BCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_INVALID_ADDESS, addr);
 	}
 	else if(xCCI_InProtectedZone(&Interface->ProtectionAndEndpoints, addr))
 	{
-		BCCI_SendErrorFrame(Interface, ERR_PROTECTED, addr);
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_PROTECTED, addr);
 	}
 	else if(Interface->ServiceConfig->ValidateCallback16
 			&& !Interface->ServiceConfig->ValidateCallback16(addr, data))
 	{
-		BCCI_SendErrorFrame(Interface, ERR_VALIDATION, addr);
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_VALIDATION, addr);
 	}
 	else
 	{
@@ -227,11 +227,11 @@ void BCCI_HandleCall(pBCCI_Interface Interface)
 
 		if(!Interface->ServiceConfig->UserActionCallback(action, &userError))
 		{
-			BCCI_SendErrorFrame(Interface, ERR_INVALID_ACTION, action);
+			BCCI_SendErrorFrame(Interface, CANInput, ERR_INVALID_ACTION, action);
 		}
 		else if(userError != 0)
 		{
-			BCCI_SendErrorFrame(Interface, ERR_USER, userError);
+			BCCI_SendErrorFrame(Interface, CANInput, ERR_USER, userError);
 		}
 		else
 		{
@@ -242,7 +242,7 @@ void BCCI_HandleCall(pBCCI_Interface Interface)
 		}
 	}
 	else
-		BCCI_SendErrorFrame(Interface, ERR_INVALID_ACTION, action);
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_INVALID_ACTION, action);
 }
 // ----------------------------------------
 
@@ -280,7 +280,7 @@ void BCCI_HandleReadBlock16(pBCCI_Interface Interface)
 		}
 	}
 	else
-		BCCI_SendErrorFrame(Interface, ERR_INVALID_ENDPOINT, epnt);
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_INVALID_ENDPOINT, epnt);
 }
 // ----------------------------------------
 
@@ -311,10 +311,10 @@ void BCCI_HandleWriteBlock16(pBCCI_Interface Interface)
 			BCCI_SendResponseFrameEx(Interface, Slave_MBOX_WB_16_A, &CANOutput, length);
 		}
 		else
-			BCCI_SendErrorFrame(Interface, ERR_INVALID_ENDPOINT, epnt);
+			BCCI_SendErrorFrame(Interface, CANInput, ERR_INVALID_ENDPOINT, epnt);
 	}
 	else
-		BCCI_SendErrorFrame(Interface, ERR_ILLEGAL_SIZE, length);
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_ILLEGAL_SIZE, length);
 }
 // ----------------------------------------
 
@@ -332,9 +332,9 @@ void BCCI_SendResponseFrame(pBCCI_Interface Interface, Int16U Mailbox, pCANMessa
 }
 // ----------------------------------------
 
-void BCCI_SendErrorFrame(pBCCI_Interface Interface, Int16U ErrorCode, Int16U Details)
+void BCCI_SendErrorFrame(pBCCI_Interface Interface, CANMessage CANInput, Int16U ErrorCode, Int16U Details)
 {
-	CANMessage CANOutput;
+	CANMessage CANOutput = CANInput;
 
 	CANOutput.HIGH.WORD.WORD_0 = ErrorCode;
 	CANOutput.HIGH.WORD.WORD_1 = Details;
