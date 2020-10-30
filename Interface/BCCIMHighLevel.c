@@ -66,7 +66,7 @@ bool BHL_WriteRegister(uint16_t NodeID, uint16_t Address, uint16_t Data)
 }
 // ----------------------------------------
 
-bool HLI_CAN_ReadArray16(uint16_t Node, uint16_t Endpoint, uint16_t* Data, uint16_t DataSize, uint16_t* DataRead)
+bool BHL_ReadArray16(uint16_t Node, uint16_t Endpoint, uint16_t* Data, uint16_t DataSize, uint16_t* DataRead)
 {
 	uint16_t err;
 	err = BCCIM_ReadBlock16(MASTER_CAN_Interface, Node, Endpoint);
