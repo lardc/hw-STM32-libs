@@ -135,7 +135,7 @@ void NCAN_RecieveData()
 			InputMessage.HIGH.DWORD_0 = NCAN_WordSwap(CAN1->sFIFOMailBox[0].RDLR);
 			InputMessage.LOW.DWORD_1  = NCAN_WordSwap(CAN1->sFIFOMailBox[0].RDHR);
 			InputMessage.MsgID.all	  = MsgID;
-			InputMessage.DLC		  = MailBox[i].DataLength;
+			InputMessage.DLC		  = CAN1->sFIFOMailBox[0].RDTR & 0xF;
 			//
 			MailBox[i].DataReady = TRUE;
 			MailBox[i].Message = InputMessage;
