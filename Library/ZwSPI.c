@@ -90,11 +90,41 @@ uint16_t SPI_ReadByte(SPI_TypeDef* SPIx)
 
 void SPI_InvertClockPolarity(SPI_TypeDef* SPIx, bool Invert)
 {
-	while (SPIx->SR & SPI_SR_BSY);
-	if(Invert)
-		SPIx->CR1 |= SPI_CR1_CPOL;
+	bool ClockInverted = SPIx->CR1 & SPI_CR1_CPOL;
+
+	if((Invert && !ClockInverted) || (!Invert && ClockInverted))
+	{
+		SPI_Enable(SPIx, false);
+
+		if(Invert)
+			SPIx->CR1 |= SPI_CR1_CPOL;
+		else
+			SPIx->CR1 &= ~SPI_CR1_CPOL;
+
+		SPI_Enable(SPIx, true);
+	}
+}
+//-----------------------------------------------
+
+void SPI_Enable(SPI_TypeDef* SPIx, bool Enable)
+{
+	if(Enable)
+	{
+		SPIx->CR1 |= SPI_CR1_SPE;
+	}
 	else
-		SPIx->CR1 &=~ SPI_CR1_CPOL;
+	{
+		while (SPIx->SR & SPI_SR_FTLVL);
+		while (SPIx->SR & SPI_SR_BSY);
+
+		SPIx->CR1 &= ~SPI_CR1_SPE;
+
+		while (SPIx->SR & SPI_SR_FRLVL)
+		{
+			if(SPIx->DR)
+				asm("nop");
+		}
+	}
 }
 //-----------------------------------------------
 
