@@ -154,19 +154,13 @@ void NCAN_ConfigMailbox(Int16U mBox, Int32U MsgID, Int16U DataLength)
 
 void NCAN_SendMessageX(Int16U mBox, pCANMessage Data, Boolean AlterMessageID, Boolean AlterMessageLength)
 {
-	uint32_t NewMsgID;
+	uint32_t NewMsgID = Data->MsgID.all;
 
 	if (AlterMessageID)
-	{
-		NewMsgID =  Data->MsgID.all;
-	}
-	else
-	{
-		NewMsgID =  (Data->MsgID.all & CAN_MASTER_NID_MASK) | MailBox[mBox].MsgID;
-	}
+		NewMsgID |= MailBox[mBox].MsgID;
 
 	CAN1->sTxMailBox[0].TIR = (NewMsgID << 3) | CAN_TI0R_IDE;
-	CAN1->sTxMailBox[0].TDTR = AlterMessageLength ? (Data->DLC) : (MailBox[mBox].DataLength);
+	CAN1->sTxMailBox[0].TDTR = AlterMessageLength ? Data->DLC : MailBox[mBox].DataLength;
 
 	CAN1->sTxMailBox[0].TDLR = NCAN_WordSwap(Data->HIGH.DWORD_0);
 	CAN1->sTxMailBox[0].TDHR = NCAN_WordSwap(Data->LOW.DWORD_1);
