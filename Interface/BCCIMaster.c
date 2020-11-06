@@ -43,6 +43,7 @@ Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface);
 //
 static Int16U ReadBlock16Buffer[READ_BLOCK_16_BUFFER_SIZE];
 static Int16U ReadBlock16BufferCounter, ReadBlock16SavedEndpoint, ReadBlock16SavedNode;
+static Int16U SavedErrorDetails = 0;
 
 
 // Functions
@@ -228,6 +229,7 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 		if (Interface->IOConfig->IO_IsMessageReceived(Master_MBOX_ERR_A, NULL))
 		{
 			Interface->IOConfig->IO_GetMessage(Master_MBOX_ERR_A, &message);
+			SavedErrorDetails = message.HIGH.WORD.WORD_1;
 			return message.HIGH.WORD.WORD_0;
 		}
 		else if (Interface->IOConfig->IO_IsMessageReceived(Mailbox, NULL))
@@ -235,5 +237,11 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 	}
 
 	return ERR_TIMEOUT;
+}
+// ----------------------------------------
+
+Int16U BCCIM_GetSavedErrorDetails()
+{
+	return SavedErrorDetails;
 }
 // ----------------------------------------

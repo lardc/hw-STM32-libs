@@ -4,7 +4,7 @@
 
 // Variables
 //
-static BHLError BHL_Error = {ERR_NO_ERROR, 0, 0, 0};
+static BHLError BHL_Error = {ERR_NO_ERROR, 0, 0, 0, 0};
 static pBCCIM_Interface MASTER_CAN_Interface;
 
 
@@ -97,6 +97,7 @@ void BHL_LoadError(Int16U Code, Int16U NodeID, Int16U Func, Int16U ExtData)
 	BHL_Error.Device = NodeID;
 	BHL_Error.Func = Func;
 	BHL_Error.ExtData = ExtData;
+	BHL_Error.Details = BCCIM_GetSavedErrorDetails();
 }
 // ----------------------------------------
 
@@ -106,5 +107,6 @@ void BHL_ResetError()
 	BHL_Error.Device = 0;
 	BHL_Error.Func = 0;
 	BHL_Error.ExtData = 0;
+	BHL_Error.Details = 0;
 }
 // ----------------------------------------
