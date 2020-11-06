@@ -33,7 +33,7 @@
 
 // Forward functions
 //
-void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node, Int16U Command);
+void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node);
 Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox);
 void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
 Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface);
@@ -78,7 +78,7 @@ Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, pIn
 
 	// Compose and send message
 	message.HIGH.WORD.WORD_0 = Address;
-	BCCIM_SendFrame(Interface, Master_MBOX_R_16, &message, Node, CAN_ID_R_16);
+	BCCIM_SendFrame(Interface, Master_MBOX_R_16, &message, Node);
 
 	// Get response
 	if ((ret = BCCIM_WaitResponse(Interface, Master_MBOX_R_16_A)) == ERR_NO_ERROR)
@@ -103,7 +103,7 @@ Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, In
 	// Compose and send message
 	message.HIGH.WORD.WORD_0 = Address;
 	message.HIGH.WORD.WORD_1 = Data;
-	BCCIM_SendFrame(Interface, Master_MBOX_W_16, &message, Node, CAN_ID_W_16);
+	BCCIM_SendFrame(Interface, Master_MBOX_W_16, &message, Node);
 
 	// Get response
 	return BCCIM_WaitResponse(Interface, Master_MBOX_W_16_A);
@@ -120,7 +120,7 @@ Int16U BCCIM_Call(pBCCIM_Interface Interface, Int16U Node, Int16U Action)
 
 	// Compose and send message
 	message.HIGH.WORD.WORD_0 = Action;
-	BCCIM_SendFrame(Interface, Master_MBOX_C, &message, Node, CAN_ID_CALL);
+	BCCIM_SendFrame(Interface, Master_MBOX_C, &message, Node);
 
 	// Get response
 	return BCCIM_WaitResponse(Interface, Master_MBOX_C_A);
@@ -166,7 +166,7 @@ void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16
 	}
 
 	message.HIGH.WORD.WORD_0 = ReadBlock16SavedEndpoint;
-	BCCIM_SendFrame(Interface, Master_MBOX_RB_16, &message, ReadBlock16SavedNode, CAN_ID_RB_16);
+	BCCIM_SendFrame(Interface, Master_MBOX_RB_16, &message, ReadBlock16SavedNode);
 }
 // ----------------------------------------
 
@@ -208,9 +208,9 @@ void BCCIM_ReadBlock16Load(pInt16U DataArray, Int16U DataSize, pInt16U DataRead)
 }
 // ----------------------------------------
 
-void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node, Int16U Command)
+void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node)
 {
-	Message->MsgID.all = (CAN_MASTER_NID << CAN_MASTER_NID_MPY) | (Node << CAN_SLAVE_NID_MPY) | Command;
+	Message->MsgID.all = Node << CAN_SLAVE_NID_MPY;
 	Interface->IOConfig->IO_SendMessageEx(Mailbox, Message, TRUE, FALSE);
 }
 // ----------------------------------------
