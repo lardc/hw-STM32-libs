@@ -165,8 +165,8 @@ void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16
 		ReadBlock16BufferCounter = 0;
 	}
 
-	message.HIGH.WORD.WORD_0 = Endpoint;
-	BCCIM_SendFrame(Interface, Master_MBOX_RB_16, &message, Node, CAN_ID_RB_16);
+	message.HIGH.WORD.WORD_0 = ReadBlock16SavedEndpoint;
+	BCCIM_SendFrame(Interface, Master_MBOX_RB_16, &message, ReadBlock16SavedNode, CAN_ID_RB_16);
 }
 // ----------------------------------------
 
@@ -189,7 +189,7 @@ Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
 		case 2:
 			ReadBlock16Buffer[ReadBlock16BufferCounter] = CANInput.HIGH.WORD.WORD_0;
 			ReadBlock16BufferCounter += CANInput.DLC / 2;
-			BCCIM_ReadBlock16Subfunction(Interface, ReadBlock16SavedNode, ReadBlock16SavedEndpoint, FALSE);
+			BCCIM_ReadBlock16Subfunction(Interface, 0, 0, FALSE);
 			return FALSE;
 		default:
 			return TRUE;
