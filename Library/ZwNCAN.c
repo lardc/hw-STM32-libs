@@ -156,8 +156,10 @@ void NCAN_SendMessageX(Int16U mBox, pCANMessage Data, Boolean AlterMessageID, Bo
 {
 	uint32_t NewMsgID = Data->MsgID.all;
 
-	if (AlterMessageID)
-		NewMsgID |= MailBox[mBox].MsgID;
+	if (!AlterMessageID)
+		NewMsgID &= CAN_MASTER_NID_MASK;
+
+	NewMsgID |= MailBox[mBox].MsgID;
 
 	CAN1->sTxMailBox[0].TIR = (NewMsgID << 3) | CAN_TI0R_IDE;
 	CAN1->sTxMailBox[0].TDTR = AlterMessageLength ? Data->DLC : MailBox[mBox].DataLength;
