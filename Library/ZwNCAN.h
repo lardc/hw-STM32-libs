@@ -31,6 +31,7 @@ void NCAN_SendMessage(Int16U mBox, pCANMessage Data);
 void NCAN_SendMessageEx(Int16U mBox, pCANMessage Data, Boolean AlterMessageID, Boolean AlterMessageLength);
 Boolean NCAN_IsMessageReceived(Int16U mBox, pBoolean pMessageLost);
 void NCAN_GetMessage(Int16U mBox, pCANMessage Data);
+void NCAN_InterruptSetPriority(uint16_t Priority);
 
 
 #endif // __ZW_NCAN_H

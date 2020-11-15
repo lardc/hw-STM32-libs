@@ -90,6 +90,12 @@ void NCAN_FIFOInterrupt(bool Enable)
 }
 //-----------------------------------------------
 
+void NCAN_InterruptSetPriority(uint16_t Priority)
+{
+	NVIC_SetPriority(USB_LP_CAN1_RX0_IRQn, (Priority & 0xF));
+}
+//-----------------------------------------------
+
 void NCAN_FilterInit(uint16_t FilterNumber, uint32_t FilterExtID, uint32_t FilterExtIDMask)
 {
 	uint32_t FilterNumberBit = 0;
