@@ -30,8 +30,8 @@ void USART_Recieve_Interupt(USART_TypeDef* USARTx, uint32_t Priority, bool Enabl
 	if (Enable)
 	{
 		USARTx->CR1 |= USART_CR1_RXNEIE;
-		// Изменение приоритета по умолчанию не требуется
-		//NVIC_SetPriority(USARTXinterupt, Priority);
+
+		NVIC_SetPriority(USARTXinterupt, Priority);
 		NVIC_EnableIRQ(USARTXinterupt);
 	}
 	else
@@ -125,6 +125,7 @@ bool ZwSCI_RecieveCheck(USART_TypeDef* USARTx)
 void ZwSCI_RecieveFlagClear(USART_TypeDef* USARTx)
 {
 	USARTx->ISR &= ~USART_ISR_RXNE;
+	USARTx->ICR |= USART_ICR_ORECF;
 }
 //-----------------------------------------
 

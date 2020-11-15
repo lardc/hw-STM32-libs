@@ -69,8 +69,8 @@ void TIM_Interupt(TIM_TypeDef* TIMx, uint8_t Priority, bool EN)
 	if (EN)
 	{
 		TIMx->DIER |= TIM_DIER_UIE;
-		// Изменение приоритета по умолчанию не требуется
-		// NVIC_SetPriority(TIMXinterupt, Priority);
+
+		NVIC_SetPriority(TIMXinterupt, Priority);
 		NVIC_EnableIRQ(TIMXinterupt);
 	}
 	else
