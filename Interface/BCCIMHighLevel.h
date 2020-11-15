@@ -14,6 +14,7 @@ typedef struct __BHLError
 	uint16_t Device;
 	uint16_t Func;
 	uint16_t ExtData;
+	uint16_t Details;
 } BHLError, *pBHLError;
 
 // Functions

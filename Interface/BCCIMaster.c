@@ -33,7 +33,7 @@
 
 // Forward functions
 //
-void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node, Int16U Command);
+void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node);
 Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox);
 void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
 Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface);
@@ -43,6 +43,7 @@ Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface);
 //
 static Int16U ReadBlock16Buffer[READ_BLOCK_16_BUFFER_SIZE];
 static Int16U ReadBlock16BufferCounter, ReadBlock16SavedEndpoint, ReadBlock16SavedNode;
+static Int16U SavedErrorDetails = 0;
 
 
 // Functions
@@ -78,7 +79,7 @@ Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, pIn
 
 	// Compose and send message
 	message.HIGH.WORD.WORD_0 = Address;
-	BCCIM_SendFrame(Interface, Master_MBOX_R_16, &message, Node, CAN_ID_R_16);
+	BCCIM_SendFrame(Interface, Master_MBOX_R_16, &message, Node);
 
 	// Get response
 	if ((ret = BCCIM_WaitResponse(Interface, Master_MBOX_R_16_A)) == ERR_NO_ERROR)
@@ -103,7 +104,7 @@ Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, In
 	// Compose and send message
 	message.HIGH.WORD.WORD_0 = Address;
 	message.HIGH.WORD.WORD_1 = Data;
-	BCCIM_SendFrame(Interface, Master_MBOX_W_16, &message, Node, CAN_ID_W_16);
+	BCCIM_SendFrame(Interface, Master_MBOX_W_16, &message, Node);
 
 	// Get response
 	return BCCIM_WaitResponse(Interface, Master_MBOX_W_16_A);
@@ -120,7 +121,7 @@ Int16U BCCIM_Call(pBCCIM_Interface Interface, Int16U Node, Int16U Action)
 
 	// Compose and send message
 	message.HIGH.WORD.WORD_0 = Action;
-	BCCIM_SendFrame(Interface, Master_MBOX_C, &message, Node, CAN_ID_CALL);
+	BCCIM_SendFrame(Interface, Master_MBOX_C, &message, Node);
 
 	// Get response
 	return BCCIM_WaitResponse(Interface, Master_MBOX_C_A);
@@ -165,8 +166,8 @@ void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16
 		ReadBlock16BufferCounter = 0;
 	}
 
-	message.HIGH.WORD.WORD_0 = Endpoint;
-	BCCIM_SendFrame(Interface, Master_MBOX_RB_16, &message, Node, CAN_ID_RB_16);
+	message.HIGH.WORD.WORD_0 = ReadBlock16SavedEndpoint;
+	BCCIM_SendFrame(Interface, Master_MBOX_RB_16, &message, ReadBlock16SavedNode);
 }
 // ----------------------------------------
 
@@ -189,7 +190,7 @@ Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
 		case 2:
 			ReadBlock16Buffer[ReadBlock16BufferCounter] = CANInput.HIGH.WORD.WORD_0;
 			ReadBlock16BufferCounter += CANInput.DLC / 2;
-			BCCIM_ReadBlock16Subfunction(Interface, ReadBlock16SavedNode, ReadBlock16SavedEndpoint, FALSE);
+			BCCIM_ReadBlock16Subfunction(Interface, 0, 0, FALSE);
 			return FALSE;
 		default:
 			return TRUE;
@@ -208,9 +209,9 @@ void BCCIM_ReadBlock16Load(pInt16U DataArray, Int16U DataSize, pInt16U DataRead)
 }
 // ----------------------------------------
 
-void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node, Int16U Command)
+void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node)
 {
-	Message->MsgID.all = (CAN_MASTER_NID << CAN_MASTER_NID_MPY) | (Node << CAN_SLAVE_NID_MPY) | Command;
+	Message->MsgID.all = Node << CAN_SLAVE_NID_MPY;
 	Interface->IOConfig->IO_SendMessageEx(Mailbox, Message, TRUE, FALSE);
 }
 // ----------------------------------------
@@ -228,6 +229,7 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 		if (Interface->IOConfig->IO_IsMessageReceived(Master_MBOX_ERR_A, NULL))
 		{
 			Interface->IOConfig->IO_GetMessage(Master_MBOX_ERR_A, &message);
+			SavedErrorDetails = message.HIGH.WORD.WORD_1;
 			return message.HIGH.WORD.WORD_0;
 		}
 		else if (Interface->IOConfig->IO_IsMessageReceived(Mailbox, NULL))
@@ -235,5 +237,11 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 	}
 
 	return ERR_TIMEOUT;
+}
+// ----------------------------------------
+
+Int16U BCCIM_GetSavedErrorDetails()
+{
+	return SavedErrorDetails;
 }
 // ----------------------------------------
