@@ -70,7 +70,8 @@ void TIM_Interupt(TIM_TypeDef* TIMx, uint8_t Priority, bool EN)
 	{
 		TIMx->DIER |= TIM_DIER_UIE;
 
-		NVIC_SetPriority(TIMXinterupt, Priority);
+		// По умолчанию изменение приоритета прерывания не требуется
+		//NVIC_SetPriority(TIMXinterupt, Priority);
 		NVIC_EnableIRQ(TIMXinterupt);
 	}
 	else
