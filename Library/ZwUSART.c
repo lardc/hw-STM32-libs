@@ -226,7 +226,17 @@ bool USARTx_RecieveCheck(USART_TypeDef* USARTx)
 
 void USARTx_RecieveFlagClear(USART_TypeDef* USARTx)
 {
-	USARTx->ISR &= ~USART_ISR_RXNE;
+	// Регистр ISR только для чтения
+	// очистка флага полученных данных производится при считываниии из регистра данных
+
+	// USARTx->ISR &= ~USART_ISR_RXNE;
+}
+//-----------------------------------------
+
+void USARTx_OverrunFlagClear(USART_TypeDef* USARTx)
+{
+	if(USARTx->ISR & USART_ISR_ORE)
+		USARTx->ICR |= USART_ICR_ORECF;
 }
 //-----------------------------------------
 

@@ -37,6 +37,7 @@ void USART3_SendChar(uint16_t Value);
 
 bool USARTx_RecieveCheck(USART_TypeDef* USARTx);
 void USARTx_RecieveFlagClear(USART_TypeDef* USARTx);
+void USARTx_OverrunFlagClear(USART_TypeDef* USARTx);
 void USARTx_RegisterToFIFO(USART_TypeDef* USARTx);
 
 
