@@ -31,8 +31,7 @@ void USART_Recieve_Interupt(USART_TypeDef* USARTx, uint32_t Priority, bool Enabl
 	{
 		USARTx->CR1 |= USART_CR1_RXNEIE;
 
-		// По умолчанию изменение приоритета прерывания не требуется
-		//NVIC_SetPriority(USARTXinterupt, Priority);
+		NVIC_SetPriority(USARTXinterupt, Priority);
 		NVIC_EnableIRQ(USARTXinterupt);
 	}
 	else
