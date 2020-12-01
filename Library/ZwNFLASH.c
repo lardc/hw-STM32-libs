@@ -11,6 +11,7 @@
 // Forward functions
 //
 uint16_t NFLASH_ReadWord16(uint32_t Address);
+uint32_t NFLASH_Swap32(uint32_t Data);
 
 
 // Functions
@@ -89,5 +90,63 @@ void NFLASH_WriteDT(uint32_t EPROMAddress, uint16_t* Buffer, uint16_t BufferSize
 void NFLASH_ReadDT(uint32_t EPROMAddress, uint16_t* Buffer, uint16_t BufferSize)
 {
 	NFLASH_ReadArray16(EPROMAddress, Buffer, BufferSize);
+}
+// -----------------------------------------------
+
+uint32_t NFLASH_Swap32(uint32_t Data)
+{
+	uint32_t result;
+
+	result  = (Data & 0x000000ff) << 24;
+	result |= (Data & 0x0000ff00) << 8;
+	result |= (Data & 0x00ff0000) >> 8;
+	result |= (Data & 0xff000000) >> 24;
+
+	return result;
+}
+//-----------------------------------------------
+
+void NFLASH_WriteArray32(uint32_t StartAddress, uint32_t* Buffer, uint32_t BufferSize)
+{
+	// Enable flash access
+	FLASH->CR |= FLASH_CR_PG;
+
+	for (uint32_t i = 0; i < BufferSize; ++i, StartAddress += 4)
+	{
+		uint32_t Swap = NFLASH_Swap32(Buffer[i]);
+
+		*(__IO uint16_t*)StartAddress = (Swap >> 16) & 0xffff;
+		while (FLASH->SR & FLASH_SR_BSY);
+
+		*(__IO uint16_t*)(StartAddress + 2) = Swap & 0xffff;
+		while (FLASH->SR & FLASH_SR_BSY);
+	}
+
+	// Disable flash access
+	FLASH->CR &= ~FLASH_CR_PG;
+}
+// -----------------------------------------------
+
+void NFLASH_ReadArray32(uint32_t StartAddress, uint32_t* Buffer, uint32_t BufferSize)
+{
+	for (uint32_t i = 0; i < BufferSize; ++i, StartAddress += 4)
+		Buffer[i] = NFLASH_Swap32(*(__IO uint32_t*)StartAddress);
+}
+// -----------------------------------------------
+
+void NFLASH_WriteDT32(uint32_t EPROMAddress, uint32_t* Buffer, uint32_t BufferSize)
+{
+	// Prepare flash
+	NFLASH_Unlock();
+	NFLASH_ErasePages(EPROMAddress, EPROMAddress + FLASH_PAGE_SIZE);
+
+	// Write data
+	NFLASH_WriteArray32(EPROMAddress, Buffer, BufferSize);
+}
+// -----------------------------------------------
+
+void NFLASH_ReadDT32(uint32_t EPROMAddress, uint32_t* Buffer, uint32_t BufferSize)
+{
+	NFLASH_ReadArray32(EPROMAddress, Buffer, BufferSize);
 }
 // -----------------------------------------------
