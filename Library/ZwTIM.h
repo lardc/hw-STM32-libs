@@ -22,5 +22,6 @@ void TIM_DMA(TIM_TypeDef * TIMx, uint32_t DMA_MODE);
 void TIM_Clock_En(uint32_t TIM_x);
 void TIM15_16_17_PWM_CH1_Config(TIM_TypeDef* TIMx, float SystemClock, float Period);
 void TIM15_16_17_PWM_CH1_SetValue(TIM_TypeDef* TIMx, uint16_t PWM_Value);
+void TIM_OnePulseMode(TIM_TypeDef* TIMx, bool State);
 
 #endif // __ZW_TIM_H

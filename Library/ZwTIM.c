@@ -16,6 +16,12 @@ void TIM_Config(TIM_TypeDef* TIMx, float SystemClock, float Period)
 }
 //-----------------------------------------------
 
+void TIM_OnePulseMode(TIM_TypeDef* TIMx, bool State)
+{
+	State ? TIMx->CR1 |= TIM_CR1_OPM : TIMx->CR1 &=~ TIM_CR1_OPM;
+}
+//-----------------------------------------------
+
 void TIM15_16_17_PWM_CH1_Config(TIM_TypeDef* TIMx, float SystemClock, float Period)
 {
 	uint32_t PSC_TEMP = (uint32_t)(SystemClock / 1000000 * Period / 65536);
