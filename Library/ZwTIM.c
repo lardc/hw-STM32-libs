@@ -18,7 +18,7 @@ void TIM_Config(TIM_TypeDef* TIMx, float SystemClock, float Period)
 
 void TIM_OnePulseMode(TIM_TypeDef* TIMx, bool State)
 {
-	State ? TIMx->CR1 |= TIM_CR1_OPM : TIMx->CR1 &=~ TIM_CR1_OPM;
+	State ? (TIMx->CR1 |= TIM_CR1_OPM) : (TIMx->CR1 &=~ TIM_CR1_OPM);
 }
 //-----------------------------------------------
 
