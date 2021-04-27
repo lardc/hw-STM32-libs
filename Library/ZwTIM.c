@@ -57,9 +57,21 @@ void TIM_InterruptEventConfig(TIM_TypeDef* TIMx, uint32_t Event, bool Enable)
 	}
 	else
 	{
-		TIMx->DIER &=~ Event;
+		TIMx->DIER &= ~Event;
 		NVIC_DisableIRQ(TIMXinterupt);
 	}
+}
+//-----------------------------------------------
+
+bool TIM_InterruptEventFlagCheck(TIM_TypeDef* TIMx, uint32_t Event)
+{
+	return (TIMx->SR & Event);
+}
+//-----------------------------------------------
+
+void TIM_InterruptEventFlagClear(TIM_TypeDef* TIMx, uint32_t Event)
+{
+	TIMx->SR &= ~Event;
 }
 //-----------------------------------------------
 
@@ -101,14 +113,14 @@ void TIM_Start(TIM_TypeDef* TIMx)
 // Статус таймера
 bool TIM_StatusCheck(TIM_TypeDef* TIMx)
 {
-	return (TIMx->SR & TIM_SR_UIF);
+	return TIM_InterruptEventFlagCheck(TIMx, TIM_SR_UIF);
 }
 //-----------------------------------------------
 
 // Очистка статуса
 void TIM_StatusClear(TIM_TypeDef* TIMx)
 {
-	TIMx->SR &= ~TIM_SR_UIF;
+	TIM_InterruptEventFlagClear(TIMx, TIM_SR_UIF);
 }
 //-----------------------------------------------
 
