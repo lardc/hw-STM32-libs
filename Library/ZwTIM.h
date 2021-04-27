@@ -30,5 +30,6 @@ void TIM15_16_17_PWM_CH1_SetValue(TIM_TypeDef* TIMx, uint16_t PWM_Value);
 void TIM_OnePulseMode(TIM_TypeDef* TIMx, bool State);
 void TIMx_PWM_SetValue(TIM_TypeDef* TIMx, uint32_t Channel, uint32_t Value);
 void TIMx_PWM_ConfigChannel(TIM_TypeDef* TIMx, uint32_t Channel);
+void TIM_InterruptEventConfig(TIM_TypeDef* TIMx, uint32_t Event, bool Enable);
 
 #endif // __ZW_TIM_H

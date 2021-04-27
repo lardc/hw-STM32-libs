@@ -37,30 +37,35 @@ void TIM_MasterMode(TIM_TypeDef* TIMx, uint32_t MMS)
 //-----------------------------------------------
 
 // Настройка прерывания таймера
-void TIM_Interupt(TIM_TypeDef* TIMx, uint8_t Priority, bool EN)
+void TIM_InterruptEventConfig(TIM_TypeDef* TIMx, uint32_t Event, bool Enable)
 {
 	IRQn_Type TIMXinterupt;
 
-	if (TIMx == TIM1)	TIMXinterupt = TIM1_UP_TIM16_IRQn;
+	if ((TIMx == TIM1) || (TIMx == TIM16))	TIMXinterupt = TIM1_UP_TIM16_IRQn;
 	if (TIMx == TIM2)	TIMXinterupt = TIM2_IRQn;
 	if (TIMx == TIM3)	TIMXinterupt = TIM3_IRQn;
 	if (TIMx == TIM4)	TIMXinterupt = TIM4_IRQn;
 	if (TIMx == TIM6)	TIMXinterupt = TIM6_DAC_IRQn;
 	if (TIMx == TIM7)	TIMXinterupt = TIM7_IRQn;
 	if (TIMx == TIM15)	TIMXinterupt = TIM1_BRK_TIM15_IRQn;
+	if (TIMx == TIM17)	TIMXinterupt = TIM1_TRG_COM_TIM17_IRQn;
 
-	if (EN)
+	if (Enable)
 	{
-		TIMx->DIER |= TIM_DIER_UIE;
-
-		NVIC_SetPriority(TIMXinterupt, Priority);
+		TIMx->DIER |= Event;
 		NVIC_EnableIRQ(TIMXinterupt);
 	}
 	else
 	{
-		TIMx->DIER &= ~TIM_DIER_UIE;
+		TIMx->DIER &=~ Event;
 		NVIC_DisableIRQ(TIMXinterupt);
 	}
+}
+//-----------------------------------------------
+
+void TIM_Interupt(TIM_TypeDef* TIMx, uint8_t Priority, bool EN)
+{
+	TIM_InterruptEventConfig(TIMx, TIM_DIER_UIE, EN);
 }
 //-----------------------------------------------
 
@@ -164,7 +169,7 @@ void TIMx_PWM_ConfigChannel(TIM_TypeDef* TIMx, uint32_t Channel)
 void TIM15_16_17_PWM_CH1_Config(TIM_TypeDef* TIMx, float SystemClock, float Period)
 {
 	TIM_Config(TIMx, SystemClock, Period);
-	TIMx_PWM_SetValue(TIMx, 1, 0);
+	TIMx_PWM_SetValue(TIMx, TIMx_CHANNEL1, 0);
 	TIMx_PWM_ConfigChannel(TIMx, TIMx_CHANNEL1);
 }
 //-----------------------------------------------
