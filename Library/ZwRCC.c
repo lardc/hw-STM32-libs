@@ -195,20 +195,6 @@ void RCC_HSE_Config()
 }
 //-------------------------------------------------
 
-// Настройка альтернативной функции порта
-void GPIO_AltFn(GPIO_TypeDef* GPIOx, uint8_t Pin, uint8_t AltFn_Num)
-{
-	if (Pin > Pin_7)
-	{
-		GPIOx->AFR[1] |= AltFn_Num << ((Pin - Pin_8) << 2);
-	}
-	else
-	{
-		GPIOx->AFR[0] |= AltFn_Num << (Pin << 2);
-	}
-}
-//-------------------------------------------------
-
 // Включение LSI генератора
 void RCC_LSI_Config()
 {

@@ -4,7 +4,6 @@
 // Includes
 //
 #include "stdinc.h"
-#include "ZwGPIO.h"
 
 // Совместимость TrueSTUDIO и IAR
 #ifndef RCC_APB1ENR_CAN1EN
@@ -85,24 +84,6 @@
 #define PLLSRC_HSIDIV2		RCC_CFGR_PLLSRC_HSI_DIV2
 #define PLLSRC_HSEPREDIV	RCC_CFGR_PLLSRC_HSE_PREDIV
 
-#define AltFn_0		0
-#define AltFn_1		1
-#define AltFn_2		2
-#define AltFn_3		3
-#define AltFn_4		4
-#define AltFn_5		5
-#define AltFn_6		6
-#define AltFn_7		7
-#define AltFn_8		8
-#define AltFn_9		9
-#define AltFn_10	10
-#define AltFn_11	11
-#define AltFn_12	12
-#define AltFn_13	13
-#define AltFn_14	14
-#define AltFn_15	15
-
-
 void RCC_GPIO_Clk_EN(uint32_t GPIOx);
 void RCC_TIM_Clk_EN(uint32_t TIM_x);
 void RCC_ADC_Clk_EN(uint32_t ADC_xx);
@@ -111,7 +92,6 @@ void RCC_HSI_Config();
 void RCC_HSE_Config();
 void RCC_SysCfg_Clk_EN();
 void RCC_CAN_Clk_EN(uint32_t CAN_x);
-void GPIO_AltFn(GPIO_TypeDef * GPIOx, uint8_t Pin, uint8_t AltFn_Num);
 void RCC_USART_Clk_EN(uint32_t UART_x);
 void RCC_DAC_Clk_EN(uint32_t DACx);
 void RCC_DMA_Clk_EN(uint32_t DMA_ClockEnable);

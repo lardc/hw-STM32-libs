@@ -42,6 +42,25 @@
 #define Pull_Down	0x02
 //----------------------
 
+//----Alternate func----
+#define AltFn_0		0
+#define AltFn_1		1
+#define AltFn_2		2
+#define AltFn_3		3
+#define AltFn_4		4
+#define AltFn_5		5
+#define AltFn_6		6
+#define AltFn_7		7
+#define AltFn_8		8
+#define AltFn_9		9
+#define AltFn_10	10
+#define AltFn_11	11
+#define AltFn_12	12
+#define AltFn_13	13
+#define AltFn_14	14
+#define AltFn_15	15
+//----------------------
+
 // Types
 //
 typedef struct __GPIO_PortPinSetting
@@ -59,6 +78,7 @@ void GPIO_Toggle(GPIO_PortPinSetting PortPin);
 void GPIO_InitPushPullOutput(GPIO_PortPinSetting PortPin);
 void GPIO_InitOpenDrainOutput(GPIO_PortPinSetting PortPin, uint32_t Pull);
 void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc);
+void GPIO_AltFn(GPIO_TypeDef * GPIOx, uint8_t Pin, uint8_t AltFn_Num);
 void GPIO_InitInput(GPIO_PortPinSetting PortPin, uint32_t PullUpSetting);
 void GPIO_InitAnalog(GPIO_PortPinSetting PortPin);
 

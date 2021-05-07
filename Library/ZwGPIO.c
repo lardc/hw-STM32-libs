@@ -79,6 +79,20 @@ void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc)
 }
 //-----------------------------------------------
 
+// Настройка альтернативной функции порта
+void GPIO_AltFn(GPIO_TypeDef* GPIOx, uint8_t Pin, uint8_t AltFn_Num)
+{
+	if (Pin > Pin_7)
+	{
+		GPIOx->AFR[1] |= AltFn_Num << ((Pin - Pin_8) << 2);
+	}
+	else
+	{
+		GPIOx->AFR[0] |= AltFn_Num << (Pin << 2);
+	}
+}
+//-------------------------------------------------
+
 // Функция-обёртка для инициализации входов GPIO
 void GPIO_InitInput(GPIO_PortPinSetting PortPin, uint32_t PullUpSetting)
 {
