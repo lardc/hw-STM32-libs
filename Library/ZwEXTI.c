@@ -26,10 +26,12 @@ void EXTI_Config(uint32_t EXTI_PORT, uint32_t EXTI_Channel, uint8_t EXTI_Trigger
 		else if (EXTI_Trigger == RISE_TRIG)				// Прерывание при положительном фронте
 		{
 			EXTI->RTSR |= 1 << EXTI_Channel;
+			EXTI->FTSR &= (uint32_t)~(1 << EXTI_Channel);
 		}
 		else if (EXTI_Trigger == FALL_TRIG)				// Прерывание при отрицательном фронте
 		{
 			EXTI->FTSR |= 1 << EXTI_Channel;
+			EXTI->RTSR &= (uint32_t) ~(1 << EXTI_Channel);
 		}
 	}
 	else
@@ -45,10 +47,12 @@ void EXTI_Config(uint32_t EXTI_PORT, uint32_t EXTI_Channel, uint8_t EXTI_Trigger
 		else if (EXTI_Trigger == RISE_TRIG)				//Прерывание при положительном фронте
 		{
 			EXTI->RTSR2 |= 1 << (EXTI_Channel - 32);
+			EXTI->FTSR2 &= (uint32_t) ~(1 << (EXTI_Channel - 32));
 		}
 		else if (EXTI_Trigger == FALL_TRIG)				// Прерывание при отрицательном фронте
 		{
 			EXTI->FTSR2 |= 1 << (EXTI_Channel - 32);
+			EXTI->RTSR2 &= (uint32_t) ~(1 << (EXTI_Channel - 32));
 		}
 	}
 }
