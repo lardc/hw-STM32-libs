@@ -23,14 +23,14 @@ void GPIO_Config(GPIO_TypeDef* GPIOx, uint32_t Pin, uint32_t Mode, uint32_t OutT
 // Установки бита порта в 1
 void GPIO_Bit_Set(GPIO_TypeDef* GPIOx, uint32_t Pin)
 {
-	GPIOx->ODR |= ((uint32_t)0x1 << Pin);
+	GPIOx->BSRRL |= ((uint32_t)0x1 << Pin);
 }
 //-----------------------------------------------
 
 // Сброс бита порта в 0
 void GPIO_Bit_Rst(GPIO_TypeDef* GPIOx, uint32_t Pin)
 {
-	GPIOx->ODR &= ~((uint32_t)0x1 << Pin);
+	GPIOx->BRR |= ((uint32_t)0x1 << Pin);
 }
 //-----------------------------------------------
 
