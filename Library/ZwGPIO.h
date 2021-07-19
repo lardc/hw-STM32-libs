@@ -78,6 +78,7 @@ void GPIO_Toggle(GPIO_PortPinSetting PortPin);
 void GPIO_InitPushPullOutput(GPIO_PortPinSetting PortPin);
 void GPIO_InitOpenDrainOutput(GPIO_PortPinSetting PortPin, uint32_t Pull);
 void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc);
+void GPIO_InitOpenDrainAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc, uint32_t Pull);
 void GPIO_AltFn(GPIO_TypeDef * GPIOx, uint8_t Pin, uint8_t AltFn_Num);
 void GPIO_InitInput(GPIO_PortPinSetting PortPin, uint32_t PullUpSetting);
 void GPIO_InitAnalog(GPIO_PortPinSetting PortPin);

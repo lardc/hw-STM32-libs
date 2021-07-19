@@ -79,6 +79,13 @@ void GPIO_InitAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc)
 }
 //-----------------------------------------------
 
+void GPIO_InitOpenDrainAltFunction(GPIO_PortPinSetting PortPin, uint32_t AltFunc, uint32_t Pull)
+{
+	GPIO_Config(PortPin.Port, PortPin.Pin, AltFn, OpenDrain, HighSpeed, Pull);
+	GPIO_AltFn(PortPin.Port, PortPin.Pin, AltFunc);
+}
+//-----------------------------------------------
+
 // Настройка альтернативной функции порта
 void GPIO_AltFn(GPIO_TypeDef* GPIOx, uint8_t Pin, uint8_t AltFn_Num)
 {
