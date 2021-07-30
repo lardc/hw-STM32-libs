@@ -178,6 +178,15 @@ void TIMx_PWM_ConfigChannel(TIM_TypeDef* TIMx, uint32_t Channel)
 }
 //-----------------------------------------------
 
+void TIMx_PWM_SetPolarity(TIM_TypeDef* TIMx, uint32_t Channel, bool Polarity)
+{
+	if(Polarity)
+		TIMx->CCER |= TIM_CCER_CC1P << (Channel - 1) * 4;
+	else
+		TIMx->CCER &=~ TIM_CCER_CC1P << (Channel - 1) * 4;
+}
+//-----------------------------------------------
+
 void TIM15_16_17_PWM_CH1_Config(TIM_TypeDef* TIMx, float SystemClock, float Period)
 {
 	TIM_Config(TIMx, SystemClock, Period);

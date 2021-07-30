@@ -33,5 +33,6 @@ void TIMx_PWM_ConfigChannel(TIM_TypeDef* TIMx, uint32_t Channel);
 void TIM_InterruptEventConfig(TIM_TypeDef* TIMx, uint32_t Event, bool Enable);
 bool TIM_InterruptEventFlagCheck(TIM_TypeDef* TIMx, uint32_t Event);
 void TIM_InterruptEventFlagClear(TIM_TypeDef* TIMx, uint32_t Event);
+void TIMx_PWM_SetPolarity(TIM_TypeDef* TIMx, uint32_t Channel, bool Polarity);
 
 #endif // __ZW_TIM_H
