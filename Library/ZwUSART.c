@@ -114,6 +114,10 @@ void USART3_ReceiveArray16(uint16_t *Buffer, uint16_t BufferSize)
 uint16_t USARTx_GetBytesToReceive(USART_TypeDef* USARTx)
 {
 	volatile uint8_t *FIFO, *Counter;
+
+	// заглушка для погашения предупреждений
+	uint8_t dummy = 0;
+	FIFO = Counter = &dummy;
 	USARTx_AttachArrays(USARTx, &FIFO, &Counter);
 	return (*Counter);
 }
@@ -159,6 +163,10 @@ uint16_t USARTx_ReceiveChar(USART_TypeDef* USARTx)
 {
 	volatile uint8_t *FIFO, *Counter;
 	uint16_t Result = 0;
+
+	// заглушка для погашения предупреждений
+	uint8_t dummy = 0;
+	FIFO = Counter = &dummy;
 	USARTx_AttachArrays(USARTx, &FIFO, &Counter);
 
 	while((*Counter) == 0);
@@ -243,6 +251,10 @@ void USARTx_OverrunFlagClear(USART_TypeDef* USARTx)
 void USARTx_RegisterToFIFO(USART_TypeDef* USARTx)
 {
 	volatile uint8_t *FIFO, *Counter;
+
+	// заглушка для погашения предупреждений
+	uint8_t dummy = 0;
+	FIFO = Counter = &dummy;
 	USARTx_AttachArrays(USARTx, &FIFO, &Counter);
 
 	if((*Counter) < USART_FIFOlen)
