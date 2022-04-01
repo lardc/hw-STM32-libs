@@ -28,7 +28,9 @@ enum DispID
 	DISP_RBF_16			=	11,
 	DISP_RRBF_16		=	12,
 	DISP_RB_32			=	13,
-	DISP_RRB_32			=	14
+	DISP_RRB_32			=	14,
+	DISP_R_F			=	15,
+	DISP_W_F			=	16
 };
 
 
@@ -40,7 +42,9 @@ void SCCI_SendErrorFrame(pSCCI_Interface Interface, Int16U ErrorCode, Int16U Det
 void SCCI_SendResponseFrame(pSCCI_Interface Interface, Int16U FrameSize);
 //
 void SCCI_HandleRead16(pSCCI_Interface Interface);
+void SCCI_HandleReadFloat(pSCCI_Interface Interface);
 void SCCI_HandleWrite16(pSCCI_Interface Interface);
+void SCCI_HandleWriteFloat(pSCCI_Interface Interface);
 void SCCI_HandleCall(pSCCI_Interface Interface);
 void SCCI_HandleReadBlock16(pSCCI_Interface Interface, Boolean Repeat);
 void SCCI_HandleWriteBlock16(pSCCI_Interface Interface);
@@ -159,6 +163,13 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						Interface->State = SCCI_STATE_WAIT_BODY;
 						Interface->DispID = DISP_W_16;	
 						break;
+#ifdef USE_FLOAT_DT
+					case SFUNC_FLOAT:
+						Interface->ExpectedBodyLength = 4;
+						Interface->State = SCCI_STATE_WAIT_BODY;
+						Interface->DispID = DISP_W_F;
+						break;
+#endif
 					default:
 						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, fnc & FUNCTION_SCODE_MASK);
 						break;
@@ -172,6 +183,13 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						Interface->State = SCCI_STATE_WAIT_BODY;	
 						Interface->DispID = DISP_R_16;	
 						break;
+#ifdef USE_FLOAT_DT
+					case SFUNC_FLOAT:
+						Interface->ExpectedBodyLength = 2;
+						Interface->State = SCCI_STATE_WAIT_BODY;
+						Interface->DispID = DISP_R_F;
+						break;
+#endif
 					default:
 						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, fnc & FUNCTION_SCODE_MASK);
 						break;
@@ -273,7 +291,12 @@ void SCCI_DispatchBody(pSCCI_Interface Interface, Boolean MaskStateChangeOperati
 		case DISP_RBF_16:
 			SCCI_HandleReadBlockFast16(Interface, FALSE);
 			break;
-
+		case DISP_R_F:
+			SCCI_HandleReadFloat(Interface);
+			break;
+		case DISP_W_F:
+			SCCI_HandleWriteFloat(Interface);
+			break;
 		default:
 			SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, 0);
 			break;
@@ -293,6 +316,24 @@ void SCCI_HandleRead16(pSCCI_Interface Interface)
 	{
 		Interface->MessageBuffer[3] = Interface->DataTableAddress[addr];
 		SCCI_SendResponseFrame(Interface, 5);
+	}
+}
+// ----------------------------------------
+
+void SCCI_HandleReadFloat(pSCCI_Interface Interface)
+{
+	Int16U addr = Interface->MessageBuffer[2];
+
+	if(addr >= Interface->DataTableSize)
+	{
+		SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+	}
+	else
+	{
+		Int32U data = ((pInt32U)Interface->DataTableAddress)[addr];
+		Interface->MessageBuffer[3] = data >> 16;
+		Interface->MessageBuffer[4] = data & 0x0000FFFF;
+		SCCI_SendResponseFrame(Interface, 6);
 	}
 }
 // ----------------------------------------
@@ -318,6 +359,33 @@ void SCCI_HandleWrite16(pSCCI_Interface Interface)
 	else
 	{
 		Interface->DataTableAddress[addr] = data;
+		SCCI_SendResponseFrame(Interface, 4);
+	}
+}
+// ----------------------------------------
+
+void SCCI_HandleWriteFloat(pSCCI_Interface Interface)
+{
+	Int16U addr = Interface->MessageBuffer[2];
+	Int32U t_data = (Int32U)Interface->MessageBuffer[3] << 16 | Interface->MessageBuffer[4];
+	float data = *(float *)&t_data;
+
+	if(addr >= Interface->DataTableSize)
+	{
+		SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+	}
+	else if(xCCI_InProtectedZone(&Interface->ProtectionAndEndpoints, addr))
+	{
+		SCCI_SendErrorFrame(Interface, ERR_PROTECTED, addr);
+	}
+	else if(Interface->ServiceConfig->ValidateCallbackFloat
+			&& !Interface->ServiceConfig->ValidateCallbackFloat(addr, data))
+	{
+		SCCI_SendErrorFrame(Interface, ERR_VALIDATION, addr);
+	}
+	else
+	{
+		((float *)Interface->DataTableAddress)[addr] = data;
 		SCCI_SendResponseFrame(Interface, 4);
 	}
 }

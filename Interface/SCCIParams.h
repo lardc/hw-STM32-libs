@@ -7,6 +7,9 @@
 
 #include "xCCIParams.h"
 
+// Include to detect DataTable type
+#include "DataTable.h"
+
 // Constants
 //
 #define DEVICE_SCCI_ADDRESS			0

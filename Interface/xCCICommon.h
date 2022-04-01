@@ -12,17 +12,16 @@
 // Pointers to callback functions
 typedef Boolean (*xCCI_FUNC_CallbackAction)(Int16U ActionID, pInt16U UserError);
 typedef Boolean (*xCCI_FUNC_CallbackValidate16)(Int16U Address, Int16U Data);
-typedef Boolean (*xCCI_FUNC_CallbackValidate32)(Int16U Address, Int32U Data);
+typedef Boolean (*xCCI_FUNC_CallbackValidateFloat)(Int16U Address, float Data);
 typedef Int16U (*xCCI_FUNC_CallbackReadEndpoint16)(Int16U Endpoint, pInt16U *Buffer, Boolean Streamed, Boolean RepeatLastTransmission, void *UserArgument, Int16U MaxNonStreamSize);
-typedef Int16U (*xCCI_FUNC_CallbackReadEndpoint32)(Int16U Endpoint, pInt32U *Buffer, Boolean Streamed, Boolean RepeatLastTransmission, void *UserArgument, Int16U MaxNonStreamSize);
 typedef Boolean (*xCCI_FUNC_CallbackWriteEndpoint16)(Int16U Endpoint, pInt16U Buffer, Boolean Streamed, Int16U Length, void *UserArgument);
-typedef Boolean (*xCCI_FUNC_CallbackWriteEndpoint32)(Int16U Endpoint, pInt32U Buffer, Boolean Streamed, Int16U Length, void *UserArgument);
 
 // Service configuration
 typedef struct __xCCI_ServiceConfig
 {
 	xCCI_FUNC_CallbackAction UserActionCallback;
 	xCCI_FUNC_CallbackValidate16 ValidateCallback16;
+	xCCI_FUNC_CallbackValidateFloat ValidateCallbackFloat;
 } xCCI_ServiceConfig, *pxCCI_ServiceConfig;
 //
 // Protected area data
@@ -81,7 +80,8 @@ enum SCCI_SubFunctionCodes
 	SFUNC_32				= 2,
 	SFUNC_16_2				= 3,
 	SFUNC_REP_16			= 3,
-	SFUNC_REP_32			= 4
+	SFUNC_REP_32			= 4,
+	SFUNC_FLOAT				= 5
 };
 
 

@@ -32,10 +32,6 @@ Boolean  BCCI_RemoveProtectedArea(pBCCI_Interface Interface, Int16U AreaIndex);
 Boolean  BCCI_RegisterReadEndpoint16(pBCCI_Interface Interface, Int16U Endpoint,
 								    xCCI_FUNC_CallbackReadEndpoint16 ReadCallback);
 //
-// Register read endpoint 32-bit source callback
-Boolean  BCCI_RegisterReadEndpoint32(pBCCI_Interface Interface, Int16U Endpoint,
-								    xCCI_FUNC_CallbackReadEndpoint32 ReadCallback);
-//
 // Register write endpoint 16-bit destination callback
 Boolean  BCCI_RegisterWriteEndpoint16(pBCCI_Interface Interface, Int16U Endpoint,
 									 xCCI_FUNC_CallbackWriteEndpoint16 WriteCallback);
