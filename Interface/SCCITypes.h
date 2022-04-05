@@ -1,4 +1,4 @@
-﻿// -----------------------------------------
+﻿// ----------------------------------------
 // SCCI communication interface types
 // ----------------------------------------
 
@@ -58,8 +58,7 @@ typedef struct __SCCI_Interface
 	Int16U DataTableSize;
 	Int32U TimeoutValueTicks;
 	Int64U LastTimestampTicks;
-	void *ArgForEPCallback1;
-	void *ArgForEPCallback2;
+	void *ArgForEPCallback;
 	xCCI_ProtectionAndEndpoints ProtectionAndEndpoints;
 } SCCI_Interface, *pSCCI_Interface;
 

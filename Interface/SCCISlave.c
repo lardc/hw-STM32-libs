@@ -30,7 +30,8 @@ enum DispID
 	DISP_RB_32			=	13,
 	DISP_RRB_32			=	14,
 	DISP_R_F			=	15,
-	DISP_W_F			=	16
+	DISP_W_F			=	16,
+	DISP_RBF_F			=	17
 };
 
 
@@ -49,13 +50,14 @@ void SCCI_HandleCall(pSCCI_Interface Interface);
 void SCCI_HandleReadBlock16(pSCCI_Interface Interface, Boolean Repeat);
 void SCCI_HandleWriteBlock16(pSCCI_Interface Interface);
 void SCCI_HandleReadBlockFast16(pSCCI_Interface Interface, Boolean Repeat);
+void SCCI_HandleReadBlockFastFloat(pSCCI_Interface Interface);
 
 
 // Functions
 //
 void SCCI_Init(pSCCI_Interface Interface, pSCCI_IOConfig IOConfig, pxCCI_ServiceConfig ServiceConfig,
 				pInt16U DataTable, Int16U DataTableSize, Int32U MessageTimeoutTicks,
-				void *ArgumentForCallback16)
+				void *ArgumentForCallback)
 {
 	Int16U i;
 	
@@ -75,13 +77,16 @@ void SCCI_Init(pSCCI_Interface Interface, pSCCI_IOConfig IOConfig, pxCCI_Service
 	for(i = 0; i < (xCCI_MAX_WRITE_ENDPOINTS + 1); ++i)
 		Interface->ProtectionAndEndpoints.WriteEndpoints16[i] = NULL;
 
+	for(i = 0; i < (xCCI_MAX_READ_ENDPOINTS + 1); ++i)
+		Interface->ProtectionAndEndpoints.ReadEndpointsFloat[i] = NULL;
+
 	// Save parameters
 	Interface->IOConfig = IOConfig;
 	Interface->ServiceConfig = ServiceConfig;
 	Interface->DataTableAddress = DataTable;
 	Interface->DataTableSize = DataTableSize;
 	Interface->TimeoutValueTicks = MessageTimeoutTicks;
-	Interface->ArgForEPCallback1 = ArgumentForCallback16;
+	Interface->ArgForEPCallback = ArgumentForCallback;
 }
 // ----------------------------------------
 
@@ -97,15 +102,22 @@ Boolean	SCCI_RemoveProtectedArea(pSCCI_Interface Interface, Int16U AreaIndex)
 }
 // ----------------------------------------
 
-Boolean	SCCI_RegisterReadEndpoint16(pSCCI_Interface Interface, Int16U Endpoint,
-									xCCI_FUNC_CallbackReadEndpoint16 ReadCallback)
+Boolean SCCI_RegisterReadEndpoint16(pSCCI_Interface Interface, Int16U Endpoint,
+		xCCI_FUNC_CallbackReadEndpoint16 ReadCallback)
 {
 	return xCCI_RegisterReadEndpoint16(&(Interface->ProtectionAndEndpoints), Endpoint, ReadCallback);
 }
 // ----------------------------------------
 
-Boolean	SCCI_RegisterWriteEndpoint16(pSCCI_Interface Interface, Int16U Endpoint,
-									xCCI_FUNC_CallbackWriteEndpoint16 WriteCallback)
+Boolean SCCI_RegisterReadEndpointFloat(pSCCI_Interface Interface, Int16U Endpoint,
+		xCCI_FUNC_CallbackReadEndpointFloat ReadCallback)
+{
+	return xCCI_RegisterReadEndpointFloat(&(Interface->ProtectionAndEndpoints), Endpoint, ReadCallback);
+}
+// ----------------------------------------
+
+Boolean SCCI_RegisterWriteEndpoint16(pSCCI_Interface Interface, Int16U Endpoint,
+		xCCI_FUNC_CallbackWriteEndpoint16 WriteCallback)
 {
 	return xCCI_RegisterWriteEndpoint16(&(Interface->ProtectionAndEndpoints), Endpoint, WriteCallback);
 }
@@ -216,6 +228,13 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						Interface->State = SCCI_STATE_WAIT_BODY;	
 						Interface->DispID = DISP_RB_16;	
 						break;
+#ifdef USE_FLOAT_DT
+					case SFUNC_FLOAT:
+						Interface->ExpectedBodyLength = 2;
+						Interface->State = SCCI_STATE_WAIT_BODY;
+						Interface->DispID = DISP_RBF_F;
+						break;
+#endif
 					default:
 						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, fnc & FUNCTION_SCODE_MASK);
 						break;
@@ -296,6 +315,9 @@ void SCCI_DispatchBody(pSCCI_Interface Interface, Boolean MaskStateChangeOperati
 			break;
 		case DISP_W_F:
 			SCCI_HandleWriteFloat(Interface);
+			break;
+		case DISP_RBF_F:
+			SCCI_HandleReadBlockFastFloat(Interface);
 			break;
 		default:
 			SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, 0);
@@ -410,7 +432,7 @@ void SCCI_HandleReadBlock16(pSCCI_Interface Interface, Boolean Repeat)
 	if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt])
 	{
 		length = Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt](epnt, &src, FALSE, Repeat,
-														Interface->ArgForEPCallback1, SCCI_BLOCK_MAX_VAL_16_R);
+														Interface->ArgForEPCallback, SCCI_BLOCK_MAX_VAL_16_R);
 		MemZero16(&Interface->MessageBuffer[3], SCCI_BLOCK_MAX_VAL_16_R);
 
 		if(!length || (length > SCCI_BLOCK_MAX_VAL_16_R))
@@ -440,7 +462,7 @@ void SCCI_HandleWriteBlock16(pSCCI_Interface Interface)
 		if((epnt < xCCI_MAX_WRITE_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.WriteEndpoints16[epnt])
 		{
 			if(Interface->ProtectionAndEndpoints.WriteEndpoints16[epnt](epnt, &Interface->MessageBuffer[3], FALSE,
-																	    length, Interface->ArgForEPCallback1))
+																	    length, Interface->ArgForEPCallback))
 			{
 				Interface->MessageBuffer[2] &= 0xFF00;
 				SCCI_SendResponseFrame(Interface, 4);
@@ -466,7 +488,7 @@ void SCCI_HandleReadBlockFast16(pSCCI_Interface Interface, Boolean Repeat)
 	if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt])
 	{
 		length = Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt](epnt, &src, TRUE, Repeat,
-																		Interface->ArgForEPCallback1, 0);
+																		Interface->ArgForEPCallback, 0);
 		Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
 
 		if(!length || (length > xCCI_BLOCK_STM_MAX_VAL))
@@ -480,6 +502,40 @@ void SCCI_HandleReadBlockFast16(pSCCI_Interface Interface, Boolean Repeat)
 		SCCI_SendResponseFrame(Interface, 6);
 
 		Interface->IOConfig->IO_SendArray16(src, length);
+		Interface->IOConfig->IO_SendArray16(ZeroBuffer, (8 - length % 8) % 8);
+	}
+	else
+		SCCI_SendErrorFrame(Interface, ERR_INVALID_ENDPOINT, epnt);
+}
+// ----------------------------------------
+
+void SCCI_HandleReadBlockFastFloat(pSCCI_Interface Interface)
+{
+	float* src;
+	Int16U epnt = Interface->MessageBuffer[2] >> 8;
+	Int16U ZeroBuffer[xCCI_BUFFER_SIZE] = {0};
+
+	if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt])
+	{
+		Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
+
+		Int16U length = Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt](epnt, &src,
+				Interface->ArgForEPCallback);
+
+		// Process float array as short
+		length *= 2;
+		pInt16U short_src = (pInt16U)src;
+
+		if(length > xCCI_BLOCK_STM_MAX_VAL)
+			length = 0;
+		Interface->MessageBuffer[3] = length;
+
+		if(SCCI_USE_CRC_IN_STREAM)
+			Interface->MessageBuffer[4] = CRC16_ComputeCRC(short_src, length);
+
+		SCCI_SendResponseFrame(Interface, 6);
+
+		Interface->IOConfig->IO_SendArray16(short_src, length);
 		Interface->IOConfig->IO_SendArray16(ZeroBuffer, (8 - length % 8) % 8);
 	}
 	else

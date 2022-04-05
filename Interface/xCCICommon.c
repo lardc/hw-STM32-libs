@@ -1,4 +1,4 @@
-﻿// -----------------------------------------
+﻿// ----------------------------------------
 // SCCI communication interface
 // ----------------------------------------
 
@@ -43,6 +43,19 @@ Boolean xCCI_RegisterReadEndpoint16(pxCCI_ProtectionAndEndpoints PAE, Int16U End
 	if(Endpoint < (xCCI_MAX_READ_ENDPOINTS + 1))
 	{
 		PAE->ReadEndpoints16[Endpoint] = ReadCallback;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+// ----------------------------------------
+
+Boolean xCCI_RegisterReadEndpointFloat(pxCCI_ProtectionAndEndpoints PAE, Int16U Endpoint,
+								    xCCI_FUNC_CallbackReadEndpointFloat ReadCallback)
+{
+	if(Endpoint < (xCCI_MAX_READ_ENDPOINTS + 1))
+	{
+		PAE->ReadEndpointsFloat[Endpoint] = ReadCallback;
 		return TRUE;
 	}
 

@@ -1,4 +1,4 @@
-﻿// -----------------------------------------
+﻿// ----------------------------------------
 // Common declarations for xCCI interfaces
 // ----------------------------------------
 
@@ -15,6 +15,7 @@ typedef Boolean (*xCCI_FUNC_CallbackValidate16)(Int16U Address, Int16U Data);
 typedef Boolean (*xCCI_FUNC_CallbackValidateFloat)(Int16U Address, float Data);
 typedef Int16U (*xCCI_FUNC_CallbackReadEndpoint16)(Int16U Endpoint, pInt16U *Buffer, Boolean Streamed, Boolean RepeatLastTransmission, void *UserArgument, Int16U MaxNonStreamSize);
 typedef Boolean (*xCCI_FUNC_CallbackWriteEndpoint16)(Int16U Endpoint, pInt16U Buffer, Boolean Streamed, Int16U Length, void *UserArgument);
+typedef Int16U (*xCCI_FUNC_CallbackReadEndpointFloat)(Int16U Endpoint, float** Buffer, void *UserArgument);
 
 // Service configuration
 typedef struct __xCCI_ServiceConfig
@@ -37,8 +38,8 @@ typedef struct __xCCI_ProtectionAndEndpoints
 	xCCI_ProtectedArea ProtectedAreas[xCCI_MAX_PROTECTED_AREAS];
 	xCCI_FUNC_CallbackReadEndpoint16 ReadEndpoints16[xCCI_MAX_READ_ENDPOINTS + 1];
 	xCCI_FUNC_CallbackWriteEndpoint16 WriteEndpoints16[xCCI_MAX_WRITE_ENDPOINTS + 1];
+	xCCI_FUNC_CallbackReadEndpointFloat ReadEndpointsFloat[xCCI_MAX_READ_ENDPOINTS + 1];
 } xCCI_ProtectionAndEndpoints, *pxCCI_ProtectionAndEndpoints;
-
 
 // Constants
 //
@@ -84,7 +85,6 @@ enum SCCI_SubFunctionCodes
 	SFUNC_FLOAT				= 5
 };
 
-
 // Functions
 //
 // Create protected area
@@ -93,6 +93,8 @@ Int16U xCCI_AddProtectedArea(pxCCI_ProtectionAndEndpoints PAE, Int16U StartAddre
 Boolean xCCI_RemoveProtectedArea(pxCCI_ProtectionAndEndpoints PAE, Int16U AreaIndex);
 // Register read endpoint 16-bit source callback
 Boolean xCCI_RegisterReadEndpoint16(pxCCI_ProtectionAndEndpoints PAE, Int16U Endpoint, xCCI_FUNC_CallbackReadEndpoint16 ReadCallback);
+// Register read endpoint float source callback
+Boolean xCCI_RegisterReadEndpointFloat(pxCCI_ProtectionAndEndpoints PAE, Int16U Endpoint, xCCI_FUNC_CallbackReadEndpointFloat ReadCallback);
 // Register write endpoint 16-bit destination callback
 Boolean xCCI_RegisterWriteEndpoint16(pxCCI_ProtectionAndEndpoints PAE, Int16U Endpoint, xCCI_FUNC_CallbackWriteEndpoint16 WriteCallback);
 // Check register address
