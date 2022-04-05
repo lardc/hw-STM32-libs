@@ -11,7 +11,7 @@
 #include "SCCIParams.h"
 #include "xCCICommon.h"
 #include "SCCITypes.h"
-
+#include "DataTable.h"
 
 // Functions
 //

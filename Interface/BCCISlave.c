@@ -1,4 +1,4 @@
-﻿// -----------------------------------------
+﻿// ----------------------------------------
 // BCCI-Slave communication interface
 // ----------------------------------------
 
@@ -29,6 +29,12 @@
 #define Slave_MBOX_WB_16_A			33
 #define Slave_MBOX_RB_16			34
 #define Slave_MBOX_RB_16_A			35
+#define Slave_MBOX_R_F				36
+#define Slave_MBOX_R_F_A			37
+#define Slave_MBOX_W_F				38
+#define Slave_MBOX_W_F_A			39
+#define Slave_MBOX_RB_F				40
+#define Slave_MBOX_RB_F_A			41
 
 // Forward functions
 //
@@ -77,6 +83,12 @@ void BCCI_Init(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxCCI_Service
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_WB_16_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_WB_16 + 1,	2);
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16, 	CAN_SLAVE_FILTER_ID + CAN_ID_RB_16,		2);
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_RB_16 + 1,	8);
+#ifdef USE_FLOAT_DT
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F,		CAN_SLAVE_FILTER_ID + CAN_ID_W_16,		6);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F_A,		CAN_SLAVE_FILTER_ID + CAN_ID_W_16 + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F, 		CAN_SLAVE_FILTER_ID + CAN_ID_R_16,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_R_16 + 1,	6);
+#endif
 }
 // ----------------------------------------
 
