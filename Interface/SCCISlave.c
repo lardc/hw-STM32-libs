@@ -314,7 +314,13 @@ void SCCI_HandleRead16(pSCCI_Interface Interface)
 	}
 	else
 	{
-		Interface->MessageBuffer[3] = Interface->DataTableAddress[addr];
+#ifdef USE_FLOAT_DT
+		Int32S t_data = (Int32S)(((float *)Interface->DataTableAddress)[addr]);
+		Int16U data = (Int16U)((Int16S)t_data);
+#else
+		Int16U data = Interface->DataTableAddress[addr];
+#endif
+		Interface->MessageBuffer[3] = data;
 		SCCI_SendResponseFrame(Interface, 5);
 	}
 }
@@ -358,7 +364,11 @@ void SCCI_HandleWrite16(pSCCI_Interface Interface)
 	}
 	else
 	{
+#ifdef USE_FLOAT_DT
+		((float *)Interface->DataTableAddress)[addr] = (float)data;
+#else
 		Interface->DataTableAddress[addr] = data;
+#endif
 		SCCI_SendResponseFrame(Interface, 4);
 	}
 }
