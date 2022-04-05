@@ -228,13 +228,6 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						Interface->State = SCCI_STATE_WAIT_BODY;	
 						Interface->DispID = DISP_RB_16;	
 						break;
-#ifdef USE_FLOAT_DT
-					case SFUNC_FLOAT:
-						Interface->ExpectedBodyLength = 2;
-						Interface->State = SCCI_STATE_WAIT_BODY;
-						Interface->DispID = DISP_RBF_F;
-						break;
-#endif
 					default:
 						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, fnc & FUNCTION_SCODE_MASK);
 						break;
@@ -260,6 +253,13 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						Interface->State = SCCI_STATE_WAIT_BODY;
 						Interface->DispID = DISP_RBF_16;
 						break;
+#ifdef USE_FLOAT_DT
+					case SFUNC_FLOAT:
+						Interface->ExpectedBodyLength = 2;
+						Interface->State = SCCI_STATE_WAIT_BODY;
+						Interface->DispID = DISP_RBF_F;
+						break;
+#endif
 					default:
 						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, fnc & FUNCTION_SCODE_MASK);
 						break;
