@@ -31,7 +31,8 @@ enum DispID
 	DISP_RRB_32			=	14,
 	DISP_R_F			=	15,
 	DISP_W_F			=	16,
-	DISP_RBF_F			=	17
+	DISP_RBF_F			=	17,
+	DISP_RLIM_F			=	18
 };
 
 
@@ -51,6 +52,7 @@ void SCCI_HandleReadBlock16(pSCCI_Interface Interface, Boolean Repeat);
 void SCCI_HandleWriteBlock16(pSCCI_Interface Interface);
 void SCCI_HandleReadBlockFast16(pSCCI_Interface Interface, Boolean Repeat);
 void SCCI_HandleReadBlockFastFloat(pSCCI_Interface Interface);
+void SCCI_HandleReadLimitFloat(pSCCI_Interface Interface);
 
 
 // Functions
@@ -162,13 +164,14 @@ void SCCI_Process(pSCCI_Interface Interface, Int64U CurrentTickCount, Boolean Ma
 void SCCI_DispatchHeader(pSCCI_Interface Interface)
 {
 	Int16U fnc = Interface->MessageBuffer[1] >> 8;
+	Int16U sfunc = fnc & FUNCTION_SCODE_MASK;
 
 	if((Interface->MessageBuffer[0] & 0xFF) == DEVICE_SCCI_ADDRESS)
 	{
 		switch((fnc & FUNCTION_CODE_MASK) >> 3)
 		{
 			case FUNCTION_WRITE:
-				switch(fnc & FUNCTION_SCODE_MASK)
+				switch(sfunc)
 				{
 					case SFUNC_16:
 						Interface->ExpectedBodyLength = 3;
@@ -183,12 +186,12 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						break;
 #endif
 					default:
-						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, fnc & FUNCTION_SCODE_MASK);
+						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, sfunc);
 						break;
 				}
 				break;
 			case FUNCTION_READ:
-				switch(fnc & FUNCTION_SCODE_MASK)
+				switch(sfunc)
 				{
 					case SFUNC_16:
 						Interface->ExpectedBodyLength = 2;
@@ -203,12 +206,12 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						break;
 #endif
 					default:
-						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, fnc & FUNCTION_SCODE_MASK);
+						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, sfunc);
 						break;
 				}
 				break;
 			case FUNCTION_WRITE_BLOCK:
-				switch(fnc & FUNCTION_SCODE_MASK)
+				switch(sfunc)
 				{
 					case SFUNC_16:
 						Interface->ExpectedBodyLength = 5;
@@ -216,12 +219,12 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						Interface->DispID = DISP_WB_16;	
 						break;
 					default:
-						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, fnc & FUNCTION_SCODE_MASK);
+						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, sfunc);
 						break;
 				}
 				break;
 			case FUNCTION_READ_BLOCK:
-				switch(fnc & FUNCTION_SCODE_MASK)
+				switch(sfunc)
 				{
 					case SFUNC_16:
 						Interface->ExpectedBodyLength = 2;
@@ -229,24 +232,22 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						Interface->DispID = DISP_RB_16;	
 						break;
 					default:
-						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, fnc & FUNCTION_SCODE_MASK);
+						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, sfunc);
 						break;
 				}
 				break;
 			case FUNCTION_CALL:
-				if((fnc & FUNCTION_SCODE_MASK) == 0)
+				if(sfunc == 0)
 				{
 					Interface->ExpectedBodyLength = 2;
 					Interface->State = SCCI_STATE_WAIT_BODY;
 					Interface->DispID = DISP_C;	
 				}
 				else
-				{
-					SCCI_SendErrorFrame(Interface, ERR_INVALID_SFUNCTION, fnc & FUNCTION_SCODE_MASK);
-				}
+					SCCI_SendErrorFrame(Interface, ERR_INVALID_SFUNCTION, sfunc);
 				break;
 			case FUNCTION_FAST_READ_BLK:
-				switch(fnc & FUNCTION_SCODE_MASK)
+				switch(sfunc)
 				{
 					case SFUNC_16:
 						Interface->ExpectedBodyLength = 2;
@@ -261,7 +262,22 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						break;
 #endif
 					default:
-						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, fnc & FUNCTION_SCODE_MASK);
+						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, sfunc);
+						break;
+				}
+				break;
+			case FUNCTION_GET_LIMIT:
+				switch(sfunc)
+				{
+#ifdef USE_FLOAT_DT
+					case SFUNC_FLOAT:
+						Interface->ExpectedBodyLength = 3;
+						Interface->State = SCCI_STATE_WAIT_BODY;
+						Interface->DispID = DISP_RLIM_F;
+						break;
+#endif
+					default:
+						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, sfunc);
 						break;
 				}
 				break;
@@ -319,6 +335,9 @@ void SCCI_DispatchBody(pSCCI_Interface Interface, Boolean MaskStateChangeOperati
 		case DISP_RBF_F:
 			SCCI_HandleReadBlockFastFloat(Interface);
 			break;
+		case DISP_RLIM_F:
+			SCCI_HandleReadLimitFloat(Interface);
+			break;
 		default:
 			SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, 0);
 			break;
@@ -359,6 +378,31 @@ void SCCI_HandleReadFloat(pSCCI_Interface Interface)
 	else
 	{
 		Int32U data = ((pInt32U)Interface->DataTableAddress)[addr];
+		Interface->MessageBuffer[3] = data >> 16;
+		Interface->MessageBuffer[4] = data & 0x0000FFFF;
+		SCCI_SendResponseFrame(Interface, 6);
+	}
+}
+// ----------------------------------------
+
+void SCCI_HandleReadLimitFloat(pSCCI_Interface Interface)
+{
+	float LowLimit = 0, HighLimit = 0;
+	Int16U addr = Interface->MessageBuffer[2];
+	Boolean UseHighLimit = Interface->MessageBuffer[3];
+
+	if(addr >= Interface->DataTableSize)
+	{
+		SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+	}
+	else if(Interface->ServiceConfig->ValidateCallbackFloat
+			&& !Interface->ServiceConfig->ValidateCallbackFloat(addr, 0, &LowLimit, &HighLimit))
+	{
+		SCCI_SendErrorFrame(Interface, ERR_VALIDATION, addr);
+	}
+	else
+	{
+		Int32U data = *(pInt32U)(UseHighLimit ? &HighLimit : &LowLimit);
 		Interface->MessageBuffer[3] = data >> 16;
 		Interface->MessageBuffer[4] = data & 0x0000FFFF;
 		SCCI_SendResponseFrame(Interface, 6);
@@ -411,7 +455,7 @@ void SCCI_HandleWriteFloat(pSCCI_Interface Interface)
 		SCCI_SendErrorFrame(Interface, ERR_PROTECTED, addr);
 	}
 	else if(Interface->ServiceConfig->ValidateCallbackFloat
-			&& !Interface->ServiceConfig->ValidateCallbackFloat(addr, data))
+			&& !Interface->ServiceConfig->ValidateCallbackFloat(addr, data, NULL, NULL))
 	{
 		SCCI_SendErrorFrame(Interface, ERR_VALIDATION, addr);
 	}
