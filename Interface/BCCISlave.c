@@ -38,6 +38,8 @@ typedef void (*xProcessFunction)(pBCCI_Interface Interface);
 #define Slave_MBOX_W_F_A			39
 #define Slave_MBOX_RB_F				40
 #define Slave_MBOX_RB_F_A			41
+#define Slave_MBOX_RLIM_F			42
+#define Slave_MBOX_RLIM_F_A			43
 
 // Forward functions
 //
@@ -51,6 +53,7 @@ void BCCI_HandleRead16(pBCCI_Interface Interface);
 void BCCI_HandleReadFloat(pBCCI_Interface Interface);
 void BCCI_HandleWrite16(pBCCI_Interface Interface);
 void BCCI_HandleWriteFloat(pBCCI_Interface Interface);
+void BCCI_HandleReadLimitFloat(pBCCI_Interface Interface);
 void BCCI_HandleCall(pBCCI_Interface Interface);
 void BCCI_HandleReadBlock16(pBCCI_Interface Interface);
 void BCCI_HandleWriteBlock16(pBCCI_Interface Interface);
@@ -91,10 +94,12 @@ void BCCI_Init(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxCCI_Service
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16, 	CAN_SLAVE_FILTER_ID + CAN_ID_RB_16,		2);
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_RB_16 + 1,	8);
 #ifdef USE_FLOAT_DT
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F,		CAN_SLAVE_FILTER_ID + CAN_ID_W_16,		6);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F_A,		CAN_SLAVE_FILTER_ID + CAN_ID_W_16 + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F, 		CAN_SLAVE_FILTER_ID + CAN_ID_R_16,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_R_16 + 1,	6);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F,		CAN_SLAVE_FILTER_ID + CAN_ID_W_F,		6);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F_A,		CAN_SLAVE_FILTER_ID + CAN_ID_W_F + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F, 		CAN_SLAVE_FILTER_ID + CAN_ID_R_F,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_R_F + 1,	6);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F, 	CAN_SLAVE_FILTER_ID + CAN_ID_RLIM_F,	4);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_RLIM_F + 1, 6);
 #endif
 }
 // ----------------------------------------
@@ -112,6 +117,9 @@ void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 		return;
 
 	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_R_F, BCCI_HandleReadFloat))
+		return;
+
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RLIM_F, BCCI_HandleReadLimitFloat))
 		return;
 #endif
 
@@ -259,6 +267,42 @@ void BCCI_HandleWriteFloat(pBCCI_Interface Interface)
 		CANOutput.HIGH.WORD.WORD_0 = addr;
 
 		BCCI_SendResponseFrame(Interface, Slave_MBOX_W_F_A, &CANOutput);
+	}
+}
+// ----------------------------------------
+
+void BCCI_HandleReadLimitFloat(pBCCI_Interface Interface)
+{
+	CANMessage CANInput;
+	Interface->IOConfig->IO_GetMessage(Slave_MBOX_RLIM_F, &CANInput);
+
+	Int16U addr = CANInput.HIGH.WORD.WORD_0;
+	Boolean UseHighLimit = CANInput.HIGH.WORD.WORD_1;
+	float LowLimit = 0, HighLimit = 0;
+
+	if(addr >= Interface->DataTableSize)
+	{
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_INVALID_ADDESS, addr);
+	}
+	else if(xCCI_InProtectedZone(&Interface->ProtectionAndEndpoints, addr))
+	{
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_PROTECTED, addr);
+	}
+	else if(Interface->ServiceConfig->ValidateCallbackFloat
+			&& !Interface->ServiceConfig->ValidateCallbackFloat(addr, 0, &LowLimit, &HighLimit))
+	{
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_VALIDATION, addr);
+	}
+	else
+	{
+		CANMessage CANOutput = CANInput;
+		Int32U data = *(pInt32U)(UseHighLimit ? &HighLimit : &LowLimit);
+
+		CANOutput.HIGH.WORD.WORD_0 = addr;
+		CANOutput.HIGH.WORD.WORD_1 = data >> 16;
+		CANOutput.LOW.WORD.WORD_2  = data & 0x0000FFFF;
+
+		BCCI_SendResponseFrame(Interface, Slave_MBOX_RLIM_F_A, &CANOutput);
 	}
 }
 // ----------------------------------------

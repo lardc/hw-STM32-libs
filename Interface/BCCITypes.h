@@ -1,4 +1,4 @@
-﻿// -----------------------------------------
+﻿// ----------------------------------------
 // BCCI communication interface types
 // ----------------------------------------
 
@@ -14,10 +14,13 @@
 //
 #define CAN_ID_W_16					10
 #define CAN_ID_W_32					14
-#define CAN_ID_WB_16				30
-#define CAN_ID_RB_16				40
+#define CAN_ID_W_F					16
 #define CAN_ID_R_16					20
 #define CAN_ID_R_32					24
+#define CAN_ID_R_F					26
+#define CAN_ID_RLIM_F				28
+#define CAN_ID_WB_16				30
+#define CAN_ID_RB_16				40
 #define CAN_ID_CALL					50
 #define CAN_ID_ERR					61
 
