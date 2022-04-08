@@ -10,6 +10,9 @@
 #include "CRC16.h"
 #include "SysConfig.h"
 
+// Definitions
+typedef void (*xProcessFunction)(pBCCI_Interface Interface);
+
 // Macro
 //
 #define BCCI_BLOCK_MAX_VAL_16_W		3
@@ -38,12 +41,16 @@
 
 // Forward functions
 //
+Boolean BCCI_ProcessX(pBCCI_Interface Interface, Boolean MaskStateChangeOperations, Int16U MBox, xProcessFunction Func);
+//
 void BCCI_SendErrorFrame(pBCCI_Interface Interface, CANMessage CANInput, Int16U ErrorCode, Int16U Details);
 void BCCI_SendResponseFrame(pBCCI_Interface Interface, Int16U Mailbox, pCANMessage Message);
 void BCCI_SendResponseFrameEx(pBCCI_Interface Interface, Int16U Mailbox, pCANMessage Message, Int16U MessageLength);
 //
 void BCCI_HandleRead16(pBCCI_Interface Interface);
+void BCCI_HandleReadFloat(pBCCI_Interface Interface);
 void BCCI_HandleWrite16(pBCCI_Interface Interface);
+void BCCI_HandleWriteFloat(pBCCI_Interface Interface);
 void BCCI_HandleCall(pBCCI_Interface Interface);
 void BCCI_HandleReadBlock16(pBCCI_Interface Interface);
 void BCCI_HandleWriteBlock16(pBCCI_Interface Interface);
@@ -94,72 +101,48 @@ void BCCI_Init(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxCCI_Service
 
 void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 {
-	CANMessage CANInput;
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_W_16, BCCI_HandleWrite16))
+		return;
+
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_R_16, BCCI_HandleRead16))
+		return;
 	
-	if(Interface->IOConfig->IO_IsMessageReceived(Slave_MBOX_W_16, NULL))
+#ifdef USE_FLOAT_DT
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_W_F, BCCI_HandleWriteFloat))
+		return;
+
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_R_F, BCCI_HandleReadFloat))
+		return;
+#endif
+
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_C, BCCI_HandleCall))
+		return;
+	
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RB_16, BCCI_HandleReadBlock16))
+		return;
+	
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_WB_16, BCCI_HandleWriteBlock16))
+		return;
+}
+// ----------------------------------------
+
+Boolean BCCI_ProcessX(pBCCI_Interface Interface, Boolean MaskStateChangeOperations, Int16U MBox, xProcessFunction Func)
+{
+	if(Interface->IOConfig->IO_IsMessageReceived(MBox, NULL))
 	{
 		if(MaskStateChangeOperations)
 		{
-			Interface->IOConfig->IO_GetMessage(Slave_MBOX_W_16, &CANInput);
+			CANMessage CANInput;
+			Interface->IOConfig->IO_GetMessage(MBox, &CANInput);
 			BCCI_SendErrorFrame(Interface, CANInput, ERR_BLOCKED, 0);
 		}
 		else
-			BCCI_HandleWrite16(Interface);
-		
-		return;
+			Func(Interface);
+
+		return TRUE;
 	}
-	
-	if(Interface->IOConfig->IO_IsMessageReceived(Slave_MBOX_R_16, NULL))
-	{
-		if(MaskStateChangeOperations)
-		{
-			Interface->IOConfig->IO_GetMessage(Slave_MBOX_R_16, &CANInput);
-			BCCI_SendErrorFrame(Interface, CANInput, ERR_BLOCKED, 0);
-		}
-		else
-			BCCI_HandleRead16(Interface);
-		
-		return;
-	}
-	
-	if(Interface->IOConfig->IO_IsMessageReceived(Slave_MBOX_C, NULL))
-	{
-		if(MaskStateChangeOperations)
-		{
-			Interface->IOConfig->IO_GetMessage(Slave_MBOX_C, &CANInput);
-			BCCI_SendErrorFrame(Interface, CANInput, ERR_BLOCKED, 0);
-		}
-		else
-			BCCI_HandleCall(Interface);
-		
-		return;
-	}
-	
-	if(Interface->IOConfig->IO_IsMessageReceived(Slave_MBOX_RB_16, NULL))
-	{
-		if(MaskStateChangeOperations)
-		{
-			Interface->IOConfig->IO_GetMessage(Slave_MBOX_RB_16, &CANInput);
-			BCCI_SendErrorFrame(Interface, CANInput, ERR_BLOCKED, 0);
-		}
-		else
-			BCCI_HandleReadBlock16(Interface);
-		
-		return;
-	}
-	
-	if(Interface->IOConfig->IO_IsMessageReceived(Slave_MBOX_WB_16, NULL))
-	{
-		if(MaskStateChangeOperations)
-		{
-			Interface->IOConfig->IO_GetMessage(Slave_MBOX_WB_16, &CANInput);
-			BCCI_SendErrorFrame(Interface, CANInput, ERR_BLOCKED, 0);
-		}
-		else
-			BCCI_HandleWriteBlock16(Interface);
-		
-		return;
-	}
+	else
+		return FALSE;
 }
 // ----------------------------------------
 
@@ -183,6 +166,32 @@ void BCCI_HandleRead16(pBCCI_Interface Interface)
 		CANOutput.HIGH.WORD.WORD_1 = Interface->DataTableAddress[addr];
 		
 		BCCI_SendResponseFrame(Interface, Slave_MBOX_R_16_A, &CANOutput);
+	}
+}
+// ----------------------------------------
+
+void BCCI_HandleReadFloat(pBCCI_Interface Interface)
+{
+	Int16U addr;
+	CANMessage CANInput;
+
+	Interface->IOConfig->IO_GetMessage(Slave_MBOX_R_F, &CANInput);
+	addr = CANInput.HIGH.WORD.WORD_0;
+
+	if(addr >= Interface->DataTableSize)
+	{
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_INVALID_ADDESS, addr);
+	}
+	else
+	{
+		CANMessage CANOutput = CANInput;
+		Int32U data = ((pInt32U)(Interface->DataTableAddress))[addr];
+
+		CANOutput.HIGH.WORD.WORD_0 = addr;
+		CANOutput.HIGH.WORD.WORD_1 = data >> 16;
+		CANOutput.LOW.WORD.WORD_2  = data & 0x0000FFFF;
+
+		BCCI_SendResponseFrame(Interface, Slave_MBOX_R_F_A, &CANOutput);
 	}
 }
 // ----------------------------------------
@@ -216,6 +225,40 @@ void BCCI_HandleWrite16(pBCCI_Interface Interface)
 		CANOutput.HIGH.WORD.WORD_0 = addr;
 		
 		BCCI_SendResponseFrame(Interface, Slave_MBOX_W_16_A, &CANOutput);
+	}
+}
+// ----------------------------------------
+
+void BCCI_HandleWriteFloat(pBCCI_Interface Interface)
+{
+	CANMessage CANInput;
+	Interface->IOConfig->IO_GetMessage(Slave_MBOX_W_F, &CANInput);
+
+	Int16U addr = CANInput.HIGH.WORD.WORD_0;
+	Int32U t_data = (Int32U)CANInput.HIGH.WORD.WORD_1 << 16 | CANInput.LOW.WORD.WORD_2;
+	float data = *(float *)&t_data;
+
+	if(addr >= Interface->DataTableSize)
+	{
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_INVALID_ADDESS, addr);
+	}
+	else if(xCCI_InProtectedZone(&Interface->ProtectionAndEndpoints, addr))
+	{
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_PROTECTED, addr);
+	}
+	else if(Interface->ServiceConfig->ValidateCallbackFloat
+			&& !Interface->ServiceConfig->ValidateCallbackFloat(addr, data, NULL, NULL))
+	{
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_VALIDATION, addr);
+	}
+	else
+	{
+		CANMessage CANOutput = CANInput;
+
+		((float *)Interface->DataTableAddress)[addr] = data;
+		CANOutput.HIGH.WORD.WORD_0 = addr;
+
+		BCCI_SendResponseFrame(Interface, Slave_MBOX_W_F_A, &CANOutput);
 	}
 }
 // ----------------------------------------
