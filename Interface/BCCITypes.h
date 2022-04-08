@@ -21,6 +21,7 @@
 #define CAN_ID_RLIM_F				28
 #define CAN_ID_WB_16				30
 #define CAN_ID_RB_16				40
+#define CAN_ID_RB_F					42
 #define CAN_ID_CALL					50
 #define CAN_ID_ERR					61
 

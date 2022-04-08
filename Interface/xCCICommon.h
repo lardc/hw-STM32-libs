@@ -15,7 +15,7 @@ typedef Boolean (*xCCI_FUNC_CallbackValidate16)(Int16U Address, Int16U Data);
 typedef Boolean (*xCCI_FUNC_CallbackValidateFloat)(Int16U Address, float Data, float* LowLimit, float* HighLimit);
 typedef Int16U (*xCCI_FUNC_CallbackReadEndpoint16)(Int16U Endpoint, pInt16U *Buffer, Boolean Streamed, Boolean RepeatLastTransmission, void *UserArgument, Int16U MaxNonStreamSize);
 typedef Boolean (*xCCI_FUNC_CallbackWriteEndpoint16)(Int16U Endpoint, pInt16U Buffer, Boolean Streamed, Int16U Length, void *UserArgument);
-typedef Int16U (*xCCI_FUNC_CallbackReadEndpointFloat)(Int16U Endpoint, float** Buffer, void *UserArgument);
+typedef Int16U (*xCCI_FUNC_CallbackReadEndpointFloat)(Int16U Endpoint, float** Buffer, void *UserArgument, Int16U MaxNonStreamSize);
 
 // Service configuration
 typedef struct __xCCI_ServiceConfig

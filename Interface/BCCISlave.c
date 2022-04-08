@@ -56,6 +56,7 @@ void BCCI_HandleWriteFloat(pBCCI_Interface Interface);
 void BCCI_HandleReadLimitFloat(pBCCI_Interface Interface);
 void BCCI_HandleCall(pBCCI_Interface Interface);
 void BCCI_HandleReadBlock16(pBCCI_Interface Interface);
+void BCCI_HandleReadBlockFloat(pBCCI_Interface Interface);
 void BCCI_HandleWriteBlock16(pBCCI_Interface Interface);
 
 // Functions
@@ -98,6 +99,8 @@ void BCCI_Init(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxCCI_Service
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F_A,		CAN_SLAVE_FILTER_ID + CAN_ID_W_F + 1,	2);
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F, 		CAN_SLAVE_FILTER_ID + CAN_ID_R_F,		2);
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_R_F + 1,	6);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_F,	 	CAN_SLAVE_FILTER_ID + CAN_ID_RB_F,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_F_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_RB_F + 1,	8);
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F, 	CAN_SLAVE_FILTER_ID + CAN_ID_RLIM_F,	4);
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_RLIM_F + 1, 6);
 #endif
@@ -111,6 +114,15 @@ void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 
 	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_R_16, BCCI_HandleRead16))
 		return;
+
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_C, BCCI_HandleCall))
+		return;
+
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RB_16, BCCI_HandleReadBlock16))
+		return;
+
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_WB_16, BCCI_HandleWriteBlock16))
+		return;
 	
 #ifdef USE_FLOAT_DT
 	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_W_F, BCCI_HandleWriteFloat))
@@ -119,18 +131,12 @@ void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_R_F, BCCI_HandleReadFloat))
 		return;
 
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RB_F, BCCI_HandleReadBlockFloat))
+		return;
+
 	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RLIM_F, BCCI_HandleReadLimitFloat))
 		return;
 #endif
-
-	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_C, BCCI_HandleCall))
-		return;
-	
-	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RB_16, BCCI_HandleReadBlock16))
-		return;
-	
-	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_WB_16, BCCI_HandleWriteBlock16))
-		return;
 }
 // ----------------------------------------
 
@@ -378,6 +384,38 @@ void BCCI_HandleReadBlock16(pBCCI_Interface Interface)
 }
 // ----------------------------------------
 
+void BCCI_HandleReadBlockFloat(pBCCI_Interface Interface)
+{
+	CANMessage CANInput;
+	Interface->IOConfig->IO_GetMessage(Slave_MBOX_RB_F, &CANInput);
+
+	Int16U epnt = CANInput.HIGH.WORD.WORD_0;
+	if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt])
+	{
+		pInt32U src;
+		CANMessage CANOutput = CANInput;
+
+		Int16U length = Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt](epnt, (float**)&src,
+				Interface->ArgForEPCallback, 2);
+
+		switch(length)
+		{
+			case 2:
+				CANOutput.LOW.DWORD_1 = src[1];
+			case 1:
+				CANOutput.HIGH.DWORD_0 = src[0];
+				BCCI_SendResponseFrameEx(Interface, Slave_MBOX_RB_F_A, &CANOutput, length);
+				break;
+			default:
+				BCCI_SendResponseFrameEx(Interface, Slave_MBOX_RB_F_A, &CANOutput, 0);
+				break;
+		}
+	}
+	else
+		BCCI_SendErrorFrame(Interface, CANInput, ERR_INVALID_ENDPOINT, epnt);
+}
+// ----------------------------------------
+
 void BCCI_HandleWriteBlock16(pBCCI_Interface Interface)
 {
 	CANMessage CANInput;
@@ -452,6 +490,13 @@ Boolean BCCI_RegisterReadEndpoint16(pBCCI_Interface Interface, Int16U Endpoint,
 		xCCI_FUNC_CallbackReadEndpoint16 ReadCallback)
 {
 	return xCCI_RegisterReadEndpoint16(&(Interface->ProtectionAndEndpoints), Endpoint, ReadCallback);
+}
+// ----------------------------------------
+
+Boolean BCCI_RegisterReadEndpointFloat(pBCCI_Interface Interface, Int16U Endpoint,
+		xCCI_FUNC_CallbackReadEndpointFloat ReadCallback)
+{
+	return xCCI_RegisterReadEndpointFloat(&(Interface->ProtectionAndEndpoints), Endpoint, ReadCallback);
 }
 // ----------------------------------------
 

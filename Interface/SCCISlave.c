@@ -564,7 +564,7 @@ void SCCI_HandleReadBlockFastFloat(pSCCI_Interface Interface)
 		Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
 
 		Int16U length = Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt](epnt, &src,
-				Interface->ArgForEPCallback);
+				Interface->ArgForEPCallback, 0);
 
 		// Process float array as short
 		length *= 2;
