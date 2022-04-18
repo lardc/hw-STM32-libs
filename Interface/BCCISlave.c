@@ -404,7 +404,7 @@ void BCCI_HandleReadBlockFloat(pBCCI_Interface Interface)
 				CANOutput.LOW.DWORD_1 = src[1];
 			case 1:
 				CANOutput.HIGH.DWORD_0 = src[0];
-				BCCI_SendResponseFrameEx(Interface, Slave_MBOX_RB_F_A, &CANOutput, length);
+				BCCI_SendResponseFrameEx(Interface, Slave_MBOX_RB_F_A, &CANOutput, length * 2);
 				break;
 			default:
 				BCCI_SendResponseFrameEx(Interface, Slave_MBOX_RB_F_A, &CANOutput, 0);
