@@ -19,7 +19,7 @@ typedef struct __CANMailboxItem
 
 // Definitions
 //
-#define MAILBOXmax		36		// Количество MailBox
+#define MAILBOXmax		50		// Количество MailBox
 
 
 // Variables
