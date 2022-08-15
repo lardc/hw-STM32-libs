@@ -14,19 +14,23 @@
 
 // Definitions
 //
-#define Master_MBOX_W_16			1
-#define Master_MBOX_W_16_A			2
-#define Master_MBOX_W_32			3
-#define Master_MBOX_W_32_A			4
-#define Master_MBOX_R_16			5
-#define Master_MBOX_R_16_A			6
-#define Master_MBOX_R_32			7
-#define Master_MBOX_R_32_A			8
-#define Master_MBOX_C				9
-#define Master_MBOX_C_A				10
-#define Master_MBOX_ERR_A			11
-#define Master_MBOX_RB_16			12
-#define Master_MBOX_RB_16_A			13
+#define Master_MBOX_W_16			0
+#define Master_MBOX_W_16_A			1
+#define Master_MBOX_R_16			2
+#define Master_MBOX_R_16_A			3
+#define Master_MBOX_C				4
+#define Master_MBOX_C_A				5
+#define Master_MBOX_ERR_A			6
+#define Master_MBOX_RB_16			7
+#define Master_MBOX_RB_16_A			8
+#define Master_MBOX_R_F				9
+#define Master_MBOX_R_F_A			10
+#define Master_MBOX_W_F				11
+#define Master_MBOX_W_F_A			12
+#define Master_MBOX_RB_F			13
+#define Master_MBOX_RB_F_A			14
+#define Master_MBOX_RLIM_F			15
+#define Master_MBOX_RLIM_F_A		16
 
 #define MIN(a, b) 					(((a) < (b)) ? (a) : (b))
 

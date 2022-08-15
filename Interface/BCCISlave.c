@@ -17,29 +17,25 @@ typedef void (*xProcessFunction)(pBCCI_Interface Interface);
 //
 #define BCCI_BLOCK_MAX_VAL_16_W		3
 //
-#define Slave_MBOX_W_16				21
-#define Slave_MBOX_W_16_A			22
-#define Slave_MBOX_W_32				23
-#define Slave_MBOX_W_32_A			24
-#define Slave_MBOX_R_16				25
-#define Slave_MBOX_R_16_A			26
-#define Slave_MBOX_R_32				27
-#define Slave_MBOX_R_32_A			28
-#define Slave_MBOX_C				29
-#define Slave_MBOX_C_A				30
-#define Slave_MBOX_ERR_A			31
-#define Slave_MBOX_WB_16			32
-#define Slave_MBOX_WB_16_A			33
-#define Slave_MBOX_RB_16			34
-#define Slave_MBOX_RB_16_A			35
-#define Slave_MBOX_R_F				36
-#define Slave_MBOX_R_F_A			37
-#define Slave_MBOX_W_F				38
-#define Slave_MBOX_W_F_A			39
-#define Slave_MBOX_RB_F				40
-#define Slave_MBOX_RB_F_A			41
-#define Slave_MBOX_RLIM_F			42
-#define Slave_MBOX_RLIM_F_A			43
+#define Slave_MBOX_W_16				20
+#define Slave_MBOX_W_16_A			21
+#define Slave_MBOX_R_16				22
+#define Slave_MBOX_R_16_A			23
+#define Slave_MBOX_C				24
+#define Slave_MBOX_C_A				25
+#define Slave_MBOX_ERR_A			26
+#define Slave_MBOX_WB_16			27
+#define Slave_MBOX_WB_16_A			28
+#define Slave_MBOX_RB_16			29
+#define Slave_MBOX_RB_16_A			30
+#define Slave_MBOX_R_F				31
+#define Slave_MBOX_R_F_A			32
+#define Slave_MBOX_W_F				33
+#define Slave_MBOX_W_F_A			34
+#define Slave_MBOX_RB_F				35
+#define Slave_MBOX_RB_F_A			36
+#define Slave_MBOX_RLIM_F			37
+#define Slave_MBOX_RLIM_F_A			38
 
 // Forward functions
 //
