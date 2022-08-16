@@ -23,14 +23,16 @@
 #define Master_MBOX_ERR_A			6
 #define Master_MBOX_RB_16			7
 #define Master_MBOX_RB_16_A			8
-#define Master_MBOX_R_F				9
-#define Master_MBOX_R_F_A			10
-#define Master_MBOX_W_F				11
-#define Master_MBOX_W_F_A			12
-#define Master_MBOX_RB_F			13
-#define Master_MBOX_RB_F_A			14
-#define Master_MBOX_RLIM_F			15
-#define Master_MBOX_RLIM_F_A		16
+#define Master_MBOX_WB_16			9
+#define Master_MBOX_WB_16_A			10
+#define Master_MBOX_R_F				11
+#define Master_MBOX_R_F_A			12
+#define Master_MBOX_W_F				13
+#define Master_MBOX_W_F_A			14
+#define Master_MBOX_RB_F			15
+#define Master_MBOX_RB_F_A			16
+#define Master_MBOX_RLIM_F			17
+#define Master_MBOX_RLIM_F_A		18
 
 #define MIN(a, b) 					(((a) < (b)) ? (a) : (b))
 
@@ -69,6 +71,8 @@ void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U Mess
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_ERR_A,	CAN_MASTER_FILTER_ID + CAN_ID_ERR,		4);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16,	CAN_MASTER_FILTER_ID + CAN_ID_RB_16,	2);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16_A,	CAN_MASTER_FILTER_ID + CAN_ID_RB_16 + 1,8);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_WB_16,	CAN_MASTER_FILTER_ID + CAN_ID_WB_16,	4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_WB_16_A,	CAN_MASTER_FILTER_ID + CAN_ID_WB_16 + 1,2);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F,		CAN_MASTER_FILTER_ID + CAN_ID_R_F,		2);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F_A,	CAN_MASTER_FILTER_ID + CAN_ID_R_F + 1,	6);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F,		CAN_MASTER_FILTER_ID + CAN_ID_W_F,		6);
@@ -235,6 +239,33 @@ Int16U BCCIM_ReadBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoin
 	}
 
 	return ERR_TIMEOUT;
+}
+// ----------------------------------------
+
+Int16U BCCIM_WriteBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, pInt16U Data, Int16U DataLength)
+{
+	CANMessage message;
+
+	// Clear input mailboxes
+	Interface->IOConfig->IO_GetMessage(Master_MBOX_ERR_A, NULL);
+	Interface->IOConfig->IO_GetMessage(Master_MBOX_WB_16_A, NULL);
+
+	// Compose and send message
+	message.HIGH.WORD.WORD_0 = (Endpoint << 8) | DataLength;
+	switch(DataLength)
+	{
+		case 3:
+			message.LOW.WORD.WORD_3 = *(Data + 2);
+		case 2:
+			message.LOW.WORD.WORD_2 = *(Data + 1);
+		case 1:
+			message.HIGH.WORD.WORD_1 = *Data;
+			break;
+	}
+	BCCIM_SendFrame(Interface, Master_MBOX_WB_16, &message, Node);
+
+	// Get response
+	return BCCIM_WaitResponse(Interface, Master_MBOX_WB_16_A);
 }
 // ----------------------------------------
 
