@@ -1,19 +1,17 @@
-﻿// -----------------------------------------
+﻿// ----------------------------------------
 // BCCI communication interface
 // ----------------------------------------
 
 // Header
 #include "BCCIMaster.h"
-//
+
 // Includes
 #include "BCCIxParams.h"
 #include "CRC16.h"
 #include "SysConfig.h"
 #include "DeviceProfile.h"
 
-
 // Definitions
-//
 #define Master_MBOX_W_16			0
 #define Master_MBOX_W_16_A			1
 #define Master_MBOX_R_16			2
@@ -36,24 +34,22 @@
 
 #define MIN(a, b) 					(((a) < (b)) ? (a) : (b))
 
-
 // Forward functions
-//
 void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node);
 Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox);
 void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
 Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface);
-
+void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
+Boolean BCCIM_HandleReadBlockFloat(pBCCIM_Interface Interface);
 
 // Variables
-//
-static Int16U ReadBlock16Buffer[READ_BLOCK_16_BUFFER_SIZE];
-static Int16U ReadBlock16BufferCounter, ReadBlock16SavedEndpoint, ReadBlock16SavedNode;
+Int16U BCCIM_ReadBlockBufferCounter;
+float BCCIM_ReadBlockFloatBuffer[READ_BLOCK_FLOAT_BUFFER_SIZE];
+pInt16U BCCIM_ReadBlock16Buffer = (pInt16U)BCCIM_ReadBlockFloatBuffer;
+static Int16U ReadBlockSavedEndpoint, ReadBlockSavedNode;
 static Int16U SavedErrorDetails = 0;
 
-
 // Functions
-//
 void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks, volatile Int64U *pTimer)
 {
 	// Save parameters
@@ -279,13 +275,13 @@ void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16
 		Interface->IOConfig->IO_GetMessage(Master_MBOX_ERR_A, NULL);
 		Interface->IOConfig->IO_GetMessage(Master_MBOX_RB_16_A, NULL);
 
-		ReadBlock16SavedEndpoint = Endpoint;
-		ReadBlock16SavedNode = Node;
-		ReadBlock16BufferCounter = 0;
+		ReadBlockSavedEndpoint = Endpoint;
+		ReadBlockSavedNode = Node;
+		BCCIM_ReadBlockBufferCounter = 0;
 	}
 
-	message.HIGH.WORD.WORD_0 = ReadBlock16SavedEndpoint;
-	BCCIM_SendFrame(Interface, Master_MBOX_RB_16, &message, ReadBlock16SavedNode);
+	message.HIGH.WORD.WORD_0 = ReadBlockSavedEndpoint;
+	BCCIM_SendFrame(Interface, Master_MBOX_RB_16, &message, ReadBlockSavedNode);
 }
 // ----------------------------------------
 
@@ -294,21 +290,90 @@ Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
 	CANMessage CANInput;
 	Interface->IOConfig->IO_GetMessage(Master_MBOX_RB_16_A, &CANInput);
 
-	if(ReadBlock16BufferCounter >= READ_BLOCK_16_BUFFER_SIZE)
+	if(BCCIM_ReadBlockBufferCounter >= READ_BLOCK_16_BUFFER_SIZE)
 		return TRUE;
 
 	switch(CANInput.DLC)
 	{
 		case 8:
-			ReadBlock16Buffer[ReadBlock16BufferCounter + 3] = CANInput.LOW.WORD.WORD_3;
+			BCCIM_ReadBlock16Buffer[BCCIM_ReadBlockBufferCounter + 3] = CANInput.LOW.WORD.WORD_3;
 		case 6:
-			ReadBlock16Buffer[ReadBlock16BufferCounter + 2] = CANInput.LOW.WORD.WORD_2;
+			BCCIM_ReadBlock16Buffer[BCCIM_ReadBlockBufferCounter + 2] = CANInput.LOW.WORD.WORD_2;
 		case 4:
-			ReadBlock16Buffer[ReadBlock16BufferCounter + 1] = CANInput.HIGH.WORD.WORD_1;
+			BCCIM_ReadBlock16Buffer[BCCIM_ReadBlockBufferCounter + 1] = CANInput.HIGH.WORD.WORD_1;
 		case 2:
-			ReadBlock16Buffer[ReadBlock16BufferCounter] = CANInput.HIGH.WORD.WORD_0;
-			ReadBlock16BufferCounter += CANInput.DLC / 2;
+			BCCIM_ReadBlock16Buffer[BCCIM_ReadBlockBufferCounter] = CANInput.HIGH.WORD.WORD_0;
+			BCCIM_ReadBlockBufferCounter += CANInput.DLC / 2;
 			BCCIM_ReadBlock16Subfunction(Interface, 0, 0, FALSE);
+			return FALSE;
+		default:
+			return TRUE;
+	}
+}
+// ----------------------------------------
+
+Int16U BCCIM_ReadBlockFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint)
+{
+	Int16U ret;
+	Int64U timeout;
+	BCCIM_ReadBlockFloatSubfunction(Interface, Node, Endpoint, TRUE);
+
+	timeout = Interface->TimeoutValueTicks + *(Interface->pTimerCounter);
+	while(*(Interface->pTimerCounter) < timeout)
+	{
+		// Get response
+		if ((ret = BCCIM_WaitResponse(Interface, Master_MBOX_RB_F_A)) == ERR_NO_ERROR)
+		{
+			if (BCCIM_HandleReadBlockFloat(Interface))
+				return ERR_NO_ERROR;
+		}
+		else
+			return ret;
+	}
+
+	return ERR_TIMEOUT;
+}
+// ----------------------------------------
+
+void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start)
+{
+	CANMessage message;
+
+	if(Start)
+	{
+		// Clear input mailboxes
+		Interface->IOConfig->IO_GetMessage(Master_MBOX_ERR_A, NULL);
+		Interface->IOConfig->IO_GetMessage(Master_MBOX_RB_F_A, NULL);
+
+		ReadBlockSavedEndpoint = Endpoint;
+		ReadBlockSavedNode = Node;
+		BCCIM_ReadBlockBufferCounter = 0;
+	}
+
+	message.HIGH.WORD.WORD_0 = ReadBlockSavedEndpoint;
+	BCCIM_SendFrame(Interface, Master_MBOX_RB_F, &message, ReadBlockSavedNode);
+}
+// ----------------------------------------
+
+Boolean BCCIM_HandleReadBlockFloat(pBCCIM_Interface Interface)
+{
+	CANMessage CANInput;
+	Interface->IOConfig->IO_GetMessage(Master_MBOX_RB_F_A, &CANInput);
+
+	if(BCCIM_ReadBlockBufferCounter >= READ_BLOCK_FLOAT_BUFFER_SIZE)
+		return TRUE;
+
+	pInt32U buffer = (pInt32U)BCCIM_ReadBlockFloatBuffer;
+	Int16U length = CANInput.DLC / 4;
+	switch(length)
+	{
+		case 2:
+			buffer[BCCIM_ReadBlockBufferCounter + 1] = CANInput.LOW.DWORD_1;
+		case 1:
+			buffer[BCCIM_ReadBlockBufferCounter] = CANInput.HIGH.DWORD_0;
+
+			BCCIM_ReadBlockBufferCounter += length;
+			BCCIM_ReadBlockFloatSubfunction(Interface, 0, 0, FALSE);
 			return FALSE;
 		default:
 			return TRUE;
@@ -318,10 +383,10 @@ Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
 
 void BCCIM_ReadBlock16Load(pInt16U DataArray, Int16U DataSize, pInt16U DataRead)
 {
-	Int16U i, Counter = MIN(DataSize, ReadBlock16BufferCounter);
+	Int16U i, Counter = MIN(DataSize, BCCIM_ReadBlockBufferCounter);
 
 	for (i = 0; i < Counter; ++i)
-		DataArray[i] = ReadBlock16Buffer[i];
+		DataArray[i] = BCCIM_ReadBlock16Buffer[i];
 
 	*DataRead = Counter;
 }
