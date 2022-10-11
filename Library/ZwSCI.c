@@ -134,3 +134,18 @@ void ZwSCI_RegisterToFIFO(USART_TypeDef* USARTx)
 		FIFO[FIFO_RXcount++] = USARTx->RDR;
 }
 //-----------------------------------------
+
+void ZwSCI_xSendChar(USART_TypeDef* USARTx, Int16U Value)
+{
+	USARTx->TDR = (uint8_t)Value;
+	while (!(USARTx->ISR & USART_ISR_TC));
+	USARTx->ISR &= ~USART_ISR_TC;
+}
+//-----------------------------------------
+
+void ZwSCI_xRegisterToFIFO(USART_TypeDef* USARTx, uint8_t* RecieveBuffer, uint8_t* RecieveCounter)
+{
+	if (*RecieveCounter < USART_FIFOlen)
+		*(RecieveBuffer + *RecieveCounter) = USARTx->RDR;
+}
+//-----------------------------------------
