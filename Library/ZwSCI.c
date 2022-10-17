@@ -11,7 +11,9 @@ static volatile uint8_t FIFO[USART_FIFOlen];	// USART FIFO
 //
 void USART_Init(USART_TypeDef* USARTx, uint32_t SYS_clk, uint32_t BaudRate)
 {
-	RCC_USART_Clk_EN(USART_1_ClkEN);		// Включение тактирования UART1.
+	if (USARTx == USART1) RCC_USART_Clk_EN(USART_1_ClkEN);		// Включение тактирования UART1
+	if (USARTx == USART2) RCC_USART_Clk_EN(USART_2_ClkEN);		// Включение тактирования UART2
+	if (USARTx == USART3) RCC_USART_Clk_EN(USART_3_ClkEN);		// Включение тактирования UART3
 
 	USARTx->BRR = SYS_clk / BaudRate;		// Скорость
 	USARTx->CR1 |= (USART_CR1_TE | USART_CR1_RE); // Разрешаем прием и передачу
