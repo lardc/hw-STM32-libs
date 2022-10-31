@@ -176,8 +176,15 @@ void BCCI_HandleRead16(pBCCI_Interface Interface)
 	{
 		CANMessage CANOutput = CANInput;
 		
+#ifdef USE_FLOAT_DT
+		Int32S t_data = (Int32S)(((float *)Interface->DataTableAddress)[addr]);
+		Int16U data = (Int16U)((Int16S)t_data);
+#else
+		Int16U data = Interface->DataTableAddress[addr];
+#endif
+
 		CANOutput.HIGH.WORD.WORD_0 = addr;
-		CANOutput.HIGH.WORD.WORD_1 = Interface->DataTableAddress[addr];
+		CANOutput.HIGH.WORD.WORD_1 = data;
 		
 		BCCI_SendResponseFrame(Interface, Slave_MBOX_R_16_A, &CANOutput);
 	}
@@ -234,8 +241,11 @@ void BCCI_HandleWrite16(pBCCI_Interface Interface)
 	else
 	{
 		CANMessage CANOutput = CANInput;
-		
+#ifdef USE_FLOAT_DT
+		((float *)Interface->DataTableAddress)[addr] = (float)data;
+#else
 		Interface->DataTableAddress[addr] = data;
+#endif
 		CANOutput.HIGH.WORD.WORD_0 = addr;
 		
 		BCCI_SendResponseFrame(Interface, Slave_MBOX_W_16_A, &CANOutput);
