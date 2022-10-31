@@ -5,6 +5,17 @@
 //
 #include "stdinc.h"
 
+// Types
+//
+typedef struct __EXTI_PortChennelSetting
+{
+	uint8_t Port;
+	uint32_t Channel;
+} EXTI_PortChannelSetting;
+#define EXTI_PortChannelSettingMacro static const EXTI_PortChannelSetting
+
+// Definitions
+//
 #define RISE_TRIG	0x01
 #define FALL_TRIG	0x02
 #define BOTH_TRIG	0x03
@@ -55,9 +66,12 @@
 #define EXTI_PG		6
 #define EXTI_Inter	0
 
-void EXTI_Config(uint32_t EXTI_PORT, uint32_t EXTI_Channel, uint8_t EXTI_Trigger, uint32_t Priority);
 void EXTI_EnableInterrupt(IRQn_Type EXTI_IRQ, uint16_t Prioriry, bool Enable);
 void EXTI_FlagReset(uint32_t EXTI_Channel);
 bool EXTI_FlagCheck(uint32_t EXTI_Channel);
+void EXTI_Init(EXTI_PortChannelSetting PortChannel, uint8_t TriggerType);
+
+// Устаревшая функция инициализации
+void EXTI_Config(uint32_t EXTI_PORT, uint32_t EXTI_Channel, uint8_t EXTI_Trigger, uint32_t Priority);
 
 #endif // __ZW_EXTI_H

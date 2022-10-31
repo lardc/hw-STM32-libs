@@ -1,7 +1,55 @@
 ﻿// Includes
 //
 #include "ZwEXTI.h"
+#include "ZwGPIO.h"
 
+
+// Функция для инициализации внешних прерываний
+void EXTI_Init(EXTI_PortChannelSetting PortChannel, uint8_t TriggerType)
+{
+	EXTI_Config(PortChannel.Port, PortChannel.Channel, TriggerType, 0);
+
+	switch(PortChannel.Channel)
+	{
+	case EXTI_0:
+		EXTI_EnableInterrupt(EXTI0_IRQn, 0, true);
+		break;
+
+	case EXTI_1:
+		EXTI_EnableInterrupt(EXTI1_IRQn, 0, true);
+		break;
+
+	case EXTI_2:
+		EXTI_EnableInterrupt(EXTI2_TSC_IRQn, 0, true);
+		break;
+
+	case EXTI_3:
+		EXTI_EnableInterrupt(EXTI3_IRQn, 0, true);
+		break;
+
+	case EXTI_4:
+		EXTI_EnableInterrupt(EXTI4_IRQn, 0, true);
+		break;
+
+	case EXTI_5:
+	case EXTI_6:
+	case EXTI_7:
+	case EXTI_8:
+	case EXTI_9:
+		EXTI_EnableInterrupt(EXTI9_5_IRQn, 0, true);
+		break;
+
+	case EXTI_10:
+	case EXTI_11:
+	case EXTI_12:
+	case EXTI_13:
+	case EXTI_14:
+	case EXTI_15:
+		EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);
+		break;
+	}
+}
+// -----------------------------------------------------------------------------
 
 // Настройка контроллера прерываний
 void EXTI_Config(uint32_t EXTI_PORT, uint32_t EXTI_Channel, uint8_t EXTI_Trigger, uint32_t Priority)

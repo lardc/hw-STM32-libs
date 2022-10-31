@@ -17,5 +17,7 @@ void ZwSCI_SendChar(Int16U Value);
 bool ZwSCI_RecieveCheck(USART_TypeDef* USARTx);
 void ZwSCI_RecieveFlagClear(USART_TypeDef* USARTx);
 void ZwSCI_RegisterToFIFO(USART_TypeDef* USARTx);
+void ZwSCI_xSendChar(USART_TypeDef* USARTx, Int16U Value);
+void ZwSCI_xRegisterToFIFO(USART_TypeDef* USARTx, uint8_t* RecieveBuffer, uint8_t* RecieveCounter);
 
 #endif // __ZW_SCI_H
