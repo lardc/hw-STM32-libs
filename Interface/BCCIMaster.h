@@ -37,6 +37,8 @@ Int16U BCCIM_Call(pBCCIM_Interface Interface, Int16U Node, Int16U Action);
 Int16U BCCIM_ReadBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint);
 void BCCIM_ReadBlock16Load(pInt16U DataArray, Int16U DataSize, pInt16U DataRead);
 Int16U BCCIM_GetSavedErrorDetails();
+Int16U BCCIM_WriteFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, float Data);
+Int16U BCCIM_ReadFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, float* Data);
 
 
 #endif // __BCCI_MASTER_H

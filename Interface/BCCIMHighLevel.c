@@ -51,10 +51,40 @@ bool BHL_ReadRegister(uint16_t NodeID, uint16_t Address, uint16_t* Data)
 }
 // ----------------------------------------
 
+bool BHL_ReadRegisterFloat(uint16_t NodeID, uint16_t Address, float* Data)
+{
+	Int16U err;
+	err = BCCIM_ReadFloat(MASTER_CAN_Interface, NodeID, Address, Data);
+
+	if (err == ERR_NO_ERROR)
+		return TRUE;
+	else
+	{
+		BHL_LoadError(err, NodeID, FUNCTION_READ, Address);
+		return FALSE;
+	}
+}
+// ----------------------------------------
+
 bool BHL_WriteRegister(uint16_t NodeID, uint16_t Address, uint16_t Data)
 {
 	Int16U err;
 	err = BCCIM_Write16(MASTER_CAN_Interface, NodeID, Address, Data);
+
+	if (err == ERR_NO_ERROR)
+		return TRUE;
+	else
+	{
+		BHL_LoadError(err, NodeID, FUNCTION_WRITE, Address);
+		return FALSE;
+	}
+}
+// ----------------------------------------
+
+bool BHL_WriteRegisterFloat(uint16_t NodeID, uint16_t Address, float Data)
+{
+	Int16U err;
+	err = BCCIM_WriteFloat(MASTER_CAN_Interface, NodeID, Address, Data);
 
 	if (err == ERR_NO_ERROR)
 		return TRUE;

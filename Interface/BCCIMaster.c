@@ -27,6 +27,14 @@
 #define Master_MBOX_ERR_A			11
 #define Master_MBOX_RB_16			12
 #define Master_MBOX_RB_16_A			13
+#define Master_MBOX_R_F				20
+#define Master_MBOX_R_F_A			21
+#define Master_MBOX_W_F				22
+#define Master_MBOX_W_F_A			23
+#define Master_MBOX_RB_F			24
+#define Master_MBOX_RB_F_A			25
+#define Master_MBOX_RLIM_F			26
+#define Master_MBOX_RLIM_F_A		27
 
 #define MIN(a, b) 					(((a) < (b)) ? (a) : (b))
 
@@ -65,6 +73,16 @@ void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U Mess
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_ERR_A,	CAN_MASTER_FILTER_ID + CAN_ID_ERR,		4);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16,	CAN_MASTER_FILTER_ID + CAN_ID_RB_16,	2);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16_A,	CAN_MASTER_FILTER_ID + CAN_ID_RB_16 + 1,8);
+#ifdef USE_FLOAT_DT
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F,		CAN_MASTER_FILTER_ID + CAN_ID_W_F,		6);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F_A,	CAN_MASTER_FILTER_ID + CAN_ID_W_F + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F, 		CAN_MASTER_FILTER_ID + CAN_ID_R_F,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F_A, 	CAN_MASTER_FILTER_ID + CAN_ID_R_F + 1,	6);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F,	 	CAN_MASTER_FILTER_ID + CAN_ID_RB_F,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F_A, 	CAN_MASTER_FILTER_ID + CAN_ID_RB_F + 1,	8);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F, 	CAN_MASTER_FILTER_ID + CAN_ID_RLIM_F,	4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F_A, CAN_MASTER_FILTER_ID + CAN_ID_RLIM_F + 1, 6);
+#endif
 }
 // ----------------------------------------
 
@@ -93,6 +111,34 @@ Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, pIn
 }
 // ----------------------------------------
 
+Int16U BCCIM_ReadFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, float* Data)
+{
+	Int16U ret;
+	CANMessage message;
+
+	// Clear input mailboxes
+	Interface->IOConfig->IO_GetMessage(Master_MBOX_ERR_A, NULL);
+	Interface->IOConfig->IO_GetMessage(Master_MBOX_R_F_A, NULL);
+
+	// Compose and send message
+	message.HIGH.WORD.WORD_0 = Address;
+	BCCIM_SendFrame(Interface, Master_MBOX_R_F, &message, Node);
+
+	// Get response
+	if ((ret = BCCIM_WaitResponse(Interface, Master_MBOX_R_F_A)) == ERR_NO_ERROR)
+	{
+		Interface->IOConfig->IO_GetMessage(Master_MBOX_R_F_A, &message);
+		if (Data)
+		{
+			Int32U t_data = (Int32U)message.HIGH.WORD.WORD_1 << 16 | message.LOW.WORD.WORD_2;
+			*Data = *(float *)&t_data;
+		}
+	}
+
+	return ret;
+}
+// ----------------------------------------
+
 Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, Int16U Data)
 {
 	CANMessage message;
@@ -108,6 +154,27 @@ Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, In
 
 	// Get response
 	return BCCIM_WaitResponse(Interface, Master_MBOX_W_16_A);
+}
+// ----------------------------------------
+
+Int16U BCCIM_WriteFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, float Data)
+{
+	CANMessage message;
+
+	// Clear input mailboxes
+	Interface->IOConfig->IO_GetMessage(Master_MBOX_ERR_A, NULL);
+	Interface->IOConfig->IO_GetMessage(Master_MBOX_W_F_A, NULL);
+
+	// Compose and send message
+	Int32U Temp = *(Int32U*)(float*)&Data;
+
+	message.HIGH.WORD.WORD_0 = Address;
+	message.HIGH.WORD.WORD_1 = Temp >> 16;
+	message.LOW.WORD.WORD_2  = Temp & 0x0000FFFF;
+	BCCIM_SendFrame(Interface, Master_MBOX_W_F, &message, Node);
+
+	// Get response
+	return BCCIM_WaitResponse(Interface, Master_MBOX_W_F_A);
 }
 // ----------------------------------------
 
