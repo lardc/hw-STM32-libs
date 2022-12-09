@@ -180,7 +180,13 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 	Int16U fnc = Interface->MessageBuffer[1] >> 8;
 	Int16U sfunc = fnc & FUNCTION_SCODE_MASK;
 
-	if((Interface->MessageBuffer[0] & 0xFF) == DEVICE_SCCI_ADDRESS)
+#ifdef CAN_BRIDGE
+	const Boolean bridge = TRUE;
+#else
+	const Boolean bridge = FALSE;
+#endif
+
+	if((Interface->MessageBuffer[0] & 0xFF) == DEVICE_SCCI_ADDRESS || bridge)
 	{
 		switch((fnc & FUNCTION_CODE_MASK) >> 3)
 		{
