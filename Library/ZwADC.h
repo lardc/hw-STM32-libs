@@ -109,5 +109,7 @@ void ADC_InterruptClearFlag(ADC_TypeDef *ADCx, uint32_t Flag);
 uint16_t ADC_Read(ADC_TypeDef * ADCx);
 void ADC1_2_SetDualMode(bool Enable);
 void ADC3_4_SetDualMode(bool Enable);
+void ADC_SetContinuousMode(ADC_TypeDef* ADCx);
+void ADC_ResetConfig(ADC_TypeDef* ADCx);
 
 #endif // __ZW_ADC_H
