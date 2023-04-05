@@ -309,6 +309,7 @@ void ADC_SetContinuousMode(ADC_TypeDef* ADCx)
 
 void ADC_ResetConfig(ADC_TypeDef* ADCx)
 {
+	ADC_SamplingStop(ADCx);
 	ADCx->CR = 0;
 	ADCx->CFGR = 0;
 }
