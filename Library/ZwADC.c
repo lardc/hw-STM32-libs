@@ -300,3 +300,17 @@ void ADC3_4_SetDualMode(bool Enable)
 		ADC3_4->CCR |= ADC34_CCR_MULTI_1 | ADC34_CCR_MULTI_2;
 }
 //-----------------------------------------------
+
+void ADC_SetContinuousMode(ADC_TypeDef* ADCx)
+{
+	ADCx->CFGR |= ADC_CFGR_CONT;
+}
+//-----------------------------------------------
+
+void ADC_ResetConfig(ADC_TypeDef* ADCx)
+{
+	ADC_SamplingStop(ADCx);
+	ADCx->CR = 0;
+	ADCx->CFGR = 0;
+}
+//-----------------------------------------------

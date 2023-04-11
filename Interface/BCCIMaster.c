@@ -1,4 +1,4 @@
-﻿// ----------------------------------------
+// ----------------------------------------
 // BCCI communication interface
 // ----------------------------------------
 
@@ -73,7 +73,9 @@ void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U Mess
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F_A,	CAN_MASTER_FILTER_ID + CAN_ID_R_F + 1,	6);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F,		CAN_MASTER_FILTER_ID + CAN_ID_W_F,		6);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F_A,	CAN_MASTER_FILTER_ID + CAN_ID_W_F + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F, 	CAN_MASTER_FILTER_ID + CAN_ID_RLIM_F,	4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F,	 	CAN_MASTER_FILTER_ID + CAN_ID_RB_F,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F_A, 	CAN_MASTER_FILTER_ID + CAN_ID_RB_F + 1,	8);
+  Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F, 	CAN_MASTER_FILTER_ID + CAN_ID_RLIM_F,	4);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F_A,	CAN_MASTER_FILTER_ID + CAN_ID_RLIM_F + 1, 6);
 }
 // ----------------------------------------

@@ -24,6 +24,8 @@ bool BHL_Call(uint16_t NodeID, uint16_t Command);
 bool BHL_ReadRegister(uint16_t NodeID, uint16_t Address, uint16_t* Data);
 bool BHL_WriteRegister(uint16_t NodeID, uint16_t Address, uint16_t Data);
 bool BHL_ReadArray16(uint16_t Node, uint16_t Endpoint, uint16_t* Data, uint16_t DataSize, uint16_t* DataRead);
+bool BHL_WriteRegisterFloat(uint16_t NodeID, uint16_t Address, float Data);
+bool BHL_ReadRegisterFloat(uint16_t NodeID, uint16_t Address, float* Data);
 //
 BHLError BHL_GetError();
 void BHL_ResetError();
