@@ -3,7 +3,7 @@
 #include "ZwNCAN.h"
 #include "ZwRCC.h"
 #include "BCCIxParams.h"
-
+#include "Delay.h"
 
 // Types
 //
@@ -174,10 +174,13 @@ void NCAN_SendMessageX(Int16U mBox, pCANMessage Data, Boolean AlterMessageID, Bo
 	CAN1->sTxMailBox[0].TDHR = NCAN_WordSwap(Data->LOW.DWORD_1);
 
 	CAN1->sTxMailBox[0].TIR |= CAN_TI0R_TXRQ;
+
+	uint32_t TxTimeout = 1000;
 	while (!(CAN1->TSR & CAN_TSR_TXOK0))
 	{
-		if(CAN1->TSR & CAN_TSR_TERR0)
+		if(CAN1->TSR & CAN_TSR_TERR0 || TxTimeout-- == 0)
 			break;
+		DELAY_US(1);
 	}
 }
 //-----------------------------------------------
