@@ -3,9 +3,8 @@
 
 // Include
 #include "LabelDescription.h"
-#include "Flash.h"
-#include "ZwSysCtrl.h"
-#include "SySConfig.h"
+#include "ZwIWDG.h"
+#include "ZwNFLASH.h"
 
 // Definitions
 #define LABEL_WRITE_AREA		((LABEL_NAME_MAX_LENGTH >> 1) + 2)
@@ -27,8 +26,8 @@ void FWLB_LoadBoardLabel()
 	{
 		Int16U Symbol = *(pInt16U)(i + LABEL_START_ADDRESS + 2);
 
-		CurrentLabel[i * 2] = (Symbol >> 8 == 0xFF) ? 0 : Symbol >> 8;
-		CurrentLabel[i * 2 + 1] = (Symbol & 0xFF == 0xFF) ? 0 : Symbol & 0xFF;
+		CurrentLabel[i * 2] = ((Symbol >> 8) == 0xFF) ? 0 : Symbol >> 8;
+		CurrentLabel[i * 2 + 1] = ((Symbol & 0xFF) == 0xFF) ? 0 : Symbol & 0xFF;
 	}
 
 	// Определение индекса метки
@@ -66,13 +65,8 @@ void FWLB_WriteBoardLabel(Int16U Index)
 
 	tmp[0] = 0;							// Строковые данные
 	tmp[1] = LABEL_NAME_MAX_LENGTH;		// Длина строки
-	PrgAdrCount = (pInt16U)LABEL_START_ADDRESS;
 
-	ZwSystem_DisableDog();
-	DINT;
-	Status = Flash_Program((pInt16U)PrgAdrCount, tmp, LABEL_WRITE_AREA, (FLASH_ST *)&FlashStatus);
-	EINT;
-	ZwSystem_EnableDog(SYS_WD_PRESCALER);
+	NFLASH_WriteArray16(LABEL_START_ADDRESS, tmp, LABEL_WRITE_AREA);
 }
 // ----------------------------------------
 
