@@ -9,7 +9,6 @@
 #include "CRC16.h"
 #include "SysConfig.h"
 
-
 // Constants
 //
 enum DispID
@@ -35,13 +34,18 @@ enum DispID
 	DISP_RLIM_F			=	18
 };
 
+// Variables
+const Int16U ZeroBuffer[xCCI_BUFFER_SIZE] = {0};
 
 // Forward functions
 //
 void SCCI_DispatchHeader(pSCCI_Interface Interface);
 void SCCI_DispatchBody(pSCCI_Interface Interface, Boolean MaskStateChangeOperations);
 void SCCI_SendErrorFrame(pSCCI_Interface Interface, Int16U ErrorCode, Int16U Details);
+void SCCI_SendErrorFrameEx(pSCCI_Interface Interface, Int16U Node, Int16U ErrorCode, Int16U Details);
 void SCCI_SendResponseFrame(pSCCI_Interface Interface, Int16U FrameSize);
+void SCCI_SendResponseFrameEx(pSCCI_Interface Interface, Int16U Node, Int16U Function, Int16U SubFunction,
+		Int16U FrameSize);
 //
 void SCCI_HandleRead16(pSCCI_Interface Interface);
 void SCCI_HandleReadFloat(pSCCI_Interface Interface);
@@ -53,7 +57,17 @@ void SCCI_HandleWriteBlock16(pSCCI_Interface Interface);
 void SCCI_HandleReadBlockFast16(pSCCI_Interface Interface, Boolean Repeat);
 void SCCI_HandleReadBlockFastFloat(pSCCI_Interface Interface);
 void SCCI_HandleReadLimitFloat(pSCCI_Interface Interface);
-
+//
+void SCCI_AnswerRead16(pSCCI_Interface Interface, Int16U Node, Int16U Address, Int16U Value);
+void SCCI_AnswerReadFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address, float Value);
+void SCCI_AnswerReadLimitFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address, float Value);
+void SCCI_AnswerWriteBlock(pSCCI_Interface Interface, Int16U Node, Int16U Endpoint);
+void SCCI_AnswerWrite16(pSCCI_Interface Interface, Int16U Node, Int16U Address);
+void SCCI_AnswerWriteFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address);
+void SCCI_AnswerCall(pSCCI_Interface Interface, Int16U Node, Int16U Action);
+void SCCI_AnswerError(pSCCI_Interface Interface, Int16U Node, Int16U ErrorCode, Int16U Details);
+void SCCI_AnswerReadBlock16Fast(pSCCI_Interface Interface, Int16U Node, Int16U Endpoint, pInt16U Data, Int16U DataSize);
+void SCCI_AnswerReadBlockFloatFast(pSCCI_Interface Interface, Int16U Node, Int16U Endpoint, float* Data, Int16U DataSize);
 
 // Functions
 //
@@ -166,7 +180,13 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 	Int16U fnc = Interface->MessageBuffer[1] >> 8;
 	Int16U sfunc = fnc & FUNCTION_SCODE_MASK;
 
-	if((Interface->MessageBuffer[0] & 0xFF) == DEVICE_SCCI_ADDRESS)
+#ifdef CAN_BRIDGE
+	const Boolean bridge = TRUE;
+#else
+	const Boolean bridge = FALSE;
+#endif
+
+	if((Interface->MessageBuffer[0] & 0xFF) == DEVICE_SCCI_ADDRESS || bridge)
 	{
 		switch((fnc & FUNCTION_CODE_MASK) >> 3)
 		{
@@ -299,8 +319,7 @@ void SCCI_DispatchBody(pSCCI_Interface Interface, Boolean MaskStateChangeOperati
 	}
 
 	if(MaskStateChangeOperations &&
-	   (Interface->DispID == DISP_W_16 ||
-	    Interface->DispID == DISP_WB_16))
+	   (Interface->DispID == DISP_W_16 || Interface->DispID == DISP_WB_16 || Interface->DispID == DISP_W_F))
 	{
 		SCCI_SendErrorFrame(Interface, ERR_BLOCKED, 0);
 		return;
@@ -347,175 +366,275 @@ void SCCI_DispatchBody(pSCCI_Interface Interface, Boolean MaskStateChangeOperati
 
 void SCCI_HandleRead16(pSCCI_Interface Interface)
 {
+	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U addr = Interface->MessageBuffer[2];
 
-	if(addr >= Interface->DataTableSize)
+	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		if(addr >= Interface->DataTableSize)
+		{
+			SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		}
+		else
+		{
+#ifdef USE_FLOAT_DT
+			Int32S t_data = (Int32S)(((float *)Interface->DataTableAddress)[addr]);
+			Int16U data = (Int16U)((Int16S)t_data);
+#else
+			Int16U data = Interface->DataTableAddress[addr];
+#endif
+			Interface->MessageBuffer[3] = data;
+			SCCI_SendResponseFrame(Interface, 5);
+		}
 	}
+#ifdef CAN_BRIDGE
 	else
 	{
-#ifdef USE_FLOAT_DT
-		Int32S t_data = (Int32S)(((float *)Interface->DataTableAddress)[addr]);
-		Int16U data = (Int16U)((Int16S)t_data);
-#else
-		Int16U data = Interface->DataTableAddress[addr];
-#endif
-		Interface->MessageBuffer[3] = data;
-		SCCI_SendResponseFrame(Interface, 5);
+		Int16U data;
+		Int16U err = BCCIM_Read16(&MASTER_DEVICE_CAN_Interface, node, addr, &data);
+
+		if(err == ERR_NO_ERROR)
+			SCCI_AnswerRead16(Interface, node, addr, data);
+		else
+			SCCI_AnswerError(Interface, node, err, BCCIM_GetSavedErrorDetails());
 	}
+#endif
 }
 // ----------------------------------------
 
 void SCCI_HandleReadFloat(pSCCI_Interface Interface)
 {
+	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U addr = Interface->MessageBuffer[2];
 
-	if(addr >= Interface->DataTableSize)
+	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		if(addr >= Interface->DataTableSize)
+		{
+			SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		}
+		else
+		{
+			Int32U data = ((pInt32U)Interface->DataTableAddress)[addr];
+			Interface->MessageBuffer[3] = data >> 16;
+			Interface->MessageBuffer[4] = data & 0x0000FFFF;
+			SCCI_SendResponseFrame(Interface, 6);
+		}
 	}
+#ifdef CAN_BRIDGE
 	else
 	{
-		Int32U data = ((pInt32U)Interface->DataTableAddress)[addr];
-		Interface->MessageBuffer[3] = data >> 16;
-		Interface->MessageBuffer[4] = data & 0x0000FFFF;
-		SCCI_SendResponseFrame(Interface, 6);
+		float data;
+		Int16U err = BCCIM_ReadFloat(&MASTER_DEVICE_CAN_Interface, node, addr, &data);
+
+		if(err == ERR_NO_ERROR)
+			SCCI_AnswerReadFloat(Interface, node, addr, data);
+		else
+			SCCI_AnswerError(Interface, node, err, BCCIM_GetSavedErrorDetails());
 	}
+#endif
 }
 // ----------------------------------------
 
 void SCCI_HandleReadLimitFloat(pSCCI_Interface Interface)
 {
 	float LowLimit = 0, HighLimit = 0;
+	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U addr = Interface->MessageBuffer[2];
 	Boolean UseHighLimit = Interface->MessageBuffer[3];
 
-	if(addr >= Interface->DataTableSize)
+	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		if(addr >= Interface->DataTableSize)
+		{
+			SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		}
+		else if(Interface->ServiceConfig->ValidateCallbackFloat
+				&& !Interface->ServiceConfig->ValidateCallbackFloat(addr, 0, &LowLimit, &HighLimit))
+		{
+			SCCI_SendErrorFrame(Interface, ERR_VALIDATION, addr);
+		}
+		else
+		{
+			Int32U data = *(pInt32U)(UseHighLimit ? &HighLimit : &LowLimit);
+			Interface->MessageBuffer[3] = data >> 16;
+			Interface->MessageBuffer[4] = data & 0x0000FFFF;
+			SCCI_SendResponseFrame(Interface, 6);
+		}
 	}
-	else if(Interface->ServiceConfig->ValidateCallbackFloat
-			&& !Interface->ServiceConfig->ValidateCallbackFloat(addr, 0, &LowLimit, &HighLimit))
-	{
-		SCCI_SendErrorFrame(Interface, ERR_VALIDATION, addr);
-	}
+#ifdef CAN_BRIDGE
 	else
 	{
-		Int32U data = *(pInt32U)(UseHighLimit ? &HighLimit : &LowLimit);
-		Interface->MessageBuffer[3] = data >> 16;
-		Interface->MessageBuffer[4] = data & 0x0000FFFF;
-		SCCI_SendResponseFrame(Interface, 6);
+		float data;
+		Int16U err = BCCIM_ReadLimitFloat(&MASTER_DEVICE_CAN_Interface, node, addr, UseHighLimit, &data);
+
+		if(err == ERR_NO_ERROR)
+			SCCI_AnswerReadLimitFloat(Interface, node, addr, data);
+		else
+			SCCI_AnswerError(Interface, node, err, BCCIM_GetSavedErrorDetails());
 	}
+#endif
 }
 // ----------------------------------------
 
 void SCCI_HandleWrite16(pSCCI_Interface Interface)
 {
+	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U addr = Interface->MessageBuffer[2];
 	Int16U data = Interface->MessageBuffer[3];
 
-	if(addr >= Interface->DataTableSize)
+	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		if(addr >= Interface->DataTableSize)
+		{
+			SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		}
+		else if(xCCI_InProtectedZone(&Interface->ProtectionAndEndpoints, addr))
+		{
+			SCCI_SendErrorFrame(Interface, ERR_PROTECTED, addr);
+		}
+		else if(Interface->ServiceConfig->ValidateCallback16
+				&& !Interface->ServiceConfig->ValidateCallback16(addr, data))
+		{
+			SCCI_SendErrorFrame(Interface, ERR_VALIDATION, addr);
+		}
+		else
+		{
+#ifdef USE_FLOAT_DT
+			((float *)Interface->DataTableAddress)[addr] = (float)data;
+#else
+			Interface->DataTableAddress[addr] = data;
+#endif
+			SCCI_SendResponseFrame(Interface, 4);
+		}
 	}
-	else if(xCCI_InProtectedZone(&Interface->ProtectionAndEndpoints, addr))
-	{
-		SCCI_SendErrorFrame(Interface, ERR_PROTECTED, addr);
-	}
-	else if(Interface->ServiceConfig->ValidateCallback16
-			&& !Interface->ServiceConfig->ValidateCallback16(addr, data))
-	{
-		SCCI_SendErrorFrame(Interface, ERR_VALIDATION, addr);
-	}
+#ifdef CAN_BRIDGE
 	else
 	{
-#ifdef USE_FLOAT_DT
-		((float *)Interface->DataTableAddress)[addr] = (float)data;
-#else
-		Interface->DataTableAddress[addr] = data;
-#endif
-		SCCI_SendResponseFrame(Interface, 4);
+		Int16U err = BCCIM_Write16(&MASTER_DEVICE_CAN_Interface, node, addr, data);
+
+		if(err == ERR_NO_ERROR)
+			SCCI_AnswerWrite16(Interface, node, addr);
+		else
+			SCCI_AnswerError(Interface, node, err, BCCIM_GetSavedErrorDetails());
 	}
+#endif
 }
 // ----------------------------------------
 
 void SCCI_HandleWriteFloat(pSCCI_Interface Interface)
 {
+	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U addr = Interface->MessageBuffer[2];
 	Int32U t_data = (Int32U)Interface->MessageBuffer[3] << 16 | Interface->MessageBuffer[4];
 	float data = *(float *)&t_data;
 
-	if(addr >= Interface->DataTableSize)
+	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		if(addr >= Interface->DataTableSize)
+		{
+			SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
+		}
+		else if(xCCI_InProtectedZone(&Interface->ProtectionAndEndpoints, addr))
+		{
+			SCCI_SendErrorFrame(Interface, ERR_PROTECTED, addr);
+		}
+		else if(Interface->ServiceConfig->ValidateCallbackFloat
+				&& !Interface->ServiceConfig->ValidateCallbackFloat(addr, data, NULL, NULL))
+		{
+			SCCI_SendErrorFrame(Interface, ERR_VALIDATION, addr);
+		}
+		else
+		{
+			((float *)Interface->DataTableAddress)[addr] = data;
+			SCCI_SendResponseFrame(Interface, 4);
+		}
 	}
-	else if(xCCI_InProtectedZone(&Interface->ProtectionAndEndpoints, addr))
-	{
-		SCCI_SendErrorFrame(Interface, ERR_PROTECTED, addr);
-	}
-	else if(Interface->ServiceConfig->ValidateCallbackFloat
-			&& !Interface->ServiceConfig->ValidateCallbackFloat(addr, data, NULL, NULL))
-	{
-		SCCI_SendErrorFrame(Interface, ERR_VALIDATION, addr);
-	}
+#ifdef CAN_BRIDGE
 	else
 	{
-		((float *)Interface->DataTableAddress)[addr] = data;
-		SCCI_SendResponseFrame(Interface, 4);
+		Int16U err = BCCIM_WriteFloat(&MASTER_DEVICE_CAN_Interface, node, addr, data);
+
+		if(err == ERR_NO_ERROR)
+			SCCI_AnswerWriteFloat(Interface, node, addr);
+		else
+			SCCI_AnswerError(Interface, node, err, BCCIM_GetSavedErrorDetails());
 	}
+#endif
 }
 // ----------------------------------------
 
 void SCCI_HandleReadBlock16(pSCCI_Interface Interface, Boolean Repeat)
 {
-	pInt16U src;
-	Int16U length;
+	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U epnt = Interface->MessageBuffer[2] >> 8;
 
-	if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt])
+	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		length = Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt](epnt, &src, FALSE, Repeat,
-														Interface->ArgForEPCallback, SCCI_BLOCK_MAX_VAL_16_R);
-		MemZero16(&Interface->MessageBuffer[3], SCCI_BLOCK_MAX_VAL_16_R);
-
-		if(!length || (length > SCCI_BLOCK_MAX_VAL_16_R))
+		if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt])
 		{
-			Interface->MessageBuffer[2] &= 0xFF00;
+			pInt16U src;
+			Int16U length = Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt](epnt, &src, FALSE, Repeat,
+															Interface->ArgForEPCallback, SCCI_BLOCK_MAX_VAL_16_R);
+			MemZero16(&Interface->MessageBuffer[3], SCCI_BLOCK_MAX_VAL_16_R);
+
+			if(!length || (length > SCCI_BLOCK_MAX_VAL_16_R))
+			{
+				Interface->MessageBuffer[2] &= 0xFF00;
+			}
+			else
+			{
+				Interface->MessageBuffer[2] = (epnt << 8) | length;
+				MemCopy16(src, &Interface->MessageBuffer[3], length);
+			}
+
+			SCCI_SendResponseFrame(Interface, SCCI_BLOCK_MAX_VAL_16_R + 4);
 		}
 		else
-		{
-			Interface->MessageBuffer[2] = (epnt << 8) | length;
-			MemCopy16(src, &Interface->MessageBuffer[3], length);
-		}
-
-		SCCI_SendResponseFrame(Interface, SCCI_BLOCK_MAX_VAL_16_R + 4);
+			SCCI_SendErrorFrame(Interface, ERR_INVALID_ENDPOINT, epnt);
 	}
+#ifdef CAN_BRIDGE
 	else
-		SCCI_SendErrorFrame(Interface, ERR_INVALID_ENDPOINT, epnt);
+		SCCI_SendErrorFrameEx(Interface, node, ERR_NOT_SUPPORTED, 0);
+#endif
 }
 // ----------------------------------------
 
 void SCCI_HandleWriteBlock16(pSCCI_Interface Interface)
 {
+	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U epnt = Interface->MessageBuffer[2] >> 8;
 	Int16U length = Interface->MessageBuffer[2] & 0xFF;
 
 	if(length <= SCCI_BLOCK_MAX_VAL_16_W)
 	{
-		if((epnt < xCCI_MAX_WRITE_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.WriteEndpoints16[epnt])
+		if(node == DEVICE_SCCI_ADDRESS)
 		{
-			if(Interface->ProtectionAndEndpoints.WriteEndpoints16[epnt](epnt, &Interface->MessageBuffer[3], FALSE,
-																	    length, Interface->ArgForEPCallback))
+			if((epnt < xCCI_MAX_WRITE_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.WriteEndpoints16[epnt])
 			{
-				Interface->MessageBuffer[2] &= 0xFF00;
-				SCCI_SendResponseFrame(Interface, 4);
+				if(Interface->ProtectionAndEndpoints.WriteEndpoints16[epnt](epnt, &Interface->MessageBuffer[3], FALSE,
+																			length, Interface->ArgForEPCallback))
+				{
+					Interface->MessageBuffer[2] &= 0xFF00;
+					SCCI_SendResponseFrame(Interface, 4);
+				}
+				else
+					SCCI_SendErrorFrame(Interface, ERR_TOO_LONG, epnt);
 			}
 			else
-				SCCI_SendErrorFrame(Interface, ERR_TOO_LONG, epnt);
+				SCCI_SendErrorFrame(Interface, ERR_INVALID_ENDPOINT, epnt);
 		}
+#ifdef CAN_BRIDGE
 		else
-			SCCI_SendErrorFrame(Interface, ERR_INVALID_ENDPOINT, epnt);
+		{
+			Int16U err = BCCIM_WriteBlock16(&MASTER_DEVICE_CAN_Interface, node, epnt, &Interface->MessageBuffer[3], length);
+
+			if(err == ERR_NO_ERROR)
+				SCCI_AnswerWriteBlock(Interface, node, epnt);
+			else
+				SCCI_AnswerError(Interface, node, err, BCCIM_GetSavedErrorDetails());
+		}
+#endif
 	}
 	else
 		SCCI_SendErrorFrame(Interface, ERR_ILLEGAL_SIZE, length);
@@ -524,90 +643,132 @@ void SCCI_HandleWriteBlock16(pSCCI_Interface Interface)
 
 void SCCI_HandleReadBlockFast16(pSCCI_Interface Interface, Boolean Repeat)
 {
-	pInt16U src;
-	Int16U length;
+	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U epnt = Interface->MessageBuffer[2] >> 8;
-	Int16U ZeroBuffer[xCCI_BUFFER_SIZE] = {0};
 
-	if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt])
+	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		length = Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt](epnt, &src, TRUE, Repeat,
-																		Interface->ArgForEPCallback, 0);
-		Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
+		if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt])
+		{
+			pInt16U src;
+			Int16U length = Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt](epnt, &src, TRUE, Repeat,
+																			Interface->ArgForEPCallback, 0);
+			Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
 
-		if(!length || (length > xCCI_BLOCK_STM_MAX_VAL))
-			length = 0;
+			if(!length || (length > xCCI_BLOCK_STM_MAX_VAL))
+				length = 0;
 
-		Interface->MessageBuffer[3] = length;
+			Interface->MessageBuffer[3] = length;
 
-		if(SCCI_USE_CRC_IN_STREAM)
-			Interface->MessageBuffer[4] = CRC16_ComputeCRC(src, length);
+			if(SCCI_USE_CRC_IN_STREAM)
+				Interface->MessageBuffer[4] = CRC16_ComputeCRC(src, length);
 
-		SCCI_SendResponseFrame(Interface, 6);
+			SCCI_SendResponseFrame(Interface, 6);
 
-		Interface->IOConfig->IO_SendArray16(src, length);
-		Interface->IOConfig->IO_SendArray16(ZeroBuffer, (8 - length % 8) % 8);
+			Interface->IOConfig->IO_SendArray16(src, length);
+			Interface->IOConfig->IO_SendArray16((pInt16U)ZeroBuffer, (8 - length % 8) % 8);
+		}
+		else
+			SCCI_SendErrorFrame(Interface, ERR_INVALID_ENDPOINT, epnt);
 	}
+#ifdef CAN_BRIDGE
 	else
-		SCCI_SendErrorFrame(Interface, ERR_INVALID_ENDPOINT, epnt);
+	{
+		Int16U err = BCCIM_ReadBlock16(&MASTER_DEVICE_CAN_Interface, node, epnt);
+
+		if(err == ERR_NO_ERROR)
+			SCCI_AnswerReadBlock16Fast(Interface, node, epnt, BCCIM_ReadBlock16Buffer, BCCIM_ReadBlockBufferCounter);
+		else
+			SCCI_AnswerError(Interface, node, err, BCCIM_GetSavedErrorDetails());
+	}
+#endif
 }
 // ----------------------------------------
 
 void SCCI_HandleReadBlockFastFloat(pSCCI_Interface Interface)
 {
-	float* src;
+	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U epnt = Interface->MessageBuffer[2] >> 8;
-	Int16U ZeroBuffer[xCCI_BUFFER_SIZE] = {0};
 
-	if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt])
+	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
+		if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt])
+		{
+			Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
 
-		Int16U length = Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt](epnt, &src,
-				Interface->ArgForEPCallback, 0);
+			float* src;
+			Int16U length = Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt](epnt, &src,
+					Interface->ArgForEPCallback, 0);
 
-		// Process float array as short
-		length *= 2;
-		pInt16U short_src = (pInt16U)src;
+			// Process float array as short
+			length *= 2;
+			pInt16U short_src = (pInt16U)src;
 
-		if(length > xCCI_BLOCK_STM_MAX_VAL)
-			length = 0;
-		Interface->MessageBuffer[3] = length;
+			if(length > xCCI_BLOCK_STM_MAX_VAL)
+				length = 0;
+			Interface->MessageBuffer[3] = length;
 
-		if(SCCI_USE_CRC_IN_STREAM)
-			Interface->MessageBuffer[4] = CRC16_ComputeCRC(short_src, length);
+			if(SCCI_USE_CRC_IN_STREAM)
+				Interface->MessageBuffer[4] = CRC16_ComputeCRC(short_src, length);
 
-		SCCI_SendResponseFrame(Interface, 6);
+			SCCI_SendResponseFrame(Interface, 6);
 
-		Interface->IOConfig->IO_SendArray16(short_src, length);
-		Interface->IOConfig->IO_SendArray16(ZeroBuffer, (8 - length % 8) % 8);
+			Interface->IOConfig->IO_SendArray16(short_src, length);
+			Interface->IOConfig->IO_SendArray16((pInt16U)ZeroBuffer, (8 - length % 8) % 8);
+		}
+		else
+			SCCI_SendErrorFrame(Interface, ERR_INVALID_ENDPOINT, epnt);
 	}
+#ifdef CAN_BRIDGE
 	else
-		SCCI_SendErrorFrame(Interface, ERR_INVALID_ENDPOINT, epnt);
+	{
+		Int16U err = BCCIM_ReadBlockFloat(&MASTER_DEVICE_CAN_Interface, node, epnt);
+
+		if(err == ERR_NO_ERROR)
+			SCCI_AnswerReadBlockFloatFast(Interface, node, epnt, BCCIM_ReadBlockFloatBuffer, BCCIM_ReadBlockBufferCounter);
+		else
+			SCCI_AnswerError(Interface, node, err, BCCIM_GetSavedErrorDetails());
+	}
+#endif
 }
 // ----------------------------------------
 
 void SCCI_HandleCall(pSCCI_Interface Interface)
 {
+	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U action = Interface->MessageBuffer[2];
 
-	if(Interface->ServiceConfig->UserActionCallback != NULL)
+	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		Int16U userError = 0;
+		if(Interface->ServiceConfig->UserActionCallback != NULL)
+		{
+			Int16U userError = 0;
 
-		if(!Interface->ServiceConfig->UserActionCallback(action, &userError))
-		{
-			SCCI_SendErrorFrame(Interface, ERR_INVALID_ACTION, action);
-		}
-		else if(userError != 0)
-		{
-			SCCI_SendErrorFrame(Interface, ERR_USER, userError);
+			if(!Interface->ServiceConfig->UserActionCallback(action, &userError))
+			{
+				SCCI_SendErrorFrame(Interface, ERR_INVALID_ACTION, action);
+			}
+			else if(userError != 0)
+			{
+				SCCI_SendErrorFrame(Interface, ERR_USER, userError);
+			}
+			else
+				SCCI_SendResponseFrame(Interface, 4);
 		}
 		else
-			SCCI_SendResponseFrame(Interface, 4);
+			SCCI_SendErrorFrame(Interface, ERR_INVALID_ACTION, action);
 	}
+#ifdef CAN_BRIDGE
 	else
-		SCCI_SendErrorFrame(Interface, ERR_INVALID_ACTION, action);
+	{
+		Int16U err = BCCIM_Call(&MASTER_DEVICE_CAN_Interface, node, action);
+
+		if(err == ERR_NO_ERROR)
+			SCCI_AnswerCall(Interface, node, action);
+		else
+			SCCI_AnswerError(Interface, node, err, BCCIM_GetSavedErrorDetails());
+	}
+#endif
 }
 // ----------------------------------------
 
@@ -619,20 +780,39 @@ void SCCI_SendResponseFrame(pSCCI_Interface Interface, Int16U FrameSize)
 	Interface->MessageBuffer[1] |= RESPONSE_MASK << 8;
 	Interface->MessageBuffer[FrameSize - 1] = CRC16_ComputeCRC(Interface->MessageBuffer, FrameSize - 1);
 
-	Interface->IOConfig->IO_SendArray16(Interface->MessageBuffer, FrameSize); 
+	Interface->IOConfig->IO_SendArray16(Interface->MessageBuffer, FrameSize);
+}
+// ----------------------------------------
+
+void SCCI_SendResponseFrameEx(pSCCI_Interface Interface, Int16U Node, Int16U Function, Int16U SubFunction,
+		Int16U FrameSize)
+{
+	Interface->State = SCCI_STATE_WAIT_HEADER;
+
+	Interface->MessageBuffer[0] = (START_BYTE << 8) | Node;
+	Interface->MessageBuffer[1] = (RESPONSE_MASK | (Function << 3) | SubFunction) << 8;
+	Interface->MessageBuffer[FrameSize - 1] = CRC16_ComputeCRC(Interface->MessageBuffer, FrameSize - 1);
+
+	Interface->IOConfig->IO_SendArray16(Interface->MessageBuffer, FrameSize);
 }
 // ----------------------------------------
 
 void SCCI_SendErrorFrame(pSCCI_Interface Interface, Int16U ErrorCode, Int16U Details)
 {
+	SCCI_SendErrorFrameEx(Interface, DEVICE_SCCI_ADDRESS, ErrorCode, Details);
+}
+// ----------------------------------------
+
+void SCCI_SendErrorFrameEx(pSCCI_Interface Interface, Int16U Node, Int16U ErrorCode, Int16U Details)
+{
 	Interface->State = SCCI_STATE_WAIT_HEADER;
 
-	Interface->MessageBuffer[0] = (START_BYTE << 8) | DEVICE_SCCI_ADDRESS;
+	Interface->MessageBuffer[0] = (START_BYTE << 8) | Node;
 	Interface->MessageBuffer[1] = (RESPONSE_MASK | (FUNCTION_ERROR << 3)) << 8;
 	Interface->MessageBuffer[2] = ErrorCode;
 	Interface->MessageBuffer[3] = Details;
 	Interface->MessageBuffer[4] = CRC16_ComputeCRC(Interface->MessageBuffer, 4);
-	
+
 	Interface->IOConfig->IO_SendArray16(Interface->MessageBuffer, 5);
 }
 // ----------------------------------------
@@ -656,3 +836,113 @@ void MemCopy16(uint16_t *Source, uint16_t *Destination, uint16_t Length)
 	}
 }
 //-----------------------------------------
+
+void SCCI_AnswerRead16(pSCCI_Interface Interface, Int16U Node, Int16U Address, Int16U Value)
+{
+	Interface->MessageBuffer[2] = Address;
+	Interface->MessageBuffer[3] = Value;
+
+	SCCI_SendResponseFrameEx(Interface, Node, FUNCTION_READ, SFUNC_16, 5);
+}
+//-----------------------------------------
+
+void SCCI_AnswerReadFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address, float Value)
+{
+	Int32U data = *(pInt32U)(&Value);
+	Interface->MessageBuffer[2] = Address;
+	Interface->MessageBuffer[3] = data >> 16;
+	Interface->MessageBuffer[4] = data & 0x0000FFFF;
+
+	SCCI_SendResponseFrameEx(Interface, Node, FUNCTION_READ, SFUNC_FLOAT, 6);
+}
+//-----------------------------------------
+
+void SCCI_AnswerReadLimitFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address, float Value)
+{
+	Int32U data = *(pInt32U)(&Value);
+	Interface->MessageBuffer[2] = Address;
+	Interface->MessageBuffer[3] = data >> 16;
+	Interface->MessageBuffer[4] = data & 0x0000FFFF;
+
+	SCCI_SendResponseFrameEx(Interface, Node, FUNCTION_GET_LIMIT, SFUNC_FLOAT, 6);
+}
+//-----------------------------------------
+
+void SCCI_AnswerWrite16(pSCCI_Interface Interface, Int16U Node, Int16U Address)
+{
+	Interface->MessageBuffer[2] = Address;
+
+	SCCI_SendResponseFrameEx(Interface, Node, FUNCTION_WRITE, SFUNC_16, 4);
+}
+//-----------------------------------------
+
+void SCCI_AnswerWriteBlock(pSCCI_Interface Interface, Int16U Node, Int16U Endpoint)
+{
+	Interface->MessageBuffer[2] = Endpoint;
+
+	SCCI_SendResponseFrameEx(Interface, Node, FUNCTION_WRITE_BLOCK, SFUNC_16, 4);
+}
+//-----------------------------------------
+
+void SCCI_AnswerWriteFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address)
+{
+	Interface->MessageBuffer[2] = Address;
+
+	SCCI_SendResponseFrameEx(Interface, Node, FUNCTION_WRITE, SFUNC_FLOAT, 4);
+}
+//-----------------------------------------
+
+void SCCI_AnswerCall(pSCCI_Interface Interface, Int16U Node, Int16U Action)
+{
+	Interface->MessageBuffer[2] = Action;
+
+	SCCI_SendResponseFrameEx(Interface, Node, FUNCTION_CALL, SFUNC_NONE, 4);
+}
+//-----------------------------------------
+
+void SCCI_AnswerError(pSCCI_Interface Interface, Int16U Node, Int16U ErrorCode, Int16U Details)
+{
+	SCCI_SendErrorFrameEx(Interface, Node, ErrorCode, Details);
+}
+// ----------------------------------------
+
+void SCCI_AnswerReadBlock16Fast(pSCCI_Interface Interface, Int16U Node, Int16U Endpoint, pInt16U Data, Int16U DataSize)
+{
+	Interface->MessageBuffer[2] = (Endpoint << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
+
+	if(DataSize > xCCI_BLOCK_STM_MAX_VAL)
+		DataSize = 0;
+
+	Interface->MessageBuffer[3] = DataSize;
+
+	if(SCCI_USE_CRC_IN_STREAM)
+		Interface->MessageBuffer[4] = CRC16_ComputeCRC(Data, DataSize);
+
+	SCCI_SendResponseFrameEx(Interface, Node, FUNCTION_FAST_READ_BLK, SFUNC_16, 6);
+
+	Interface->IOConfig->IO_SendArray16(Data, DataSize);
+	Interface->IOConfig->IO_SendArray16((pInt16U)ZeroBuffer, (8 - DataSize % 8) % 8);
+}
+// ----------------------------------------
+
+void SCCI_AnswerReadBlockFloatFast(pSCCI_Interface Interface, Int16U Node, Int16U Endpoint, float* Data, Int16U DataSize)
+{
+	Interface->MessageBuffer[2] = (Endpoint << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
+
+	DataSize *= 2;
+	pInt16U ShortData = (pInt16U)Data;
+
+	if(DataSize > xCCI_BLOCK_STM_MAX_VAL)
+		DataSize = 0;
+
+	Interface->MessageBuffer[3] = DataSize;
+
+	if(SCCI_USE_CRC_IN_STREAM)
+		Interface->MessageBuffer[4] = CRC16_ComputeCRC(ShortData, DataSize);
+
+	SCCI_SendResponseFrameEx(Interface, Node, FUNCTION_FAST_READ_BLK, SFUNC_FLOAT, 6);
+
+	Interface->IOConfig->IO_SendArray16(ShortData, DataSize);
+	Interface->IOConfig->IO_SendArray16((pInt16U)ZeroBuffer, (8 - DataSize % 8) % 8);
+}
+// ----------------------------------------
