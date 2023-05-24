@@ -60,11 +60,17 @@ void BCCI_HandleWriteBlock16(pBCCI_Interface Interface);
 void BCCI_Init(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxCCI_ServiceConfig ServiceConfig, pInt16U DataTable,
 		Int16U DataTableSize, void *ArgumentForCallback)
 {
-	Int16U i;
-	
+	BCCI_InitWithNodeID(Interface, IOConfig, ServiceConfig, DataTable, DataTableSize, ArgumentForCallback, CAN_NID);
+}
+// ----------------------------------------
+
+void BCCI_InitWithNodeID(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxCCI_ServiceConfig ServiceConfig,
+		pInt16U DataTable, Int16U DataTableSize, void *ArgumentForCallback, Int16U NodeID)
+{
 	// Reset fields
 	Interface->ProtectionAndEndpoints.ProtectedAreasUsed = 0;
 	
+	Int16U i;
 	for(i = 0; i < (xCCI_MAX_READ_ENDPOINTS + 1); ++i)
 		Interface->ProtectionAndEndpoints.ReadEndpoints16[i] = NULL;
 	
@@ -79,26 +85,27 @@ void BCCI_Init(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxCCI_Service
 	Interface->ArgForEPCallback = ArgumentForCallback;
 	
 	// Setup messages
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_16,		CAN_SLAVE_FILTER_ID + CAN_ID_W_16,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_16_A,	CAN_SLAVE_FILTER_ID + CAN_ID_W_16 + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_16, 		CAN_SLAVE_FILTER_ID + CAN_ID_R_16,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_16_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_R_16 + 1,	4);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_C, 		CAN_SLAVE_FILTER_ID + CAN_ID_CALL,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_C_A, 		CAN_SLAVE_FILTER_ID + CAN_ID_CALL + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_ERR_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_ERR,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_WB_16, 	CAN_SLAVE_FILTER_ID + CAN_ID_WB_16,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_WB_16_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_WB_16 + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16, 	CAN_SLAVE_FILTER_ID + CAN_ID_RB_16,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_RB_16 + 1,	8);
+	Int32U SlaveFilterID = (Int32U)NodeID << CAN_SLAVE_NID_MPY;
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_16,		SlaveFilterID + CAN_ID_W_16,		4);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_16_A,	SlaveFilterID + CAN_ID_W_16 + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_16, 		SlaveFilterID + CAN_ID_R_16,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_16_A, 	SlaveFilterID + CAN_ID_R_16 + 1,	4);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_C, 		SlaveFilterID + CAN_ID_CALL,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_C_A, 		SlaveFilterID + CAN_ID_CALL + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_ERR_A, 	SlaveFilterID + CAN_ID_ERR,			4);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_WB_16, 	SlaveFilterID + CAN_ID_WB_16,		4);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_WB_16_A, 	SlaveFilterID + CAN_ID_WB_16 + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16, 	SlaveFilterID + CAN_ID_RB_16,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16_A, 	SlaveFilterID + CAN_ID_RB_16 + 1,	8);
 #ifdef USE_FLOAT_DT
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F,		CAN_SLAVE_FILTER_ID + CAN_ID_W_F,		6);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F_A,		CAN_SLAVE_FILTER_ID + CAN_ID_W_F + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F, 		CAN_SLAVE_FILTER_ID + CAN_ID_R_F,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_R_F + 1,	6);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_F,	 	CAN_SLAVE_FILTER_ID + CAN_ID_RB_F,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_F_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_RB_F + 1,	8);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F, 	CAN_SLAVE_FILTER_ID + CAN_ID_RLIM_F,	4);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F_A, 	CAN_SLAVE_FILTER_ID + CAN_ID_RLIM_F + 1, 6);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F,		SlaveFilterID + CAN_ID_W_F,			6);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F_A,		SlaveFilterID + CAN_ID_W_F + 1,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F, 		SlaveFilterID + CAN_ID_R_F,			2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F_A, 	SlaveFilterID + CAN_ID_R_F + 1,		6);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_F,	 	SlaveFilterID + CAN_ID_RB_F,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_F_A, 	SlaveFilterID + CAN_ID_RB_F + 1,	8);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F, 	SlaveFilterID + CAN_ID_RLIM_F,		4);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F_A, 	SlaveFilterID + CAN_ID_RLIM_F + 1, 	6);
 #endif
 }
 // ----------------------------------------
