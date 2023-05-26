@@ -126,7 +126,7 @@ bool ZwSCI_RecieveCheck(USART_TypeDef* USARTx)
 
 void ZwSCI_RecieveFlagClear(USART_TypeDef* USARTx)
 {
-	USARTx->ISR &= ~USART_ISR_RXNE;
+	USARTx->RQR |= USART_RQR_RXFRQ;
 }
 //-----------------------------------------
 
