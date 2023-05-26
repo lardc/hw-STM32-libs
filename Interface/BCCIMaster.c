@@ -53,7 +53,13 @@ static Int16U SavedErrorDetails = 0;
 void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks,
 		volatile Int64U *pTimer)
 {
-	BCCIM_InitWithNodeID(Interface, IOConfig, MessageTimeoutTicks, pTimer, CAN_NID);
+#ifdef CAN_NID
+	const Int16U NodeID = CAN_NID;
+#else
+	const Int16U NodeID = CAN_MASTER_NID;
+#endif
+
+	BCCIM_InitWithNodeID(Interface, IOConfig, MessageTimeoutTicks, pTimer, NodeID);
 }
 // ----------------------------------------
 
