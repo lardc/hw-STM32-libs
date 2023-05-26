@@ -50,7 +50,15 @@ static Int16U ReadBlockSavedEndpoint, ReadBlockSavedNode;
 static Int16U SavedErrorDetails = 0;
 
 // Functions
-void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks, volatile Int64U *pTimer)
+void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks,
+		volatile Int64U *pTimer)
+{
+	BCCIM_InitWithNodeID(Interface, IOConfig, MessageTimeoutTicks, pTimer, CAN_NID);
+}
+// ----------------------------------------
+
+void BCCIM_InitWithNodeID(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks,
+		volatile Int64U *pTimer, Int16U NodeID)
 {
 	// Save parameters
 	Interface->IOConfig = IOConfig;
@@ -58,25 +66,26 @@ void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U Mess
 	Interface->pTimerCounter = pTimer;
 
 	// Setup messages
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16,		CAN_MASTER_FILTER_ID + CAN_ID_R_16,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16_A,	CAN_MASTER_FILTER_ID + CAN_ID_R_16 + 1,	4);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16,		CAN_MASTER_FILTER_ID + CAN_ID_W_16,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16_A,	CAN_MASTER_FILTER_ID + CAN_ID_W_16 + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C,		CAN_MASTER_FILTER_ID + CAN_ID_CALL,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C_A,		CAN_MASTER_FILTER_ID + CAN_ID_CALL + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_ERR_A,	CAN_MASTER_FILTER_ID + CAN_ID_ERR,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16,	CAN_MASTER_FILTER_ID + CAN_ID_RB_16,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16_A,	CAN_MASTER_FILTER_ID + CAN_ID_RB_16 + 1,8);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_WB_16,	CAN_MASTER_FILTER_ID + CAN_ID_WB_16,	4);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_WB_16_A,	CAN_MASTER_FILTER_ID + CAN_ID_WB_16 + 1,2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F,		CAN_MASTER_FILTER_ID + CAN_ID_R_F,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F_A,	CAN_MASTER_FILTER_ID + CAN_ID_R_F + 1,	6);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F,		CAN_MASTER_FILTER_ID + CAN_ID_W_F,		6);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F_A,	CAN_MASTER_FILTER_ID + CAN_ID_W_F + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F,	 	CAN_MASTER_FILTER_ID + CAN_ID_RB_F,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F_A, 	CAN_MASTER_FILTER_ID + CAN_ID_RB_F + 1,	8);
-  Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F, 	CAN_MASTER_FILTER_ID + CAN_ID_RLIM_F,	4);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F_A,	CAN_MASTER_FILTER_ID + CAN_ID_RLIM_F + 1, 6);
+	Int32U MasterFilterID = (Int32U)NodeID << CAN_MASTER_NID_MPY;
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16,		MasterFilterID + CAN_ID_R_16,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16_A,	MasterFilterID + CAN_ID_R_16 + 1,	4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16,		MasterFilterID + CAN_ID_W_16,		4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16_A,	MasterFilterID + CAN_ID_W_16 + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C,		MasterFilterID + CAN_ID_CALL,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C_A,		MasterFilterID + CAN_ID_CALL + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_ERR_A,	MasterFilterID + CAN_ID_ERR,		4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16,	MasterFilterID + CAN_ID_RB_16,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16_A,	MasterFilterID + CAN_ID_RB_16 + 1,	8);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_WB_16,	MasterFilterID + CAN_ID_WB_16,		4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_WB_16_A,	MasterFilterID + CAN_ID_WB_16 + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F,		MasterFilterID + CAN_ID_R_F,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F_A,	MasterFilterID + CAN_ID_R_F + 1,	6);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F,		MasterFilterID + CAN_ID_W_F,		6);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F_A,	MasterFilterID + CAN_ID_W_F + 1,	2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F,	 	MasterFilterID + CAN_ID_RB_F,		2);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F_A, 	MasterFilterID + CAN_ID_RB_F + 1,	8);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F, 	MasterFilterID + CAN_ID_RLIM_F,		4);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F_A,	MasterFilterID + CAN_ID_RLIM_F + 1, 6);
 }
 // ----------------------------------------
 

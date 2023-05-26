@@ -1,4 +1,4 @@
-﻿// -----------------------------------------
+﻿// ----------------------------------------
 // BCCI-Slave communication interface
 // ----------------------------------------
 
@@ -16,6 +16,8 @@
 // Init interface instance
 void BCCI_Init(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxCCI_ServiceConfig ServiceConfig,
  			   pInt16U DataTable, Int16U DataTableSize, void *ArgumentForCallback);
+void BCCI_InitWithNodeID(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxCCI_ServiceConfig ServiceConfig,
+		pInt16U DataTable, Int16U DataTableSize, void *ArgumentForCallback, Int16U NodeID);
 // Process packets
 void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations);
 
