@@ -229,8 +229,7 @@ void ADC_Disable(ADC_TypeDef* ADCx)
 {
 	if (ADCx->CR & ADC_CR_ADEN)
 	{
-		// Ожидание окончания текущей операции
-		ADC_WaitEndOfOperation(ADCx);
+		ADC_SamplingStop(ADCx);
 
 		ADCx->CR |= ADC_CR_ADDIS;
 		while (ADCx->CR & ADC_CR_ADDIS);
