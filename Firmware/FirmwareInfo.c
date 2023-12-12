@@ -1,6 +1,9 @@
 ﻿// Header
 #include "FirmwareInfo.h"
 
+// Include
+#include "DataTable.h"
+
 // Definitions
 #define COMMIT_LEN		7
 #define DATE_LEN		19
@@ -44,9 +47,17 @@ Int16U FWINF_Compose(pInt16U DataTable, Int16U MaxLength)
 
 void FWINF_AppendSymbol(pInt16U DataTable, Int16U Symbol, Int16U Counter)
 {
+#ifdef USE_FLOAT_DT
+	pFloat32 pDataTable = (pFloat32)DataTable;
+#elif
+	pInt16U pDataTable = DataTable;
+#endif
 	if(Counter % 2)
-		*(DataTable + Counter / 2) |= Symbol & 0xFF;
+	{
+		Int16U sym = *(pDataTable + Counter / 2);
+		*(pDataTable + Counter / 2) = sym | (Symbol & 0xFF);
+	}
 	else
-		*(DataTable + Counter / 2) = Symbol << 8;
+		*(pDataTable + Counter / 2) = Symbol << 8;
 }
 // ----------------------------------------
