@@ -49,7 +49,7 @@ void FWINF_AppendSymbol(pInt16U DataTable, Int16U Symbol, Int16U Counter)
 {
 #ifdef USE_FLOAT_DT
 	pFloat32 pDataTable = (pFloat32)DataTable;
-#elif
+#else
 	pInt16U pDataTable = DataTable;
 #endif
 	if(Counter % 2)
