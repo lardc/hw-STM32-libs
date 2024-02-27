@@ -20,6 +20,7 @@ void SPI_WriteByte8b(SPI_TypeDef* SPIx, uint8_t Data);
 uint16_t SPI_ReadByte(SPI_TypeDef* SPIx);
 void SPI_InvertClockPolarity(SPI_TypeDef* SPIx, bool Invert);
 void SPI_Enable(SPI_TypeDef* SPIx, bool Enable);
+uint16_t SPI_ReadByte8b(SPI_TypeDef* SPIx);
 
 //######################### Устаревшие функции #################################
 typedef enum __SPI_SuncPolarity

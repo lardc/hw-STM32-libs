@@ -71,6 +71,23 @@ void SPI_WriteByte8b(SPI_TypeDef* SPIx, uint8_t Data)
 }
 //-----------------------------------------------
 
+uint16_t SPI_ReadByte8b(SPI_TypeDef* SPIx)
+{
+	while (SPIx->SR & SPI_SR_BSY);
+	*(uint8_t *)(&SPIx->DR) = 0;
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	while (SPIx->SR & SPI_SR_BSY);
+	while (!(SPIx->SR & SPI_SR_RXNE));
+
+	return SPIx->DR;
+}
+//-----------------------------------------------
+
 uint16_t SPI_ReadByte(SPI_TypeDef* SPIx)
 {
 	while (SPIx->SR & SPI_SR_BSY);
