@@ -10,6 +10,7 @@
 #include "CRC16.h"
 #include "SysConfig.h"
 #include "DeviceProfile.h"
+#include "ZwIWDG.h"
 
 // Definitions
 #define Master_MBOX_W_16			0
@@ -434,6 +435,8 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 		}
 		else if (Interface->IOConfig->IO_IsMessageReceived(Mailbox, NULL))
 			return ERR_NO_ERROR;
+
+		IWDG_Refresh();
 	}
 
 	return ERR_TIMEOUT;
