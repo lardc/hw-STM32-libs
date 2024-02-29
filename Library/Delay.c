@@ -28,7 +28,9 @@ void __attribute__((optimize("O3"))) DELAY_MS(uint32_t Delay)
 	while(Delay--)
 	{
 		DELAY_US(1000);
-		IWDG_Refresh();
+
+		if(BOOT_LOADER_VARIABLE != BOOT_LOADER_REQUEST)
+			IWDG_Refresh();
 	}
 }
 //-----------------------------------------------
