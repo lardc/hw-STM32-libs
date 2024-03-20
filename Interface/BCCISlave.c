@@ -9,6 +9,7 @@
 #include "BCCIxParams.h"
 #include "CRC16.h"
 #include "SysConfig.h"
+#include <string.h>
 
 // Definitions
 typedef void (*xProcessFunction)(pBCCI_Interface Interface);
@@ -275,7 +276,8 @@ void BCCI_HandleWriteFloat(pBCCI_Interface Interface)
 
 	Int16U addr = CANInput.HIGH.WORD.WORD_0;
 	Int32U t_data = (Int32U)CANInput.HIGH.WORD.WORD_1 << 16 | CANInput.LOW.WORD.WORD_2;
-	float data = *(float *)&t_data;
+	float data;
+	memcpy(&data, &t_data, sizeof(float));
 
 	if(addr >= Interface->DataTableSize)
 	{

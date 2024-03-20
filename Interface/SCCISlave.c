@@ -8,6 +8,7 @@
 // Includes
 #include "CRC16.h"
 #include "SysConfig.h"
+#include <string.h>
 
 // Constants
 //
@@ -527,7 +528,8 @@ void SCCI_HandleWriteFloat(pSCCI_Interface Interface)
 	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U addr = Interface->MessageBuffer[2];
 	Int32U t_data = (Int32U)Interface->MessageBuffer[3] << 16 | Interface->MessageBuffer[4];
-	float data = *(float *)&t_data;
+	float data;
+	memcpy(&data, &t_data, sizeof(float));
 
 	if(node == DEVICE_SCCI_ADDRESS)
 	{
@@ -848,7 +850,8 @@ void SCCI_AnswerRead16(pSCCI_Interface Interface, Int16U Node, Int16U Address, I
 
 void SCCI_AnswerReadFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address, float Value)
 {
-	Int32U data = *(pInt32U)(&Value);
+	Int32U data;
+	memcpy(&data, &Value, sizeof(float));
 	Interface->MessageBuffer[2] = Address;
 	Interface->MessageBuffer[3] = data >> 16;
 	Interface->MessageBuffer[4] = data & 0x0000FFFF;
@@ -859,7 +862,8 @@ void SCCI_AnswerReadFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address
 
 void SCCI_AnswerReadLimitFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address, float Value)
 {
-	Int32U data = *(pInt32U)(&Value);
+	Int32U data;
+	memcpy(&data, &Value, sizeof(float));
 	Interface->MessageBuffer[2] = Address;
 	Interface->MessageBuffer[3] = data >> 16;
 	Interface->MessageBuffer[4] = data & 0x0000FFFF;
