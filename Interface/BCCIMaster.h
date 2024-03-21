@@ -1,6 +1,6 @@
 ﻿/** 
  * @file BCCIMaster.h
- * @briefBCCI master communication interface
+ * @brief BCCI master communication interface
 */
 
 #ifndef __BCCI_MASTER_H
