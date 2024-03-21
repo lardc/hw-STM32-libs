@@ -23,12 +23,21 @@ extern float	BCCIM_ReadBlockFloatBuffer[];
 /** BCCI instance state */
 typedef struct __BCCIM_Interface
 {
-	pBCCI_IOConfig IOConfig;
-	Int32U TimeoutValueTicks;
-	volatile Int64U *pTimerCounter;
+	pBCCI_IOConfig IOConfig;			///< Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+	Int32U TimeoutValueTicks;			///< Величина таймаута при обмене сообщениями по CAN, в миллисекундах
+	volatile Int64U *pTimerCounter;		///< Указатель на системный таймер, в миллисекундах
 } BCCIM_Interface, *pBCCIM_Interface;
 
 // Functions
+
+/** 
+ * @fn void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks, volatile Int64U *pTimer)
+ * @brief Инициализация BCCI интерфейса - сетап Mailbox для записи и чтения, запись Mailbox в IOConfig.
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @param IOConfig - Указатель на структуру, содержащую функции обратного вызова. Эти функции передаются в интерфейс.
+ * @param MessageTimeoutTicks - Величина таймаута при обмене сообщениями по CAN, в миллисекундах
+ * @param pTimer - Указатель на системный таймер, в миллисекундах
+*/
 void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks, volatile Int64U *pTimer);
 void BCCIM_InitWithNodeID(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks,
 		volatile Int64U *pTimer, Int16U NodeID);

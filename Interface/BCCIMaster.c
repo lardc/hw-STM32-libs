@@ -1,6 +1,7 @@
-// ----------------------------------------
-// BCCI communication interface
-// ----------------------------------------
+/**
+ * @file BCCIMaster.c
+ * @brief BCCI communication interface
+*/
 
 // Header
 #include "BCCIMaster.h"
