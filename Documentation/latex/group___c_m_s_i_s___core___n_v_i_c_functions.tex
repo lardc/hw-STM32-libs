@@ -1,0 +1,1479 @@
+\doxysubsubsubsubsubsubsubsubsection{NVIC Functions}
+\hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions}{}\label{group___c_m_s_i_s___core___n_v_i_c_functions}\index{NVIC Functions@{NVIC Functions}}
+
+
+Functions that manage interrupts and exceptions via the NVIC.  
+
+
+\doxysubsubsubsubsubsubsubsubsubsubsection*{Topics}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{group___c_m_s_i_s___core___sys_tick_functions}{Sys\+Tick Functions}}
+\begin{DoxyCompactList}\small\item\em Functions that configure the System. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactItemize}
+\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_ga3349f2e3580d7ce22d6530b7294e5921}{NVIC\+\_\+\+Enable\+IRQ}} (\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}} IRQn)
+\begin{DoxyCompactList}\small\item\em Enable External Interrupt. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_ga260fba04ac8346855c57f091d4ee1e71}{NVIC\+\_\+\+Disable\+IRQ}} (\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}} IRQn)
+\begin{DoxyCompactList}\small\item\em Disable External Interrupt. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_gafec8042db64c0f8ed432b6c8386a05d8}{NVIC\+\_\+\+Get\+Pending\+IRQ}} (\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}} IRQn)
+\begin{DoxyCompactList}\small\item\em Get Pending Interrupt. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_ga3ecf446519da33e1690deffbf5be505f}{NVIC\+\_\+\+Set\+Pending\+IRQ}} (\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}} IRQn)
+\begin{DoxyCompactList}\small\item\em Set Pending Interrupt. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_ga332e10ef9605dc6eb10b9e14511930f8}{NVIC\+\_\+\+Clear\+Pending\+IRQ}} (\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}} IRQn)
+\begin{DoxyCompactList}\small\item\em Clear Pending Interrupt. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_ga2305cbd44aaad792e3a4e538bdaf14f9}{NVIC\+\_\+\+Set\+Priority}} (\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}} IRQn, uint32\+\_\+t priority)
+\begin{DoxyCompactList}\small\item\em Set Interrupt Priority. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_ga1cbaf8e6abd4aa4885828e7f24fcfeb4}{NVIC\+\_\+\+Get\+Priority}} (\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}} IRQn)
+\begin{DoxyCompactList}\small\item\em Get Interrupt Priority. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_ga1143dec48d60a3d6f238c4798a87759c}{NVIC\+\_\+\+System\+Reset}} (void)
+\begin{DoxyCompactList}\small\item\em System Reset. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_gae4e8f0238527c69f522029b93c8e5b78}{Sys\+Tick\+\_\+\+Config}} (uint32\+\_\+t ticks)
+\begin{DoxyCompactList}\small\item\em System Tick Configuration. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\begin{DoxyCompactItemize}
+\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_ga77cfbb35a9d8027e392034321bed6904}{NVIC\+\_\+\+Set\+Priority\+Grouping}} (uint32\+\_\+t Priority\+Group)
+\begin{DoxyCompactList}\small\item\em Set Priority Grouping. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_ga394f7ce2ca826c0da26284d17ac6524d}{NVIC\+\_\+\+Get\+Priority\+Grouping}} (void)
+\begin{DoxyCompactList}\small\item\em Get Priority Grouping. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_ga47a0f52794068d076c9147aa3cb8d8a6}{NVIC\+\_\+\+Get\+Active}} (\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}} IRQn)
+\begin{DoxyCompactList}\small\item\em Get Active Interrupt. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_gadb94ac5d892b376e4f3555ae0418ebac}{NVIC\+\_\+\+Encode\+Priority}} (uint32\+\_\+t Priority\+Group, uint32\+\_\+t Preempt\+Priority, uint32\+\_\+t Sub\+Priority)
+\begin{DoxyCompactList}\small\item\em Encode Priority. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void \mbox{\hyperlink{group___c_m_s_i_s___core___n_v_i_c_functions_ga4f23ef94633f75d3c97670a53949003c}{NVIC\+\_\+\+Decode\+Priority}} (uint32\+\_\+t Priority, uint32\+\_\+t Priority\+Group, uint32\+\_\+t \texorpdfstring{$\ast$}{*}p\+Preempt\+Priority, uint32\+\_\+t \texorpdfstring{$\ast$}{*}p\+Sub\+Priority)
+\begin{DoxyCompactList}\small\item\em Decode Priority. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t \mbox{\hyperlink{group___c_m_s_i_s__core___debug_functions_gac90a497bd64286b84552c2c553d3419e}{ITM\+\_\+\+Send\+Char}} (uint32\+\_\+t ch)
+\begin{DoxyCompactList}\small\item\em ITM Send Character. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE int32\+\_\+t \mbox{\hyperlink{group___c_m_s_i_s__core___debug_functions_gac3ee2c30a1ac4ed34c8a866a17decd53}{ITM\+\_\+\+Receive\+Char}} (void)
+\begin{DoxyCompactList}\small\item\em ITM Receive Character. \end{DoxyCompactList}\item 
+\+\_\+\+\_\+\+STATIC\+\_\+\+INLINE int32\+\_\+t \mbox{\hyperlink{group___c_m_s_i_s__core___debug_functions_gae61ce9ca5917735325cd93b0fb21dd29}{ITM\+\_\+\+Check\+Char}} (void)
+\begin{DoxyCompactList}\small\item\em ITM Check Character. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsubsubsubsubsubsubsubsubsection{Detailed Description}
+Functions that manage interrupts and exceptions via the NVIC. 
+
+
+
+\doxysubsubsubsubsubsubsubsubsubsection{Function Documentation}
+\Hypertarget{group___c_m_s_i_s__core___debug_functions_gae61ce9ca5917735325cd93b0fb21dd29}\label{group___c_m_s_i_s__core___debug_functions_gae61ce9ca5917735325cd93b0fb21dd29} 
+\index{NVIC Functions@{NVIC Functions}!ITM\_CheckChar@{ITM\_CheckChar}}
+\index{ITM\_CheckChar@{ITM\_CheckChar}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{ITM\_CheckChar()}{ITM\_CheckChar()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE int32\+\_\+t ITM\+\_\+\+Check\+Char (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+ITM Check Character. 
+
+The function checks whether a character is pending for reading in the variable \doxylink{group___c_m_s_i_s__core___debug_functions_ga12e68e55a7badc271b948d6c7230b2a8}{ITM\+\_\+\+Rx\+Buffer}.
+
+\begin{DoxyReturn}{Returns}
+0 No character available. 
+
+1 Character available. 
+\end{DoxyReturn}
+\texorpdfstring{$<$}{<} Value identifying \doxylink{group___c_m_s_i_s__core___debug_functions_ga12e68e55a7badc271b948d6c7230b2a8}{ITM\+\_\+\+Rx\+Buffer} is ready for next character.
+
+\texorpdfstring{$<$}{<} Value identifying \doxylink{group___c_m_s_i_s__core___debug_functions_ga12e68e55a7badc271b948d6c7230b2a8}{ITM\+\_\+\+Rx\+Buffer} is ready for next character.
+
+\texorpdfstring{$<$}{<} Value identifying \doxylink{group___c_m_s_i_s__core___debug_functions_ga12e68e55a7badc271b948d6c7230b2a8}{ITM\+\_\+\+Rx\+Buffer} is ready for next character.\Hypertarget{group___c_m_s_i_s__core___debug_functions_gac3ee2c30a1ac4ed34c8a866a17decd53}\label{group___c_m_s_i_s__core___debug_functions_gac3ee2c30a1ac4ed34c8a866a17decd53} 
+\index{NVIC Functions@{NVIC Functions}!ITM\_ReceiveChar@{ITM\_ReceiveChar}}
+\index{ITM\_ReceiveChar@{ITM\_ReceiveChar}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{ITM\_ReceiveChar()}{ITM\_ReceiveChar()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE int32\+\_\+t ITM\+\_\+\+Receive\+Char (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+ITM Receive Character. 
+
+The function inputs a character via the external variable \doxylink{group___c_m_s_i_s__core___debug_functions_ga12e68e55a7badc271b948d6c7230b2a8}{ITM\+\_\+\+Rx\+Buffer}.
+
+\begin{DoxyReturn}{Returns}
+Received character. 
+
+-\/1 No character pending. 
+\end{DoxyReturn}
+\texorpdfstring{$<$}{<} Value identifying \doxylink{group___c_m_s_i_s__core___debug_functions_ga12e68e55a7badc271b948d6c7230b2a8}{ITM\+\_\+\+Rx\+Buffer} is ready for next character.
+
+\texorpdfstring{$<$}{<} Value identifying \doxylink{group___c_m_s_i_s__core___debug_functions_ga12e68e55a7badc271b948d6c7230b2a8}{ITM\+\_\+\+Rx\+Buffer} is ready for next character.
+
+\texorpdfstring{$<$}{<} Value identifying \doxylink{group___c_m_s_i_s__core___debug_functions_ga12e68e55a7badc271b948d6c7230b2a8}{ITM\+\_\+\+Rx\+Buffer} is ready for next character.
+
+\texorpdfstring{$<$}{<} Value identifying \doxylink{group___c_m_s_i_s__core___debug_functions_ga12e68e55a7badc271b948d6c7230b2a8}{ITM\+\_\+\+Rx\+Buffer} is ready for next character.
+
+\texorpdfstring{$<$}{<} Value identifying \doxylink{group___c_m_s_i_s__core___debug_functions_ga12e68e55a7badc271b948d6c7230b2a8}{ITM\+\_\+\+Rx\+Buffer} is ready for next character.
+
+\texorpdfstring{$<$}{<} Value identifying \doxylink{group___c_m_s_i_s__core___debug_functions_ga12e68e55a7badc271b948d6c7230b2a8}{ITM\+\_\+\+Rx\+Buffer} is ready for next character.\Hypertarget{group___c_m_s_i_s__core___debug_functions_gac90a497bd64286b84552c2c553d3419e}\label{group___c_m_s_i_s__core___debug_functions_gac90a497bd64286b84552c2c553d3419e} 
+\index{NVIC Functions@{NVIC Functions}!ITM\_SendChar@{ITM\_SendChar}}
+\index{ITM\_SendChar@{ITM\_SendChar}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{ITM\_SendChar()}{ITM\_SendChar()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t ITM\+\_\+\+Send\+Char (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{ch }\end{DoxyParamCaption})}
+
+
+
+ITM Send Character. 
+
+The function transmits a character via the ITM channel 0, and \begin{DoxyItemize}
+\item Just returns when no debugger is connected that has booked the output. \item Is blocking when a debugger is connected, but the previous character sent has not been transmitted.\end{DoxyItemize}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em ch} & Character to transmit.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Character to transmit. 
+\end{DoxyReturn}
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM TCR\+: ITM Enable bit Position
+
+\texorpdfstring{$<$}{<} ITM TCR\+: ITM Enable bit Mask
+
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM TCR\+: ITM Enable bit Position
+
+\texorpdfstring{$<$}{<} ITM TCR\+: ITM Enable bit Mask
+
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM TCR\+: ITM Enable bit Position
+
+\texorpdfstring{$<$}{<} ITM TCR\+: ITM Enable bit Mask
+
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} ITM configuration struct ~\newline
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_ga332e10ef9605dc6eb10b9e14511930f8}\label{group___c_m_s_i_s___core___n_v_i_c_functions_ga332e10ef9605dc6eb10b9e14511930f8} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_ClearPendingIRQ@{NVIC\_ClearPendingIRQ}}
+\index{NVIC\_ClearPendingIRQ@{NVIC\_ClearPendingIRQ}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_ClearPendingIRQ()}{NVIC\_ClearPendingIRQ()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void NVIC\+\_\+\+Clear\+Pending\+IRQ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}}}]{IRQn }\end{DoxyParamCaption})}
+
+
+
+Clear Pending Interrupt. 
+
+The function clears the pending bit of an external interrupt.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em IRQn} & External interrupt number. Value cannot be negative. \\
+\hline
+\end{DoxyParams}
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_ga4f23ef94633f75d3c97670a53949003c}\label{group___c_m_s_i_s___core___n_v_i_c_functions_ga4f23ef94633f75d3c97670a53949003c} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_DecodePriority@{NVIC\_DecodePriority}}
+\index{NVIC\_DecodePriority@{NVIC\_DecodePriority}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_DecodePriority()}{NVIC\_DecodePriority()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void NVIC\+\_\+\+Decode\+Priority (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{Priority,  }\item[{uint32\+\_\+t}]{Priority\+Group,  }\item[{uint32\+\_\+t \texorpdfstring{$\ast$}{*}}]{p\+Preempt\+Priority,  }\item[{uint32\+\_\+t \texorpdfstring{$\ast$}{*}}]{p\+Sub\+Priority }\end{DoxyParamCaption})}
+
+
+
+Decode Priority. 
+
+The function decodes an interrupt priority value with a given priority group to preemptive priority value and subpriority value. In case of a conflict between priority grouping and available priority bits (\+\_\+\+\_\+\+NVIC\+\_\+\+PRIO\+\_\+\+BITS) the samllest possible priority group is set.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em Priority} & Priority value, which can be retrieved with the function \doxylink{group___c_m_s_i_s___core___n_v_i_c_functions_ga1cbaf8e6abd4aa4885828e7f24fcfeb4}{NVIC\+\_\+\+Get\+Priority()}. \\
+\hline
+\mbox{\texttt{ in}}  & {\em Priority\+Group} & Used priority group. \\
+\hline
+\mbox{\texttt{ out}}  & {\em p\+Preempt\+Priority} & Preemptive priority value (starting from 0). \\
+\hline
+\mbox{\texttt{ out}}  & {\em p\+Sub\+Priority} & Subpriority value (starting from 0). \\
+\hline
+\end{DoxyParams}
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_ga260fba04ac8346855c57f091d4ee1e71}\label{group___c_m_s_i_s___core___n_v_i_c_functions_ga260fba04ac8346855c57f091d4ee1e71} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_DisableIRQ@{NVIC\_DisableIRQ}}
+\index{NVIC\_DisableIRQ@{NVIC\_DisableIRQ}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_DisableIRQ()}{NVIC\_DisableIRQ()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void NVIC\+\_\+\+Disable\+IRQ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}}}]{IRQn }\end{DoxyParamCaption})}
+
+
+
+Disable External Interrupt. 
+
+The function disables a device-\/specific interrupt in the NVIC interrupt controller.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em IRQn} & External interrupt number. Value cannot be negative. \\
+\hline
+\end{DoxyParams}
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_ga3349f2e3580d7ce22d6530b7294e5921}\label{group___c_m_s_i_s___core___n_v_i_c_functions_ga3349f2e3580d7ce22d6530b7294e5921} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_EnableIRQ@{NVIC\_EnableIRQ}}
+\index{NVIC\_EnableIRQ@{NVIC\_EnableIRQ}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_EnableIRQ()}{NVIC\_EnableIRQ()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void NVIC\+\_\+\+Enable\+IRQ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}}}]{IRQn }\end{DoxyParamCaption})}
+
+
+
+Enable External Interrupt. 
+
+The function enables a device-\/specific interrupt in the NVIC interrupt controller.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em IRQn} & External interrupt number. Value cannot be negative. \\
+\hline
+\end{DoxyParams}
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_gadb94ac5d892b376e4f3555ae0418ebac}\label{group___c_m_s_i_s___core___n_v_i_c_functions_gadb94ac5d892b376e4f3555ae0418ebac} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_EncodePriority@{NVIC\_EncodePriority}}
+\index{NVIC\_EncodePriority@{NVIC\_EncodePriority}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_EncodePriority()}{NVIC\_EncodePriority()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t NVIC\+\_\+\+Encode\+Priority (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{Priority\+Group,  }\item[{uint32\+\_\+t}]{Preempt\+Priority,  }\item[{uint32\+\_\+t}]{Sub\+Priority }\end{DoxyParamCaption})}
+
+
+
+Encode Priority. 
+
+The function encodes the priority for an interrupt with the given priority group, preemptive priority value, and subpriority value. In case of a conflict between priority grouping and available priority bits (\+\_\+\+\_\+\+NVIC\+\_\+\+PRIO\+\_\+\+BITS), the samllest possible priority group is set.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em Priority\+Group} & Used priority group. \\
+\hline
+\mbox{\texttt{ in}}  & {\em Preempt\+Priority} & Preemptive priority value (starting from 0). \\
+\hline
+\mbox{\texttt{ in}}  & {\em Sub\+Priority} & Subpriority value (starting from 0). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Encoded priority. Value can be used in the function \doxylink{group___c_m_s_i_s___core___n_v_i_c_functions_ga2305cbd44aaad792e3a4e538bdaf14f9}{NVIC\+\_\+\+Set\+Priority()}. 
+\end{DoxyReturn}
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_ga47a0f52794068d076c9147aa3cb8d8a6}\label{group___c_m_s_i_s___core___n_v_i_c_functions_ga47a0f52794068d076c9147aa3cb8d8a6} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_GetActive@{NVIC\_GetActive}}
+\index{NVIC\_GetActive@{NVIC\_GetActive}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_GetActive()}{NVIC\_GetActive()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t NVIC\+\_\+\+Get\+Active (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}}}]{IRQn }\end{DoxyParamCaption})}
+
+
+
+Get Active Interrupt. 
+
+The function reads the active register in NVIC and returns the active bit.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em IRQn} & Interrupt number.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 Interrupt status is not active. 
+
+1 Interrupt status is active. 
+\end{DoxyReturn}
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_gafec8042db64c0f8ed432b6c8386a05d8}\label{group___c_m_s_i_s___core___n_v_i_c_functions_gafec8042db64c0f8ed432b6c8386a05d8} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_GetPendingIRQ@{NVIC\_GetPendingIRQ}}
+\index{NVIC\_GetPendingIRQ@{NVIC\_GetPendingIRQ}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_GetPendingIRQ()}{NVIC\_GetPendingIRQ()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t NVIC\+\_\+\+Get\+Pending\+IRQ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}}}]{IRQn }\end{DoxyParamCaption})}
+
+
+
+Get Pending Interrupt. 
+
+The function reads the pending register in the NVIC and returns the pending bit for the specified interrupt.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em IRQn} & Interrupt number.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 Interrupt status is not pending. 
+
+1 Interrupt status is pending. 
+\end{DoxyReturn}
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_ga1cbaf8e6abd4aa4885828e7f24fcfeb4}\label{group___c_m_s_i_s___core___n_v_i_c_functions_ga1cbaf8e6abd4aa4885828e7f24fcfeb4} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_GetPriority@{NVIC\_GetPriority}}
+\index{NVIC\_GetPriority@{NVIC\_GetPriority}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_GetPriority()}{NVIC\_GetPriority()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t NVIC\+\_\+\+Get\+Priority (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}}}]{IRQn }\end{DoxyParamCaption})}
+
+
+
+Get Interrupt Priority. 
+
+The function reads the priority of an interrupt. The interrupt number can be positive to specify an external (device specific) interrupt, or negative to specify an internal (core) interrupt.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em IRQn} & Interrupt number. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Interrupt Priority. Value is aligned automatically to the implemented priority bits of the microcontroller. 
+\end{DoxyReturn}
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_ga394f7ce2ca826c0da26284d17ac6524d}\label{group___c_m_s_i_s___core___n_v_i_c_functions_ga394f7ce2ca826c0da26284d17ac6524d} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_GetPriorityGrouping@{NVIC\_GetPriorityGrouping}}
+\index{NVIC\_GetPriorityGrouping@{NVIC\_GetPriorityGrouping}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_GetPriorityGrouping()}{NVIC\_GetPriorityGrouping()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t NVIC\+\_\+\+Get\+Priority\+Grouping (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Get Priority Grouping. 
+
+The function reads the priority grouping field from the NVIC Interrupt Controller.
+
+\begin{DoxyReturn}{Returns}
+Priority grouping field (SCB-\/\texorpdfstring{$>$}{>}AIRCR \mbox{[}10\+:8\mbox{]} PRIGROUP field). 
+\end{DoxyReturn}
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_ga3ecf446519da33e1690deffbf5be505f}\label{group___c_m_s_i_s___core___n_v_i_c_functions_ga3ecf446519da33e1690deffbf5be505f} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_SetPendingIRQ@{NVIC\_SetPendingIRQ}}
+\index{NVIC\_SetPendingIRQ@{NVIC\_SetPendingIRQ}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_SetPendingIRQ()}{NVIC\_SetPendingIRQ()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void NVIC\+\_\+\+Set\+Pending\+IRQ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}}}]{IRQn }\end{DoxyParamCaption})}
+
+
+
+Set Pending Interrupt. 
+
+The function sets the pending bit of an external interrupt.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em IRQn} & Interrupt number. Value cannot be negative. \\
+\hline
+\end{DoxyParams}
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_ga2305cbd44aaad792e3a4e538bdaf14f9}\label{group___c_m_s_i_s___core___n_v_i_c_functions_ga2305cbd44aaad792e3a4e538bdaf14f9} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_SetPriority@{NVIC\_SetPriority}}
+\index{NVIC\_SetPriority@{NVIC\_SetPriority}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_SetPriority()}{NVIC\_SetPriority()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void NVIC\+\_\+\+Set\+Priority (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{group___peripheral__interrupt__number__definition_ga7e1129cd8a196f4284d41db3e82ad5c8}{IRQn\+\_\+\+Type}}}]{IRQn,  }\item[{uint32\+\_\+t}]{priority }\end{DoxyParamCaption})}
+
+
+
+Set Interrupt Priority. 
+
+The function sets the priority of an interrupt.
+
+\begin{DoxyNote}{Note}
+The priority cannot be set for every core interrupt.
+\end{DoxyNote}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em IRQn} & Interrupt number. \\
+\hline
+\mbox{\texttt{ in}}  & {\em priority} & Priority to set. \\
+\hline
+\end{DoxyParams}
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} NVIC configuration struct ~\newline
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_ga77cfbb35a9d8027e392034321bed6904}\label{group___c_m_s_i_s___core___n_v_i_c_functions_ga77cfbb35a9d8027e392034321bed6904} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_SetPriorityGrouping@{NVIC\_SetPriorityGrouping}}
+\index{NVIC\_SetPriorityGrouping@{NVIC\_SetPriorityGrouping}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_SetPriorityGrouping()}{NVIC\_SetPriorityGrouping()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void NVIC\+\_\+\+Set\+Priority\+Grouping (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{Priority\+Group }\end{DoxyParamCaption})}
+
+
+
+Set Priority Grouping. 
+
+The function sets the priority grouping field using the required unlock sequence. The parameter Priority\+Group is assigned to the field SCB-\/\texorpdfstring{$>$}{>}AIRCR \mbox{[}10\+:8\mbox{]} PRIGROUP field. Only values from 0..7 are used. In case of a conflict between priority grouping and available priority bits (\+\_\+\+\_\+\+NVIC\+\_\+\+PRIO\+\_\+\+BITS), the smallest possible priority group is set.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em Priority\+Group} & Priority grouping field. \\
+\hline
+\end{DoxyParams}
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_ga1143dec48d60a3d6f238c4798a87759c}\label{group___c_m_s_i_s___core___n_v_i_c_functions_ga1143dec48d60a3d6f238c4798a87759c} 
+\index{NVIC Functions@{NVIC Functions}!NVIC\_SystemReset@{NVIC\_SystemReset}}
+\index{NVIC\_SystemReset@{NVIC\_SystemReset}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{NVIC\_SystemReset()}{NVIC\_SystemReset()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE void NVIC\+\_\+\+System\+Reset (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+System Reset. 
+
+The function initiates a system reset request to reset the MCU. \texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Mask
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Mask
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Mask
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Mask
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} System Control Block Base Address
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Mask
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: VECTKEY Position
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Block Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: PRIGROUP Mask
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Position
+
+\texorpdfstring{$<$}{<} SCB AIRCR\+: SYSRESETREQ Mask\Hypertarget{group___c_m_s_i_s___core___n_v_i_c_functions_gae4e8f0238527c69f522029b93c8e5b78}\label{group___c_m_s_i_s___core___n_v_i_c_functions_gae4e8f0238527c69f522029b93c8e5b78} 
+\index{NVIC Functions@{NVIC Functions}!SysTick\_Config@{SysTick\_Config}}
+\index{SysTick\_Config@{SysTick\_Config}!NVIC Functions@{NVIC Functions}}
+\doxyparagraph{\texorpdfstring{SysTick\_Config()}{SysTick\_Config()}}
+{\footnotesize\ttfamily \+\_\+\+\_\+\+STATIC\+\_\+\+INLINE uint32\+\_\+t Sys\+Tick\+\_\+\+Config (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{ticks }\end{DoxyParamCaption})}
+
+
+
+System Tick Configuration. 
+
+The function initializes the System Timer and its interrupt, and starts the System Tick Timer. Counter is in free running mode to generate periodic interrupts.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\texttt{ in}}  & {\em ticks} & Number of ticks between two interrupts.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 Function succeeded. 
+
+1 Function failed.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+When the variable {\bfseries{\+\_\+\+\_\+\+Vendor\+\_\+\+Sys\+Tick\+Config}} is set to 1, then the function {\bfseries{Sys\+Tick\+\_\+\+Config}} is not included. In this case, the file {\bfseries{{\itshape device}.h}} must contain a vendor-\/specific implementation of this function. 
+\end{DoxyNote}
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Mask
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Mask
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Mask
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Mask
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Mask
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick LOAD\+: RELOAD Mask
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} System Control Space Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick Base Address ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick configuration struct ~\newline
+
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: CLKSOURCE Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: TICKINT Mask
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Position
+
+\texorpdfstring{$<$}{<} Sys\+Tick CTRL\+: ENABLE Mask\input{group___c_m_s_i_s___core___sys_tick_functions}

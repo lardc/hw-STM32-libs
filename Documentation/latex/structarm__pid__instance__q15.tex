@@ -1,0 +1,73 @@
+\doxysubsection{arm\+\_\+pid\+\_\+instance\+\_\+q15 Struct Reference}
+\hypertarget{structarm__pid__instance__q15}{}\label{structarm__pid__instance__q15}\index{arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}}
+
+
+Instance structure for the Q15 PID Control.  
+
+
+
+
+{\ttfamily \#include $<$arm\+\_\+math.\+h$>$}
+
+\doxysubsubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+q15\+\_\+t \mbox{\hyperlink{structarm__pid__instance__q15_ad77f3a2823c7f96de42c92a3fbf3246b}{A0}}
+\item 
+q31\+\_\+t \mbox{\hyperlink{structarm__pid__instance__q15_a1b8412c517071962a9acfdc6778906ec}{A1}}
+\item 
+q15\+\_\+t \mbox{\hyperlink{structarm__pid__instance__q15_a4a3f0a878b5b6b055e3478a2f244cd30}{state}} \mbox{[}3\mbox{]}
+\item 
+q15\+\_\+t \mbox{\hyperlink{structarm__pid__instance__q15_ad228aae24a1b6d855c93a8b9bbc1c4f1}{Kp}}
+\item 
+q15\+\_\+t \mbox{\hyperlink{structarm__pid__instance__q15_a0dcc19d5c8f7bc401acea9e8318cd777}{Ki}}
+\item 
+q15\+\_\+t \mbox{\hyperlink{structarm__pid__instance__q15_af5d4b53091f19eff7536636b7cc43111}{Kd}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsubsection{Detailed Description}
+Instance structure for the Q15 PID Control. 
+
+\doxysubsubsection{Field Documentation}
+\Hypertarget{structarm__pid__instance__q15_ad77f3a2823c7f96de42c92a3fbf3246b}\label{structarm__pid__instance__q15_ad77f3a2823c7f96de42c92a3fbf3246b} 
+\index{arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}!A0@{A0}}
+\index{A0@{A0}!arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}}
+\doxyparagraph{\texorpdfstring{A0}{A0}}
+{\footnotesize\ttfamily q15\+\_\+t arm\+\_\+pid\+\_\+instance\+\_\+q15\+::\+A0}
+
+The derived gain, A0 = Kp + Ki + Kd . \Hypertarget{structarm__pid__instance__q15_a1b8412c517071962a9acfdc6778906ec}\label{structarm__pid__instance__q15_a1b8412c517071962a9acfdc6778906ec} 
+\index{arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}!A1@{A1}}
+\index{A1@{A1}!arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}}
+\doxyparagraph{\texorpdfstring{A1}{A1}}
+{\footnotesize\ttfamily q31\+\_\+t arm\+\_\+pid\+\_\+instance\+\_\+q15\+::\+A1}
+
+The derived gain A1 = -\/Kp -\/ 2Kd \texorpdfstring{$\vert$}{|} Kd. \Hypertarget{structarm__pid__instance__q15_af5d4b53091f19eff7536636b7cc43111}\label{structarm__pid__instance__q15_af5d4b53091f19eff7536636b7cc43111} 
+\index{arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}!Kd@{Kd}}
+\index{Kd@{Kd}!arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}}
+\doxyparagraph{\texorpdfstring{Kd}{Kd}}
+{\footnotesize\ttfamily q15\+\_\+t arm\+\_\+pid\+\_\+instance\+\_\+q15\+::\+Kd}
+
+The derivative gain. \Hypertarget{structarm__pid__instance__q15_a0dcc19d5c8f7bc401acea9e8318cd777}\label{structarm__pid__instance__q15_a0dcc19d5c8f7bc401acea9e8318cd777} 
+\index{arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}!Ki@{Ki}}
+\index{Ki@{Ki}!arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}}
+\doxyparagraph{\texorpdfstring{Ki}{Ki}}
+{\footnotesize\ttfamily q15\+\_\+t arm\+\_\+pid\+\_\+instance\+\_\+q15\+::\+Ki}
+
+The integral gain. \Hypertarget{structarm__pid__instance__q15_ad228aae24a1b6d855c93a8b9bbc1c4f1}\label{structarm__pid__instance__q15_ad228aae24a1b6d855c93a8b9bbc1c4f1} 
+\index{arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}!Kp@{Kp}}
+\index{Kp@{Kp}!arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}}
+\doxyparagraph{\texorpdfstring{Kp}{Kp}}
+{\footnotesize\ttfamily q15\+\_\+t arm\+\_\+pid\+\_\+instance\+\_\+q15\+::\+Kp}
+
+The proportional gain. \Hypertarget{structarm__pid__instance__q15_a4a3f0a878b5b6b055e3478a2f244cd30}\label{structarm__pid__instance__q15_a4a3f0a878b5b6b055e3478a2f244cd30} 
+\index{arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}!state@{state}}
+\index{state@{state}!arm\_pid\_instance\_q15@{arm\_pid\_instance\_q15}}
+\doxyparagraph{\texorpdfstring{state}{state}}
+{\footnotesize\ttfamily q15\+\_\+t arm\+\_\+pid\+\_\+instance\+\_\+q15\+::state\mbox{[}3\mbox{]}}
+
+The state array of length 3. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+System/\+Core/arm\+\_\+math.\+h\end{DoxyCompactItemize}

@@ -1,6 +1,7 @@
-﻿// ----------------------------------------
-// BCCI master communication interface
-// ----------------------------------------
+﻿/** 
+ * @file BCCIMaster.h
+ * @briefBCCI master communication interface
+*/
 
 #ifndef __BCCI_MASTER_H
 #define __BCCI_MASTER_H
@@ -19,7 +20,7 @@ extern Int16U	BCCIM_ReadBlockBufferCounter;
 extern float	BCCIM_ReadBlockFloatBuffer[];
 
 // Types
-// BCCI instance state
+/** BCCI instance state */
 typedef struct __BCCIM_Interface
 {
 	pBCCI_IOConfig IOConfig;

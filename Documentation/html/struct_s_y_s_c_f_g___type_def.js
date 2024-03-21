@@ -1,0 +1,25 @@
+var struct_s_y_s_c_f_g___type_def =
+[
+    [ "CFGR1", "group___c_m_s_i_s___device.html#ga5e0e229c223361eee4278d585787ace1", null ],
+    [ "CFGR2", "group___c_m_s_i_s___device.html#gaa643f1162e93489204200a465e11fd86", null ],
+    [ "CFGR3", "group___c_m_s_i_s___device.html#ga86b9bede392fee8a53b449494d0856ec", null ],
+    [ "CFGR4", "group___c_m_s_i_s___device.html#ga6965791ec3888f3b58e6a4cb9935defa", null ],
+    [ "EXTICR", "group___c_m_s_i_s___device.html#ga348aafac7a09a6e93e73e5acbccc34d3", null ],
+    [ "RCR", "group___c_m_s_i_s___device.html#ga6b19ffd6acd9c6a5103b93dd64281f63", null ],
+    [ "RESERVED", "group___c_m_s_i_s___device.html#ga5163baa7563204840a69aee0543b76b7", null ],
+    [ "RESERVED0", "group___c_m_s_i_s___device.html#ga4046d6d0379d1b629665b866d0442ecd", null ],
+    [ "RESERVED1", "group___c_m_s_i_s___device.html#ga20ecd04c6a42bac56f0dbd5640e6aaf0", null ],
+    [ "RESERVED10", "group___c_m_s_i_s___device.html#ga5bf6d41770fd8dc6473d962b8770a00f", null ],
+    [ "RESERVED11", "group___c_m_s_i_s___device.html#ga611b251f8aae29cb2a83a985596bb26e", null ],
+    [ "RESERVED12", "group___c_m_s_i_s___device.html#ga89e0a9b959869be96bfef32c278c869a", null ],
+    [ "RESERVED13", "group___c_m_s_i_s___device.html#gae037e71a3c59a05d0f81128820b9d9a7", null ],
+    [ "RESERVED14", "group___c_m_s_i_s___device.html#ga765755fde982b2e6c60f43a9a181cfdb", null ],
+    [ "RESERVED2", "group___c_m_s_i_s___device.html#ga3fadb54ea7fd466c3e19c7478dca8da8", null ],
+    [ "RESERVED3", "group___c_m_s_i_s___device.html#ga51fa729c1fefbf9c26e09ee8bf727d5b", null ],
+    [ "RESERVED4", "group___c_m_s_i_s___device.html#ga1b25444a1ddbe13adec6b33e9309dbe3", null ],
+    [ "RESERVED5", "group___c_m_s_i_s___device.html#gaec51337c62111f13e976f73f1f691861", null ],
+    [ "RESERVED6", "group___c_m_s_i_s___device.html#ga7e407e96a4e0d2577d2ee1f6165965cb", null ],
+    [ "RESERVED7", "group___c_m_s_i_s___device.html#ga2e67d5f26fd40feba7cb0b45b7dc2016", null ],
+    [ "RESERVED8", "group___c_m_s_i_s___device.html#ga947b3938ff1174c1268db938e19eac6c", null ],
+    [ "RESERVED9", "group___c_m_s_i_s___device.html#gacb6d61abc4707e582365d274774a13c0", null ]
+];
