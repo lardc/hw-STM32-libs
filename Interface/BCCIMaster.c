@@ -1,6 +1,6 @@
 /**
  * @file BCCIMaster.c
- * @brief BCCI communication interface
+ * @brief Бибиблиотека интерфейса Master BCCI
 */
 
 // Header
@@ -97,7 +97,7 @@ void BCCIM_InitWithNodeID(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, I
 }
 // ----------------------------------------
 
-Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, pInt16U Data)
+Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Register, pInt16U Data)
 {
 	Int16U ret;
 	CANMessage message;
@@ -107,7 +107,7 @@ Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, pIn
 	Interface->IOConfig->IO_GetMessage(Master_MBOX_R_16_A, NULL);
 
 	// Compose and send message
-	message.HIGH.WORD.WORD_0 = Address;
+	message.HIGH.WORD.WORD_0 = Register;
 	BCCIM_SendFrame(Interface, Master_MBOX_R_16, &message, Node);
 
 	// Get response
@@ -122,7 +122,7 @@ Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, pIn
 }
 // ----------------------------------------
 
-Int16U BCCIM_ReadFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, float* Data)
+Int16U BCCIM_ReadFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Register, float* Data)
 {
 	Int16U ret;
 	CANMessage message;
@@ -132,7 +132,7 @@ Int16U BCCIM_ReadFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, 
 	Interface->IOConfig->IO_GetMessage(Master_MBOX_R_F_A, NULL);
 
 	// Compose and send message
-	message.HIGH.WORD.WORD_0 = Address;
+	message.HIGH.WORD.WORD_0 = Register;
 	BCCIM_SendFrame(Interface, Master_MBOX_R_F, &message, Node);
 
 	// Get response
@@ -150,7 +150,7 @@ Int16U BCCIM_ReadFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, 
 }
 // ----------------------------------------
 
-Int16U BCCIM_ReadLimitFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, Boolean ReadHighLimit, float* Data)
+Int16U BCCIM_ReadLimitFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Register, Boolean ReadHighLimit, float* Data)
 {
 	Int16U ret;
 	CANMessage message;
@@ -160,7 +160,7 @@ Int16U BCCIM_ReadLimitFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Addr
 	Interface->IOConfig->IO_GetMessage(Master_MBOX_RLIM_F_A, NULL);
 
 	// Compose and send message
-	message.HIGH.WORD.WORD_0 = Address;
+	message.HIGH.WORD.WORD_0 = Register;
 	message.HIGH.WORD.WORD_1 = ReadHighLimit ? 1 : 0;
 	BCCIM_SendFrame(Interface, Master_MBOX_RLIM_F, &message, Node);
 
@@ -179,7 +179,7 @@ Int16U BCCIM_ReadLimitFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Addr
 }
 // ----------------------------------------
 
-Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, Int16U Data)
+Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Register, Int16U Data)
 {
 	CANMessage message;
 
@@ -188,7 +188,7 @@ Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, In
 	Interface->IOConfig->IO_GetMessage(Master_MBOX_W_16_A, NULL);
 
 	// Compose and send message
-	message.HIGH.WORD.WORD_0 = Address;
+	message.HIGH.WORD.WORD_0 = Register;
 	message.HIGH.WORD.WORD_1 = Data;
 	BCCIM_SendFrame(Interface, Master_MBOX_W_16, &message, Node);
 
@@ -197,7 +197,7 @@ Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, In
 }
 // ----------------------------------------
 
-Int16U BCCIM_WriteFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, float Data)
+Int16U BCCIM_WriteFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Register, float Data)
 {
 	CANMessage message;
 
@@ -207,7 +207,7 @@ Int16U BCCIM_WriteFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address,
 
 	// Compose and send message
 	Int32U t_data = *(pInt32U)(&Data);
-	message.HIGH.WORD.WORD_0 = Address;
+	message.HIGH.WORD.WORD_0 = Register;
 	message.HIGH.WORD.WORD_1 = t_data >> 16;
 	message.LOW.WORD.WORD_2  = t_data & 0x0000FFFF;
 	BCCIM_SendFrame(Interface, Master_MBOX_W_F, &message, Node);
@@ -304,6 +304,12 @@ void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16
 }
 // ----------------------------------------
 
+/**
+ * @fn Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
+ * @brief Обработка получения блока данных из CAN сети.
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @return TRUE, если блок данных получен, FALSE в противном случае.
+*/
 Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
 {
 	CANMessage CANInput;
@@ -374,6 +380,12 @@ void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, In
 }
 // ----------------------------------------
 
+/**
+ * @fn Boolean BCCIM_HandleReadBlockFloat(pBCCIM_Interface Interface)
+ * @brief Обработка получения блока(массива) данных с значениями типа float из CAN сети.
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @return TRUE, если блок данных получен, FALSE в противном случае.
+*/
 Boolean BCCIM_HandleReadBlockFloat(pBCCIM_Interface Interface)
 {
 	CANMessage CANInput;
@@ -411,6 +423,14 @@ void BCCIM_ReadBlock16Load(pInt16U DataArray, Int16U DataSize, pInt16U DataRead)
 }
 // ----------------------------------------
 
+/**
+ * @fn void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node)
+ * @brief Отправка CAN сообщения.
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @param Mailbox - ID мейлбокса внутри узла в который будет отправлено сообщение.
+ * @param Message - Указатель на структуру CAN сообщения.
+ * @param Node - ID узла в CAN сети.
+*/
 void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node)
 {
 	Message->MsgID.all = Node << CAN_SLAVE_NID_MPY;
@@ -418,6 +438,15 @@ void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Mes
 }
 // ----------------------------------------
 
+/**
+ * @fn Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
+ * @brief Ожидание ответа от узла, полученного по мейлбоксу Mailbox.
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @param Mailbox - ID мейлбокса внутри узла, с которым собираемся общаться, в который будет отправлено сообщение.
+ * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
+ * @retval ERR_NO_ERROR - Ответ получен.
+ * @retval ERR_TIMEOUT - Тайм-аут
+*/
 Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 {
 	Int64U timeout;
