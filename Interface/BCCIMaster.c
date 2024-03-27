@@ -37,18 +37,92 @@
 #define MIN(a, b) 					(((a) < (b)) ? (a) : (b))
 
 // Forward functions
+/**
+ * @fn void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node)
+ * @brief Отправка CAN сообщения.
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @param Mailbox - ID мейлбокса внутри узла в который будет отправлено сообщение.
+ * @param Message - Указатель на структуру CAN сообщения.
+ * @param Node - ID узла в CAN сети.
+*/
 void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Message, Int32U Node);
+
+/**
+ * @fn Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
+ * @brief Проверка MBOX_ERR_A на то, пришла ли в него ошибка.
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @param Mailbox - ID мейлбокса внутри узла в котором будет ожидаться ответ.
+ * @return ERR_NO_ERROR, если ответ получен, иначе ERR_TIMEOUT.
+*/
 Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox);
+
+/**
+ * @fn void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start)
+ * @brief Чтение блока(массива) данных из узла в CAN сети.
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @param Node - ID узла в CAN сети
+ * @param Endpoint - Регистр начала массива
+ * @param Start - Флаг первого вызова функции
+*/
 void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
+
+/**
+ * @fn Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
+ * @brief Обработка получения блока(массива) данных из CAN сети.
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @return TRUE, если данные читаются впервые, FALSE в противном случае.
+*/
 Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface);
+
+/**
+ * @fn void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start)
+ * @brief Дополнительная функция Чтения блока(массива) данных типа float из узла в CAN сети.
+ * @details При первом чтенич данных (Start = true): Происходит очистка мейлбоксов и сохранение endpoint. 
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @param Node - ID узла в CAN сети
+ * @param Endpoint - Регистр начала массива
+ * @param Start - Флаг первого вызова функции
+*/
 void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
+
+/**
+ * @fn Boolean BCCIM_HandleReadBlockFloat(pBCCIM_Interface Interface)
+ * @brief Обработка получения блока(массива) данных типа float из CAN сети.
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @return TRUE, если данные читаются впервые, FALSE в противном случае.
+*/
 Boolean BCCIM_HandleReadBlockFloat(pBCCIM_Interface Interface);
 
 // Variables
+/**
+ * @var Int16U BCCIM_ReadBlockBufferCounter
+ * @brief Переменная для хранения размера блока(массива) данных.
+*/
 Int16U BCCIM_ReadBlockBufferCounter;
+
+/**
+ * @var float BCCIM_ReadBlockFloatBuffer
+ * @brief Переменная для хранения блока(массива) данных типа float.
+*/
 float BCCIM_ReadBlockFloatBuffer[READ_BLOCK_FLOAT_BUFFER_SIZE];
+
+/**
+ * @var pInt16U BCCIM_ReadBlock16Buffer
+ * @brief Переменная для хранения блока(массива) данных.
+*/
 pInt16U BCCIM_ReadBlock16Buffer = (pInt16U)BCCIM_ReadBlockFloatBuffer;
+
+/**
+ * @var Int16U ReadBlockSavedEndpoint
+ * @brief Переменная для сохранения регистра начала блока(массива) данных.
+ * @var Int16U ReadBlockSavedNode
+ * @brief Переменная для сохранения ID узла в CAN сети.
+*/
 static Int16U ReadBlockSavedEndpoint, ReadBlockSavedNode;
+
+/** @var Int16U SavedErrorDetails
+ * @brief Переменная для записи кода последней ошибки.
+*/
 static Int16U SavedErrorDetails = 0;
 
 // Functions
@@ -304,12 +378,7 @@ void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16
 }
 // ----------------------------------------
 
-/**
- * @fn Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
- * @brief Обработка получения блока данных из CAN сети.
- * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @return TRUE, если блок данных получен, FALSE в противном случае.
-*/
+
 Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
 {
 	CANMessage CANInput;

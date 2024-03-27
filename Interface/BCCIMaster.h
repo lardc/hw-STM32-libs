@@ -162,8 +162,12 @@ Int16U BCCIM_ReadBlockFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Endp
 */
 Int16U BCCIM_WriteBlockFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, pFloat Data, Int16U DataLength);
 
-
 void BCCIM_ReadBlock16Load(pInt16U DataArray, Int16U DataSize, pInt16U DataRead);
+
+/**
+ * @fn Int16U BCCIM_GetSavedErrorDetails()
+ * @brief Возвращает сохраненную информацию об ошибке чтения или записи
+*/
 Int16U BCCIM_GetSavedErrorDetails();
 
 #endif // __BCCI_MASTER_H
