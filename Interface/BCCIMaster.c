@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file BCCIMaster.c
  * @brief Бибиблиотека интерфейса Master BCCI
 */
@@ -547,3 +547,4 @@ Int16U BCCIM_GetSavedErrorDetails()
 	return SavedErrorDetails;
 }
 // ----------------------------------------
+
