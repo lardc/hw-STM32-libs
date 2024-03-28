@@ -433,7 +433,10 @@ Int16U BCCIM_WriteBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoi
 // ----------------------------------------
 
 /**
- * @brief Запуск поиска блока(массива) данных в узле в CAN сети.
+ * @brief Чтение блока(массива) данных в узле в CAN сети.
+ * @details Если чтение происходит впервые, т. е. флаг Start = true, то производится
+ * очистка мейлбоксов ошибки и ответа, и запоминается переданный Endpoint, блок из которого идет чтение.
+ * Если  Start = false, то производится чтение с Endpoint сохраненного в глобальной переменной ReadBlockSavedEndpoint.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param Node - ID узла в CAN сети
  * @param Endpoint - Регистр начала массива
@@ -459,7 +462,11 @@ void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16
 }
 // ----------------------------------------
 
-
+/**
+ * @brief Обработка чтения блока(массива) данных из узла в CAN сети.
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @return TRUE - если чтение производится впервые (CANInput.DLC = 0), FALSE - если мы получили Endpoint и размер считываемых данных.  
+*/
 Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
 {
 	CANMessage CANInput;
@@ -546,7 +553,7 @@ void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, In
 /**
  * @brief Обработка получения блока(массива) данных с значениями типа float из CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @return TRUE, если блок данных получен, FALSE в противном случае.
+ * @return TRUE, если чтение происходит впервые (CANInput.DLC = 0), FALSE в противном случае.
 */
 Boolean BCCIM_HandleReadBlockFloat(pBCCIM_Interface Interface)
 {
