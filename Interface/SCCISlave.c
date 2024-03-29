@@ -725,8 +725,8 @@ void SCCI_HandleWriteBlock16(pSCCI_Interface Interface)
 // ----------------------------------------
 
 /**
- * @brief Обработка чтения блока(массива) 16-битных значений из Data Table без записи в буффер.
- * @details При обычном чтении блока(массива), 
+ * @brief Обработка чтения блока(массива) 16-битных значений из Data Table.
+ * @details Быстрое чтение означает, что запрос отправляет только заголовок и далее полученный массив сразу записывает в интерфейс.
  * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
  * @param Repeat - Флаг повтора
 */
@@ -774,6 +774,12 @@ void SCCI_HandleReadBlockFast16(pSCCI_Interface Interface, Boolean Repeat)
 }
 // ----------------------------------------
 
+/**
+ * @brief Обработка чтения блока(массива) 32-битных значений типа float из Data Table.
+ * @details Быстрое чтение означает, что запрос отправляет только заголовок и далее полученный массив сразу записывает в интерфейс.
+ * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
+ * @param Repeat - Флаг повтора
+*/
 void SCCI_HandleReadBlockFastFloat(pSCCI_Interface Interface)
 {
 	Int16U node = Interface->MessageBuffer[0] & 0xFF;
@@ -908,7 +914,7 @@ void SCCI_SendResponseFrameEx(pSCCI_Interface Interface, Int16U Node, Int16U Fun
 /**
  * @brief Отправка пакета с информацией об ошибке
  * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
- * @param ErrorCode -
+ * @param ErrorCode - Код ошибки
  * @param Details -
 */
 void SCCI_SendErrorFrame(pSCCI_Interface Interface, Int16U ErrorCode, Int16U Details)
@@ -961,6 +967,13 @@ void MemCopy16(uint16_t *Source, uint16_t *Destination, uint16_t Length)
 }
 //-----------------------------------------
 
+/**
+ * @brief Отправка ответного пакета после запроса на чтение 16-битного значения
+ * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
+ * @param Node - Узел отправки ответа
+ * @param Address - Регистр Data Table
+ * @param Value - Полученное значение
+*/
 void SCCI_AnswerRead16(pSCCI_Interface Interface, Int16U Node, Int16U Address, Int16U Value)
 {
 	Interface->MessageBuffer[2] = Address;
@@ -970,6 +983,13 @@ void SCCI_AnswerRead16(pSCCI_Interface Interface, Int16U Node, Int16U Address, I
 }
 //-----------------------------------------
 
+/**
+ * @brief Отправка ответного пакета после запроса на чтение 32-битного значения типа float
+ * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
+ * @param Node - Узел отправки ответа
+ * @param Address - Регистр Data Table
+ * @param Value - Полученное значение
+*/
 void SCCI_AnswerReadFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address, float Value)
 {
 	Int32U data;
@@ -982,6 +1002,13 @@ void SCCI_AnswerReadFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address
 }
 //-----------------------------------------
 
+/**
+ * @brief Отправка ответного пакета после запроса на чтение 32-битного значения типа float с пределом
+ * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
+ * @param Node - Узел отправки ответа
+ * @param Address - Регистр Data Table
+ * @param Value - Полученное значение
+*/
 void SCCI_AnswerReadLimitFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address, float Value)
 {
 	Int32U data;
@@ -994,6 +1021,12 @@ void SCCI_AnswerReadLimitFloat(pSCCI_Interface Interface, Int16U Node, Int16U Ad
 }
 //-----------------------------------------
 
+/**
+ * @brief Отправка ответного пакета после запроса на запись 16-битного значения
+ * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
+ * @param Node - Узел отправки ответа
+ * @param Address - Регистр Data Table
+*/
 void SCCI_AnswerWrite16(pSCCI_Interface Interface, Int16U Node, Int16U Address)
 {
 	Interface->MessageBuffer[2] = Address;
@@ -1002,6 +1035,12 @@ void SCCI_AnswerWrite16(pSCCI_Interface Interface, Int16U Node, Int16U Address)
 }
 //-----------------------------------------
 
+/**
+ * @brief Отправка ответного пакета после запроса на запись массива
+ * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
+ * @param Node - Узел отправки ответа
+ * @param Endoint - Регистр начала массива
+*/
 void SCCI_AnswerWriteBlock(pSCCI_Interface Interface, Int16U Node, Int16U Endpoint)
 {
 	Interface->MessageBuffer[2] = Endpoint;
@@ -1010,6 +1049,12 @@ void SCCI_AnswerWriteBlock(pSCCI_Interface Interface, Int16U Node, Int16U Endpoi
 }
 //-----------------------------------------
 
+/**
+ * @brief Отправка ответного пакета после запроса на запись 32-битного значения типа float
+ * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
+ * @param Node - Узел отправки ответа
+ * @param Address - Регистр Data Table
+*/
 void SCCI_AnswerWriteFloat(pSCCI_Interface Interface, Int16U Node, Int16U Address)
 {
 	Interface->MessageBuffer[2] = Address;
@@ -1018,6 +1063,12 @@ void SCCI_AnswerWriteFloat(pSCCI_Interface Interface, Int16U Node, Int16U Addres
 }
 //-----------------------------------------
 
+/**
+ * @brief Отправка ответного пакета после запроса на вызов функции
+ * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
+ * @param Node - Узел отправки ответа
+ * @param Action - Код вызываемой функции 
+*/
 void SCCI_AnswerCall(pSCCI_Interface Interface, Int16U Node, Int16U Action)
 {
 	Interface->MessageBuffer[2] = Action;
@@ -1026,12 +1077,27 @@ void SCCI_AnswerCall(pSCCI_Interface Interface, Int16U Node, Int16U Action)
 }
 //-----------------------------------------
 
+/**
+ * @brief Отправка ответного пакета после ошибки
+ * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
+ * @param Node - Узел отправки ответа
+ * @param ErrorCode - Код ошибки
+ * @param Details -
+*/
 void SCCI_AnswerError(pSCCI_Interface Interface, Int16U Node, Int16U ErrorCode, Int16U Details)
 {
 	SCCI_SendErrorFrameEx(Interface, Node, ErrorCode, Details);
 }
 // ----------------------------------------
 
+/**
+ * @brief Отправка ответного пакета после запроса на чтение 16-битного массива
+ * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
+ * @param Node - Узел отправки ответа
+ * @param Endpoint - Регистр начала массива
+ * @param Data - Буфер для данных
+ * @param DataSize - Размер данных в байтах
+*/
 void SCCI_AnswerReadBlock16Fast(pSCCI_Interface Interface, Int16U Node, Int16U Endpoint, pInt16U Data, Int16U DataSize)
 {
 	Interface->MessageBuffer[2] = (Endpoint << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
@@ -1051,6 +1117,14 @@ void SCCI_AnswerReadBlock16Fast(pSCCI_Interface Interface, Int16U Node, Int16U E
 }
 // ----------------------------------------
 
+/**
+ * @brief Отправка ответного пакета после запроса на чтение 32-битного массива с данными типа float
+ * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
+ * @param Node - Узел отправки ответа
+ * @param Endpoint - Регистр начала массива
+ * @param Data - Буфер для данных
+ * @param DataSize - Размер данных в байтах
+*/
 void SCCI_AnswerReadBlockFloatFast(pSCCI_Interface Interface, Int16U Node, Int16U Endpoint, float* Data, Int16U DataSize)
 {
 	Interface->MessageBuffer[2] = (Endpoint << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
