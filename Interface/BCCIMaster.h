@@ -1,7 +1,6 @@
-﻿/** 
- * @file BCCIMaster.h
- * @brief Бибиблиотека интерфейса Master BCCI
-*/
+﻿// ----------------------------------------
+// BCCI-Master communication interface
+// ----------------------------------------
 
 #ifndef __BCCI_MASTER_H
 #define __BCCI_MASTER_H

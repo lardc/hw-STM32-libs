@@ -1,7 +1,6 @@
-﻿/** 
- * @file SCCISlave.h
- * @brief SCCI-Slave communication interface
-*/ 
+﻿// ----------------------------------------
+// SCCI-Slave communication interface
+// ---------------------------------------- 
 
 #ifndef __SCCIS_H
 #define __SCCIS_H

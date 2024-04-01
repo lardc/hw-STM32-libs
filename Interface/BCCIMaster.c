@@ -50,16 +50,16 @@ void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Mes
  * @brief Проверка MBOX_ERR_A на то, пришла ли в него ошибка.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param Mailbox - ID мейлбокса внутри узла в котором будет ожидаться ответ.
- * @return ERR_NO_ERROR, если ответ получен, иначе ERR_TIMEOUT.
+ * @return Код ошибки, если она произошла, в ином случае ERR_NO_ERROR.
 */
 Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox);
 
 /**
  * @brief Чтение блока(массива) данных из узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Endpoint - Регистр начала массива
- * @param Start - Флаг первого вызова функции
+ * @param Node - ID узла в CAN сети.
+ * @param Endpoint - Регистр начала массива.
+ * @param Start - Флаг первого вызова функции.
 */
 void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
 
@@ -74,9 +74,9 @@ Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface);
  * @brief Дополнительная функция Чтения блока(массива) данных типа float из узла в CAN сети.
  * @details При первом чтенич данных (Start = true): Происходит очистка мейлбоксов и сохранение endpoint. 
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Endpoint - Регистр начала массива
- * @param Start - Флаг первого вызова функции
+ * @param Node - ID узла в CAN сети.
+ * @param Endpoint - Регистр начала массива.
+ * @param Start - Флаг первого вызова функции.
 */
 void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
 
@@ -89,32 +89,32 @@ Boolean BCCIM_HandleReadBlockFloat(pBCCIM_Interface Interface);
 
 // Variables
 /**
- * @var Int16U BCCIM_ReadBlockBufferCounter
+ * @var Int16U BCCIM_ReadBlockBufferCounter.
  * @brief Переменная для хранения размера блока(массива) данных.
 */
 Int16U BCCIM_ReadBlockBufferCounter;
 
 /**
- * @var float BCCIM_ReadBlockFloatBuffer
+ * @var float BCCIM_ReadBlockFloatBuffer.
  * @brief Переменная для хранения блока(массива) данных типа float.
 */
 float BCCIM_ReadBlockFloatBuffer[READ_BLOCK_FLOAT_BUFFER_SIZE];
 
 /**
- * @var pInt16U BCCIM_ReadBlock16Buffer
+ * @var pInt16U BCCIM_ReadBlock16Buffer.
  * @brief Переменная для хранения блока(массива) данных.
 */
 pInt16U BCCIM_ReadBlock16Buffer = (pInt16U)BCCIM_ReadBlockFloatBuffer;
 
 /**
- * @var Int16U ReadBlockSavedEndpoint
+ * @var Int16U ReadBlockSavedEndpoint.
  * @brief Переменная для сохранения регистра начала блока(массива) данных.
- * @var Int16U ReadBlockSavedNode
+ * @var Int16U ReadBlockSavedNode.
  * @brief Переменная для сохранения ID узла в CAN сети.
 */
 static Int16U ReadBlockSavedEndpoint, ReadBlockSavedNode;
 
-/** @var Int16U SavedErrorDetails
+/** @var Int16U SavedErrorDetails.
  * @brief Переменная для записи кода последней ошибки.
 */
 static Int16U SavedErrorDetails = 0;
@@ -125,8 +125,8 @@ static Int16U SavedErrorDetails = 0;
  * @brief Инициализация Master BCCI интерфейса - сетап Mailbox для записи и чтения, запись Mailbox в IOConfig.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param IOConfig - Указатель на структуру, содержащую функции обратного вызова. Эти функции передаются в интерфейс.
- * @param MessageTimeoutTicks - Величина таймаута при обмене сообщениями по CAN, в миллисекундах
- * @param pTimer - Указатель на системный таймер, в миллисекундах
+ * @param MessageTimeoutTicks - Величина таймаута при обмене сообщениями по CAN, в миллисекундах.
+ * @param pTimer - Указатель на системный таймер, в миллисекундах.
 */
 void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks,
 		volatile Int64U *pTimer)
@@ -142,12 +142,12 @@ void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U Mess
 // ----------------------------------------
 
 /** 
- * @brief Инициализация Master BCCI интерфейса для конкретного узла(NodeID)
+ * @brief Инициализация Master BCCI интерфейса для конкретного узла(NodeID).
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param IOConfig - Указатель на структуру, содержащую функции обратного вызова. Эти функции передаются в интерфейс.
- * @param MessageTimeoutTicks - Величина таймаута при обмене сообщениями по CAN, в миллисекундах
- * @param pTimer - Указатель на системный таймер, в миллисекундах
- * @param NodeID - ID узла в CAN сети
+ * @param MessageTimeoutTicks - Величина таймаута при обмене сообщениями по CAN, в миллисекундах.
+ * @param pTimer - Указатель на системный таймер, в миллисекундах.
+ * @param NodeID - ID узла в CAN сети.
 */
 void BCCIM_InitWithNodeID(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks,
 		volatile Int64U *pTimer, Int16U NodeID)
@@ -184,9 +184,9 @@ void BCCIM_InitWithNodeID(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, I
 /**
  * @brief Чтение 16-битного значения из регистра узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Register - Регистр блока из которого будет читаться значение
- * @param Data - Указатель на буфер, в который будет записан результат
+ * @param Node - ID узла в CAN сети.
+ * @param Register - Регистр блока из которого будет читаться значение.
+ * @param Data - Указатель на буфер, в который будет записан результат.
  * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
 */
 Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Register, pInt16U Data)
@@ -217,9 +217,9 @@ Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Register, pI
 /**
  * @brief Чтение 32-битного float значения из регистра узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Register - Регистр блока из которого будет читаться значение
- * @param Data - Указатель на буфер, в котором будет записан результат
+ * @param Node - ID узла в CAN сети.
+ * @param Register - Регистр блока из которого будет читаться значение.
+ * @param Data - Указатель на буфер, в котором будет записан результат.
  * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
 */
 Int16U BCCIM_ReadFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Register, float* Data)
@@ -253,11 +253,11 @@ Int16U BCCIM_ReadFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Register,
 /**
  * @brief Чтение 32-битного float значения из регистра узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Register - Регистр блока из которого будет читаться значение
- * @param ReadHighLimit - Если true - читается верхняя граница, если false - нижняя
- * @param Data - Указатель на буфер, в котором будет записан результат
- * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
+ * @param Node - ID узла в CAN сети.
+ * @param Register - Регистр блока из которого будет читаться значение.
+ * @param ReadHighLimit - Если true - читается верхняя граница, если false - нижняя.
+ * @param Data - Указатель на буфер, в котором будет записан результат.
+ * @return Код ошибки, если она произошла, в ином случае ERR_NO_ERROR.
 */
 Int16U BCCIM_ReadLimitFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Register, Boolean ReadHighLimit, float* Data)
 {
@@ -291,10 +291,10 @@ Int16U BCCIM_ReadLimitFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Regi
 /**
  * @brief Запись 16-битного значения в регистр узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Register - Регистр блока в который будет записано значение
- * @param Data - Значение, которое будет записано в регистр
- * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
+ * @param Node - ID узла в CAN сети.
+ * @param Register - Регистр блока в который будет записано значение.
+ * @param Data - Значение, которое будет записано в регистр.
+ * @return Код ошибки, если она произошла, в ином случае ERR_NO_ERROR.
 */
 Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Register, Int16U Data)
 {
@@ -317,10 +317,10 @@ Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Register, I
 /**
  * @brief Запись 32-битного float значения в регистр узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Register - Регистр блока в котором будет записано значение
- * @param Data - Значение, которое будет записано в регистр
- * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
+ * @param Node - ID узла в CAN сети.
+ * @param Register - Регистр блока в котором будет записано значение.
+ * @param Data - Значение, которое будет записано в регистр.
+ * @return Код ошибки, если она произошла, в ином случае ERR_NO_ERROR.
 */
 Int16U BCCIM_WriteFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Register, float Data)
 {
@@ -345,9 +345,9 @@ Int16U BCCIM_WriteFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Register
 /**
  * @brief Вызов функции узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Action - ID вызываемой функции
- * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
+ * @param Node - ID узла в CAN сети.
+ * @param Action - ID вызываемой функции.
+ * @return Код ошибки, если она произошла, в ином случае ERR_NO_ERROR.
 */
 Int16U BCCIM_Call(pBCCIM_Interface Interface, Int16U Node, Int16U Action)
 {
@@ -369,9 +369,9 @@ Int16U BCCIM_Call(pBCCIM_Interface Interface, Int16U Node, Int16U Action)
 /**
  * @brief Чтение блока(массива) данных из узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Endpoint - Регистр начала массива
- * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
+ * @param Node - ID узла в CAN сети.
+ * @param Endpoint - Регистр начала массива.
+ * @return Код ошибки, если она произошла, в ином случае ERR_NO_ERROR.
 */
 Int16U BCCIM_ReadBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint)
 {
@@ -399,11 +399,11 @@ Int16U BCCIM_ReadBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoin
 /**
  * @brief Запись блока(массива) данных в узел в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Endpoint - Регистр начала массива
- * @param Data - Указатель на массив, который будет записан в узел
- * @param DataLength - Размер записываемого массива
- * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
+ * @param Node - ID узла в CAN сети.
+ * @param Endpoint - Регистр начала массива.
+ * @param Data - Указатель на массив, который будет записан в узел.
+ * @param DataLength - Размер записываемого массива.
+ * @return Код ошибки, если она произошла, в ином случае ERR_NO_ERROR.
 */
 Int16U BCCIM_WriteBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, pInt16U Data, Int16U DataLength)
 {
@@ -434,13 +434,13 @@ Int16U BCCIM_WriteBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoi
 
 /**
  * @brief Чтение блока(массива) данных в узле в CAN сети.
- * @details Если чтение происходит впервые, т. е. флаг Start = true, то производится
+ * @details Если чтение происходит впервые, т. е. флаг Start = true, то производится.
  * очистка мейлбоксов ошибки и ответа, и запоминается переданный Endpoint, блок из которого идет чтение.
  * Если  Start = false, то производится чтение с Endpoint сохраненного в глобальной переменной ReadBlockSavedEndpoint.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Endpoint - Регистр начала массива
- * @param Start - Флаг первого вызова функции
+ * @param Node - ID узла в CAN сети.
+ * @param Endpoint - Регистр начала массива.
+ * @param Start - Флаг первого вызова функции.
 */
 void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start)
 {
@@ -497,8 +497,8 @@ Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
 /**
  * @brief Чтение блока(массива) данных со значениями типа данных float из регистра узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Endpoint - Регистр начала массива
+ * @param Node - ID узла в CAN сети.
+ * @param Endpoint - Регистр начала массива.
  * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
 */
 Int16U BCCIM_ReadBlockFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint)
@@ -527,8 +527,8 @@ Int16U BCCIM_ReadBlockFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Endp
 /**
  * @brief Чтение блока(массива) данных со значениями типа данных float из регистра узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
- * @param Node - ID узла в CAN сети
- * @param Endpoint - Регистр начала массива
+ * @param Node - ID узла в CAN сети.
+ * @param Endpoint - Регистр начала массива.
 */
 void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start)
 {
@@ -610,9 +610,9 @@ void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Mes
  * @brief Ожидание ответа от узла, полученного по мейлбоксу Mailbox.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param Mailbox - ID мейлбокса внутри узла, с которым собираемся общаться, в который будет отправлено сообщение.
- * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
+ * @return Код ошибки, если она произошла, в ином случае ERR_NO_ERROR.
  * @retval ERR_NO_ERROR - Ответ получен.
- * @retval ERR_TIMEOUT - Тайм-аут
+ * @retval ERR_TIMEOUT - Тайм-аут.
 */
 Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 {
