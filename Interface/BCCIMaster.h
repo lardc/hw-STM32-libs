@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------
-// BCCI master communication interface
+// BCCI-Master communication interface
 // ----------------------------------------
 
 #ifndef __BCCI_MASTER_H
@@ -19,7 +19,6 @@ extern Int16U	BCCIM_ReadBlockBufferCounter;
 extern float	BCCIM_ReadBlockFloatBuffer[];
 
 // Types
-// BCCI instance state
 typedef struct __BCCIM_Interface
 {
 	pBCCI_IOConfig IOConfig;
@@ -31,11 +30,11 @@ typedef struct __BCCIM_Interface
 void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks, volatile Int64U *pTimer);
 void BCCIM_InitWithNodeID(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks,
 		volatile Int64U *pTimer, Int16U NodeID);
-Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, pInt16U Data);
-Int16U BCCIM_ReadFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, float* Data);
-Int16U BCCIM_ReadLimitFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, Boolean ReadHighLimit, float* Data);
-Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Address, Int16U Data);
-Int16U BCCIM_WriteFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Address, float Data);
+Int16U BCCIM_Read16(pBCCIM_Interface Interface, Int16U Node, Int16U Register, pInt16U Data);
+Int16U BCCIM_ReadFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Register, float* Data);
+Int16U BCCIM_ReadLimitFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Register, Boolean ReadHighLimit, float* Data);
+Int16U BCCIM_Write16(pBCCIM_Interface Interface, Int16U Node, Int16U Register, Int16U Data);
+Int16U BCCIM_WriteFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Register, float Data);
 Int16U BCCIM_Call(pBCCIM_Interface Interface, Int16U Node, Int16U Action);
 Int16U BCCIM_ReadBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint);
 Int16U BCCIM_WriteBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, pInt16U Data, Int16U DataLength);
