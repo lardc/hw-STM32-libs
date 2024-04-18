@@ -27,7 +27,6 @@ typedef struct __BCCIM_Interface
 } BCCIM_Interface, *pBCCIM_Interface;
 
 // Functions
-
 void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks, volatile Int64U *pTimer);
 void BCCIM_InitWithNodeID(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks,
 		volatile Int64U *pTimer, Int16U NodeID);

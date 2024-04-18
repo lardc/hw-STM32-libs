@@ -58,7 +58,7 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox);
  * @brief Чтение блока(массива) данных из узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param Node - ID узла в CAN сети.
- * @param Endpoint - Регистр начала массива.
+ * @param Endpoint - Номер массива с данными.
  * @param Start - Флаг первого вызова функции.
 */
 void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
@@ -75,7 +75,7 @@ Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface);
  * @details При первом чтенич данных (Start = true): Происходит очистка мейлбоксов и сохранение endpoint. 
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param Node - ID узла в CAN сети.
- * @param Endpoint - Регистр начала массива.
+ * @param Endpoint - Номер массива с данными.
  * @param Start - Флаг первого вызова функции.
 */
 void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
@@ -370,7 +370,7 @@ Int16U BCCIM_Call(pBCCIM_Interface Interface, Int16U Node, Int16U Action)
  * @brief Чтение блока(массива) данных из узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param Node - ID узла в CAN сети.
- * @param Endpoint - Регистр начала массива.
+ * @param Endpoint - Номер массива с данными.
  * @return Код ошибки, если она произошла, в ином случае ERR_NO_ERROR.
 */
 Int16U BCCIM_ReadBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint)
@@ -400,7 +400,7 @@ Int16U BCCIM_ReadBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoin
  * @brief Запись блока(массива) данных в узел в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param Node - ID узла в CAN сети.
- * @param Endpoint - Регистр начала массива.
+ * @param Endpoint - Номер массива с данными.
  * @param Data - Указатель на массив, который будет записан в узел.
  * @param DataLength - Размер записываемого массива.
  * @return Код ошибки, если она произошла, в ином случае ERR_NO_ERROR.
@@ -439,7 +439,7 @@ Int16U BCCIM_WriteBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoi
  * Если  Start = false, то производится чтение с Endpoint сохраненного в глобальной переменной ReadBlockSavedEndpoint.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param Node - ID узла в CAN сети.
- * @param Endpoint - Регистр начала массива.
+ * @param Endpoint - Номер массива с данными.
  * @param Start - Флаг первого вызова функции.
 */
 void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start)
@@ -498,7 +498,7 @@ Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface)
  * @brief Чтение блока(массива) данных со значениями типа данных float из регистра узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param Node - ID узла в CAN сети.
- * @param Endpoint - Регистр начала массива.
+ * @param Endpoint - Номер массива с данными.
  * @return ERR_NO_ERROR или ERR_TIMEOUT, если произошла ошибка таймаута.
 */
 Int16U BCCIM_ReadBlockFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint)
@@ -528,7 +528,7 @@ Int16U BCCIM_ReadBlockFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Endp
  * @brief Чтение блока(массива) данных со значениями типа данных float из регистра узла в CAN сети.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param Node - ID узла в CAN сети.
- * @param Endpoint - Регистр начала массива.
+ * @param Endpoint - Номер массива с данными.
 */
 void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start)
 {

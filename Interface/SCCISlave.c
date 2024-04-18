@@ -143,7 +143,7 @@ Boolean	SCCI_RemoveProtectedArea(pSCCI_Interface Interface, Int16U AreaIndex)
 /**
  * @brief Добавление Endpoint 16битного массива в текущий интерфейс.
  * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
- * @param Endpoint - Номер Endpoint.
+ * @param Endpoint - Номер массива с данными.
  * @param ReadCallback -
 */
 Boolean SCCI_RegisterReadEndpoint16(pSCCI_Interface Interface, Int16U Endpoint,
@@ -156,7 +156,7 @@ Boolean SCCI_RegisterReadEndpoint16(pSCCI_Interface Interface, Int16U Endpoint,
 /**
  * @brief Добавление Endpoint 32битного массива в текущий интерфейс.
  * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
- * @param Endpoint - Номер Endpoint.
+ * @param Endpoint - Номер массива с данными.
  * @param ReadCallback -
 */
 Boolean SCCI_RegisterReadEndpointFloat(pSCCI_Interface Interface, Int16U Endpoint,
@@ -169,7 +169,7 @@ Boolean SCCI_RegisterReadEndpointFloat(pSCCI_Interface Interface, Int16U Endpoin
 /**
  * @brief Добавление Endpoint 16битного массива в текущий интерфейс.
  * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
- * @param Endpoint - Номер Endpoint.
+ * @param Endpoint - Номер массива с данными.
  * @param WriteCallback - 
 */
 Boolean SCCI_RegisterWriteEndpoint16(pSCCI_Interface Interface, Int16U Endpoint,
@@ -1111,7 +1111,7 @@ void SCCI_AnswerError(pSCCI_Interface Interface, Int16U Node, Int16U ErrorCode, 
  * @brief Отправка ответного пакета после запроса на чтение 16-битного массива.
  * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
  * @param Node - Узел отправки ответа.
- * @param Endpoint - Регистр начала массива.
+ * @param Endpoint - Номер массива с данными.
  * @param Data - Буфер для данных.
  * @param DataSize - Размер данных в байтах.
 */
@@ -1138,7 +1138,7 @@ void SCCI_AnswerReadBlock16Fast(pSCCI_Interface Interface, Int16U Node, Int16U E
  * @brief Отправка ответного пакета после запроса на чтение 32-битного массива с данными типа float.
  * @param Interface - Указатель на структуру, хранящую дата тейбл, таймеры таймаута.
  * @param Node - Узел отправки ответа.
- * @param Endpoint - Регистр начала массива.
+ * @param Endpoint - Номер массива с данными.
  * @param Data - Буфер для данных.
  * @param DataSize - Размер данных в байтах.
 */
