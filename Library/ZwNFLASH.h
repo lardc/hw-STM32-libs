@@ -9,6 +9,8 @@
 //
 #include "stdinc.h"
 
+uint16_t NFLASH_ReadWord16(uint32_t Address);
+
 void NFLASH_WriteArray16(uint32_t StartAddress, uint16_t* Buffer, uint32_t BufferSize);
 void NFLASH_ReadArray16(uint32_t StartAddress, uint16_t* Buffer, uint32_t BufferSize);
 void NFLASH_Unlock();
