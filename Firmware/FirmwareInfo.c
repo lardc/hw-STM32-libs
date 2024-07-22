@@ -4,6 +4,7 @@
 // Includes
 #include "git_info.h"
 #include <string.h>
+#include "DataTable.h"
 
 // Forward functions
 void FWINF_AppendSymbol(pInt16U DataTable, Int16U Symbol, Int16U Counter);
@@ -52,9 +53,18 @@ void FWINF_AppendString(pInt16U DataTable, const char *String, Int16U StringLen,
 
 void FWINF_AppendSymbol(pInt16U DataTable, Int16U Symbol, Int16U Counter)
 {
+#ifdef USE_FLOAT_DT
+	float *TablePointer = (float *)DataTable;
+#else
+	pInt16U TablePointer = DataTable;
+#endif
+
 	if(Counter % 2)
-		*(DataTable + Counter / 2) |= Symbol & 0xFF;
+	{
+		Int16U PrevVal = (Int16U)(*(TablePointer + Counter / 2));
+		*(TablePointer + Counter / 2) = PrevVal | (Symbol & 0xFF);
+	}
 	else
-		*(DataTable + Counter / 2) = Symbol << 8;
+		*(TablePointer + Counter / 2) = Symbol << 8;
 }
 // ----------------------------------------
