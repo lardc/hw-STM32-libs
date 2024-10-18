@@ -10,7 +10,6 @@
 
 // Forward functions
 //
-uint16_t NFLASH_ReadWord16(uint32_t Address);
 uint32_t NFLASH_Swap32(uint32_t Data);
 
 
@@ -133,6 +132,15 @@ void NFLASH_ReadArray32(uint32_t StartAddress, uint32_t* Buffer, uint32_t Buffer
 		Buffer[i] = NFLASH_Swap32(*(__IO uint32_t*)StartAddress);
 }
 // -----------------------------------------------
+
+uint32_t NFLASH_ReadWord32(uint32_t Address)
+{
+	uint32_t Buffer;
+	NFLASH_ReadArray32(Address, &Buffer, 1);
+	return Buffer;
+}
+// -----------------------------------------------
+
 
 void NFLASH_WriteDT32(uint32_t EPROMAddress, uint32_t* Buffer, uint32_t BufferSize)
 {
