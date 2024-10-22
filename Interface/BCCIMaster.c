@@ -45,6 +45,7 @@ void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16
 Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface);
 void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
 Boolean BCCIM_HandleReadBlockFloat(pBCCIM_Interface Interface);
+void BCCIM_WaitBroadcastResponse(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize);
 
 // Variables
 Int16U BCCIM_ReadBlockBufferCounter;
@@ -541,6 +542,14 @@ void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Mes
 }
 // ----------------------------------------
 
+void BCCIM_SendBroadcastPing(pBCCI_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize);
+{
+	CANMessage message;
+	Interface->IOConfig->IO_SendMessageEx(Slave_MBOX_BP, &message, FALSE, FALSE);
+	BCCIM_WaitBroadcastResponse(Interface, NodeArray, NodeArraySize);
+}
+// ----------------------------------------
+
 /**
  * @brief Ожидание ответа от узла, полученного по мейлбоксу Mailbox.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
@@ -572,6 +581,29 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 	}
 
 	return ERR_TIMEOUT;
+}
+// ----------------------------------------
+
+void BCCIM_WaitBroadcastResponse(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize);
+{
+	Int64U timeout;
+	CANMessage message;
+	Int16U currentNodeCount = 0;
+
+	timeout = BR_TIMEOUT + *(Interface->pTimerCounter);
+
+	while (*(Interface->pTimerCounter) < timeout)
+	{
+		if (Interface->IOConfig->IO_IsMessageReceived(Master_MBOX_BP_A, NULL))
+		{
+			Interface->IOConfig->IO_GetMessage(Master_MBOX_BP_A, &message);
+
+			NodeArray[currentNodeCount++] = message.HIGH.WORD.WORD_0;
+
+			timeout = *(Interface->pTimerCounter) + BR_TIMEOUT;
+		}
+	}
+	*NodeArraySize = currentNodeCount;
 }
 // ----------------------------------------
 
