@@ -37,6 +37,8 @@ typedef void (*xProcessFunction)(pBCCI_Interface Interface);
 #define Slave_MBOX_RB_F_A			36
 #define Slave_MBOX_RLIM_F			37
 #define Slave_MBOX_RLIM_F_A			38
+#define Slave_MBOX_BP				42
+#define Slave_MBOX_BP_A				43
 
 // Forward functions
 //
@@ -55,6 +57,7 @@ void BCCI_HandleCall(pBCCI_Interface Interface);
 void BCCI_HandleReadBlock16(pBCCI_Interface Interface);
 void BCCI_HandleReadBlockFloat(pBCCI_Interface Interface);
 void BCCI_HandleWriteBlock16(pBCCI_Interface Interface);
+void BCCI_HandleBroadcastPing(pBCCI_Interface Interface);
 
 // Functions
 //
@@ -110,6 +113,8 @@ void BCCI_InitWithNodeID(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxC
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_WB_16_A, 	SlaveFilterID + CAN_ID_WB_16 + 1,	2);
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16, 	SlaveFilterID + CAN_ID_RB_16,		2);
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16_A, 	SlaveFilterID + CAN_ID_RB_16 + 1,	8);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_BP,		SlaveFilterID + CAN_ID_R_BP,		0);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_BP_A,		SlaveFilterID + CAN_ID_A_BP,		2);
 #ifdef USE_FLOAT_DT
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F,		SlaveFilterID + CAN_ID_W_F,			6);
 	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F_A,		SlaveFilterID + CAN_ID_W_F + 1,		2);
@@ -150,9 +155,7 @@ void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RB_F, BCCI_HandleReadBlockFloat))
 		return;
 
-	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RLIM_F, BCCI_HandleReadLimitFloat))
-		return;
-#endif
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RLIM_F, BCCI_HandleReadLimitFloat)) return; #endif
 }
 // ----------------------------------------
 
@@ -474,6 +477,15 @@ void BCCI_HandleWriteBlock16(pBCCI_Interface Interface)
 	}
 	else
 		BCCI_SendErrorFrame(Interface, CANInput, ERR_ILLEGAL_SIZE, length);
+}
+// ----------------------------------------
+
+void BCCI_HandleBroadcastPing(pBCCI_Interface Interface)
+{
+	CANMessage message;
+	Interface->IOConfig->IO_GetMessage(MBOX_BP, &message);
+	message.HIGH.WORD.WORD_0 = CAN_NID;
+	BCCI_SendResponseFrame(Interface, MBOX_BP_A, &message);
 }
 // ----------------------------------------
 

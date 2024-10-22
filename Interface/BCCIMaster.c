@@ -33,6 +33,8 @@
 #define Master_MBOX_RB_F_A			16
 #define Master_MBOX_RLIM_F			17
 #define Master_MBOX_RLIM_F_A		18
+#define Master_MBOX_BP				40
+#define Master_MBOX_BP_A			41
 
 #define MIN(a, b) 					(((a) < (b)) ? (a) : (b))
 
@@ -109,6 +111,8 @@ void BCCIM_InitWithNodeID(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, I
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F_A, 	MasterFilterID + CAN_ID_RB_F + 1,	8);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F, 	MasterFilterID + CAN_ID_RLIM_F,		4);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F_A,	MasterFilterID + CAN_ID_RLIM_F + 1, 6);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_BP,		CAN_ID_R_BP,						0);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_BP_A,		CAN_ID_A_BP,						2);
 }
 // ----------------------------------------
 

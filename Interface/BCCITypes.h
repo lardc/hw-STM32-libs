@@ -24,6 +24,8 @@
 #define CAN_ID_RB_F					42
 #define CAN_ID_CALL					50
 #define CAN_ID_ERR					61
+#define CAN_ID_R_BP					70
+#define CAN_ID_A_BP					71
 
 // Types
 //
