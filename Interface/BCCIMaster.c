@@ -542,7 +542,7 @@ void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Mes
 }
 // ----------------------------------------
 
-void BCCIM_SendBroadcastPing(pBCCI_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize);
+void BCCIM_SendBroadcastPing(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize);
 {
 	CANMessage message;
 	Interface->IOConfig->IO_SendMessageEx(Master_MBOX_BP, &message, FALSE, FALSE);
