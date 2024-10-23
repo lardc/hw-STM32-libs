@@ -155,7 +155,9 @@ void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RB_F, BCCI_HandleReadBlockFloat))
 		return;
 
-	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RLIM_F, BCCI_HandleReadLimitFloat)) return; #endif
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_RLIM_F, BCCI_HandleReadLimitFloat))
+		return;
+#endif
 }
 // ----------------------------------------
 
@@ -483,8 +485,8 @@ void BCCI_HandleWriteBlock16(pBCCI_Interface Interface)
 void BCCI_HandleBroadcastPing(pBCCI_Interface Interface)
 {
 	CANMessage message;
-	Interface->IOConfig->IO_GetMessage(MBOX_BP, &message);
-	BCCI_SendResponseFrame(Interface, MBOX_BP_A, &message);
+	Interface->IOConfig->IO_GetMessage(Slave_MBOX_BP, &message);
+	BCCI_SendResponseFrame(Interface, Slave_MBOX_BP_A, &message);
 }
 // ----------------------------------------
 

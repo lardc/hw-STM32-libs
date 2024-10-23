@@ -112,8 +112,8 @@ void BCCIM_InitWithNodeID(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, I
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F_A, 	MasterFilterID + CAN_ID_RB_F + 1,	8);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F, 	MasterFilterID + CAN_ID_RLIM_F,		4);
 	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F_A,	MasterFilterID + CAN_ID_RLIM_F + 1, 6);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_BP,		CAN_ID_R_BP,						0);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_BP_A,		CAN_ID_A_BP,						0);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_BP,		MasterFilterID + CAN_ID_R_BP,		0);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_BP_A,		MasterFilterID + CAN_ID_A_BP,		0);
 }
 // ----------------------------------------
 
@@ -542,7 +542,7 @@ void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Mes
 }
 // ----------------------------------------
 
-void BCCIM_SendBroadcastPing(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize);
+void BCCIM_SendBroadcastPing(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize)
 {
 	CANMessage message;
 	Interface->IOConfig->IO_SendMessageEx(Master_MBOX_BP, &message, FALSE, FALSE);
@@ -584,7 +584,7 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 }
 // ----------------------------------------
 
-void BCCIM_WaitBroadcastResponse(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize);
+void BCCIM_WaitBroadcastResponse(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize)
 {
 	Int64U timeout;
 	CANMessage message;
@@ -598,7 +598,7 @@ void BCCIM_WaitBroadcastResponse(pBCCIM_Interface Interface, pInt16U NodeArray, 
 		{
 			Interface->IOConfig->IO_GetMessage(Master_MBOX_BP_A, &message);
 
-			NodeArray[currentNodeCount++] = message.MsgID.all >> 10;
+			NodeArray[currentNodeCount++] = (message.MsgID.all & CAN_SLAVE_NID_MASK) >> 10;
 
 			timeout = *(Interface->pTimerCounter) + BR_TIMEOUT;
 		}
