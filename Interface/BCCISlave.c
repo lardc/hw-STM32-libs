@@ -144,7 +144,10 @@ void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 
 	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_WB_16, BCCI_HandleWriteBlock16))
 		return;
-	
+
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_BP, BCCI_HandleBroadcastPing))
+		return;
+
 #ifdef USE_FLOAT_DT
 	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_W_F, BCCI_HandleWriteFloat))
 		return;
