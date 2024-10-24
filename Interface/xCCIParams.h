@@ -14,5 +14,7 @@
 #define	xCCI_MAX_PROTECTED_AREAS	2
 //
 #define xCCI_BLOCK_STM_MAX_VAL		64000
+//
+#define BR_TIMEOUT					100
 
 #endif // __xCCI_PARAMS_H

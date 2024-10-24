@@ -26,7 +26,7 @@ void NCAN_FIFOInterrupt(bool Enable);
 void NCAN_RecieveData();
 bool NCAN_RecieveCheck();
 void NCAN_RecieveFlagReset();
-void NCAN_ConfigMailbox(Int16U mBox, Int32U MsgID, Int16U DataLength);
+void NCAN_ConfigMailbox(Int16U mBox, Int32U MsgID, Int16U DataLength, bool IsReceiveMailbox, Int32U Mask);
 void NCAN_SendMessage(Int16U mBox, pCANMessage Data);
 void NCAN_SendMessageEx(Int16U mBox, pCANMessage Data, Boolean AlterMessageID, Boolean AlterMessageLength);
 Boolean NCAN_IsMessageReceived(Int16U mBox, pBoolean pMessageLost);
