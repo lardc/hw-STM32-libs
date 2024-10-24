@@ -2,7 +2,6 @@
 //
 #include "ZwNCAN.h"
 #include "ZwRCC.h"
-#include "BCCIxParams.h"
 #include "Delay.h"
 
 // Types
@@ -11,6 +10,7 @@
 typedef struct __CANMailboxItem
 {
 	uint32_t	MsgID;
+	uint32_t	MsgMask;
 	bool		DataReady;
 	bool		IsReceiveMailbox;
 	uint16_t	DataLength;
@@ -134,12 +134,24 @@ void NCAN_RecieveData()
 	MsgID = CAN1->sFIFOMailBox[0].RIR >> 3;
 
 	// Поиск мэйлбокса
-	for (i = 0; i < MAILBOXmax; ++i)
+	for(i = 0; i < MAILBOXmax; ++i)
 	{
-		if (MailBox[i].IsReceiveMailbox &&
-			((MsgID & (CAN_SLAVE_NID_MASK | CAN_FUNC_MASK)) == MailBox[i].MsgID ||
-			(MsgID & (CAN_MASTER_NID_MASK | CAN_FUNC_MASK)) == MailBox[i].MsgID))
+		if(MailBox[i].IsReceiveMailbox)
 		{
+			// Если маска == 0, то ищем строгое совпадение
+			if(MailBox[i].MsgMask == 0)
+			{
+				if(MsgID != MailBox[i].MsgID)
+					continue;
+			}
+			else
+			{
+				uint32_t MaskedInputMessage = MailBox[i].MsgMask & MsgID;
+				uint32_t MaskedMailboxMsgID = MailBox[i].MsgMask & MailBox[i].MsgID;
+				if(MaskedInputMessage != MaskedMailboxMsgID)
+					continue;
+			}
+
 			InputMessage.HIGH.DWORD_0 = NCAN_WordSwap(CAN1->sFIFOMailBox[0].RDLR);
 			InputMessage.LOW.DWORD_1  = NCAN_WordSwap(CAN1->sFIFOMailBox[0].RDHR);
 			InputMessage.MsgID.all	  = MsgID;
@@ -153,11 +165,12 @@ void NCAN_RecieveData()
 }
 //-----------------------------------------------
 
-void NCAN_ConfigMailbox(Int16U mBox, Int32U MsgID, Int16U DataLength, bool IsReceiveMailbox)
+void NCAN_ConfigMailbox(Int16U mBox, Int32U MsgID, Int16U DataLength, bool IsReceiveMailbox, Int32U Mask)
 {
 	MailBox[mBox].MsgID = MsgID;
 	MailBox[mBox].DataLength = DataLength;
 	MailBox[mBox].IsReceiveMailbox = IsReceiveMailbox;
+	MailBox[mBox].MsgMask = Mask;
 }
 //-----------------------------------------------
 
@@ -166,7 +179,7 @@ void NCAN_SendMessageX(Int16U mBox, pCANMessage Data, Boolean AlterMessageID, Bo
 	uint32_t NewMsgID = Data->MsgID.all;
 
 	if (!AlterMessageID)
-		NewMsgID &= CAN_MASTER_NID_MASK;
+		NewMsgID &= MailBox[mBox].MsgMask;
 
 	NewMsgID |= MailBox[mBox].MsgID;
 
