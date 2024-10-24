@@ -12,6 +12,7 @@ typedef struct __CANMailboxItem
 {
 	uint32_t	MsgID;
 	bool		DataReady;
+	bool		IsReceiveMailbox;
 	uint16_t	DataLength;
 	CANMessage	Message;
 } CANMailboxItem;
@@ -135,8 +136,9 @@ void NCAN_RecieveData()
 	// Поиск мэйлбокса
 	for (i = 0; i < MAILBOXmax; ++i)
 	{
-		if ((MsgID & (CAN_SLAVE_NID_MASK | CAN_FUNC_MASK)) == MailBox[i].MsgID ||
-			(MsgID & (CAN_MASTER_NID_MASK | CAN_FUNC_MASK)) == MailBox[i].MsgID)
+		if (MailBox[i].IsReceiveMailbox &&
+			((MsgID & (CAN_SLAVE_NID_MASK | CAN_FUNC_MASK)) == MailBox[i].MsgID ||
+			(MsgID & (CAN_MASTER_NID_MASK | CAN_FUNC_MASK)) == MailBox[i].MsgID))
 		{
 			InputMessage.HIGH.DWORD_0 = NCAN_WordSwap(CAN1->sFIFOMailBox[0].RDLR);
 			InputMessage.LOW.DWORD_1  = NCAN_WordSwap(CAN1->sFIFOMailBox[0].RDHR);
@@ -151,10 +153,11 @@ void NCAN_RecieveData()
 }
 //-----------------------------------------------
 
-void NCAN_ConfigMailbox(Int16U mBox, Int32U MsgID, Int16U DataLength)
+void NCAN_ConfigMailbox(Int16U mBox, Int32U MsgID, Int16U DataLength, bool IsReceiveMailbox)
 {
 	MailBox[mBox].MsgID = MsgID;
 	MailBox[mBox].DataLength = DataLength;
+	MailBox[mBox].IsReceiveMailbox = IsReceiveMailbox;
 }
 //-----------------------------------------------
 

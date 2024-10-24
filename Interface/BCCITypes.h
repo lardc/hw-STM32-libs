@@ -27,6 +27,9 @@
 #define CAN_ID_R_BP					70
 #define CAN_ID_A_BP					71
 
+#define CAN_MBOX_RX					1
+#define CAN_MBOX_TX					0
+
 // Types
 //
 // CAN message (64bit)
@@ -69,7 +72,7 @@ typedef void (*BCCI_FUNC_SendMessage)(Int16U mBox, pCANMessage Data);
 typedef void (*BCCI_FUNC_SendMessageEx)(Int16U mBox, pCANMessage Data, Boolean AlterMessageID, Boolean AlterMessageLength);
 typedef void (*BCCI_FUNC_GetMessage)(Int16U mBox, pCANMessage Data);
 typedef Boolean (*BCCI_FUNC_IsMessageReceived)(Int16U mBox, pBoolean pMessageLost);
-typedef void (*BCCI_FUNC_ConfigMailbox)(Int16U mBox, Int32U MsgID, Int16U DataLen);
+typedef void (*BCCI_FUNC_ConfigMailbox)(Int16U mBox, Int32U MsgID, Int16U DataLength, bool IsReceiveMailbox);
 //
 // IO configuration
 typedef struct __BCCI_IOConfig
