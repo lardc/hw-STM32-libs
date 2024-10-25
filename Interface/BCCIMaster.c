@@ -542,6 +542,12 @@ void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Mes
 }
 // ----------------------------------------
 
+/**
+ * @brief Отправка широковещательного запроса
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @param NodeArray - Указатель на массив в который будут записаны полученные Node ID узлов, ответивших на запрос
+ * @param NodeArraySize - Указатель на переменную, в которую будет записан размер массива, после записи всех Node ID
+*/
 void BCCIM_SendBroadcastPing(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize)
 {
 	CANMessage message;
@@ -584,6 +590,12 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 }
 // ----------------------------------------
 
+/**
+ * @brief Ожидание ответа на широковещательный запрос
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @param NodeArray - Указатель на массив в который будут записаны полученные Node ID узлов, ответивших на запрос
+ * @param NodeArraySize - Указатель на переменную, в которую будет записан размер массива, после записи всех Node ID
+*/
 void BCCIM_WaitBroadcastResponse(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize)
 {
 	Int64U timeout;
