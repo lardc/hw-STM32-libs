@@ -37,13 +37,36 @@ Boolean xCCI_RemoveProtectedArea(pxCCI_ProtectionAndEndpoints PAE, Int16U AreaIn
 }
 // ----------------------------------------
 
+Boolean xCCI_EndpointIndex(pxCCI_ProtectionAndEndpoints PAE, Int16U Name, pInt16U Index)
+{
+	Int16U i;
+	for (i = 0; i < xCCI_MAX_READ_ENDPOINTS; ++i)
+	{
+		if (PAE->ReadEndpoints16[i].Name == Name)
+		{
+			*Index = i;
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+// ----------------------------------------
+
 Boolean xCCI_RegisterReadEndpoint16(pxCCI_ProtectionAndEndpoints PAE, Int16U Endpoint,
 								    xCCI_FUNC_CallbackReadEndpoint16 ReadCallback)
 {
-	if(Endpoint < (xCCI_MAX_READ_ENDPOINTS + 1))
+	Int16U i;
+	for (i = 0; i < xCCI_MAX_READ_ENDPOINTS; ++i)
 	{
-		PAE->ReadEndpoints16[Endpoint] = ReadCallback;
-		return TRUE;
+		if (!PAE->ReadEndpoints16[i].Initialized)
+		{
+			PAE->ReadEndpoints16[i].Callback = ReadCallback;
+			PAE->ReadEndpoints16[i].Name = Endpoint;
+			PAE->ReadEndpoints16[i].Initialized = TRUE;
+
+			return TRUE;
+		}
 	}
 
 	return FALSE;
@@ -53,7 +76,7 @@ Boolean xCCI_RegisterReadEndpoint16(pxCCI_ProtectionAndEndpoints PAE, Int16U End
 Boolean xCCI_RegisterReadEndpointFloat(pxCCI_ProtectionAndEndpoints PAE, Int16U Endpoint,
 								    xCCI_FUNC_CallbackReadEndpointFloat ReadCallback)
 {
-	if(Endpoint < (xCCI_MAX_READ_ENDPOINTS + 1))
+	if(Endpoint < (xCCI_MAX_READ_ENDPOINTS))
 	{
 		PAE->ReadEndpointsFloat[Endpoint] = ReadCallback;
 		return TRUE;

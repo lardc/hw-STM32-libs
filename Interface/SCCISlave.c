@@ -10,9 +10,7 @@
 #include "CRC16.h"
 #include "SysConfig.h"
 #include <string.h>
-
 // Constants
-//
 enum DispID
 {
 	DISP_NONE			=	0,
@@ -98,13 +96,17 @@ void SCCI_Init(pSCCI_Interface Interface, pSCCI_IOConfig IOConfig, pxCCI_Service
 	for(i = 0; i < xCCI_BUFFER_SIZE; ++i)
 		Interface->MessageBuffer[i] = 0;
 
-	for(i = 0; i < (xCCI_MAX_READ_ENDPOINTS + 1); ++i)
-		Interface->ProtectionAndEndpoints.ReadEndpoints16[i] = NULL;
+	for(i = 0; i < (xCCI_MAX_READ_ENDPOINTS); ++i)
+	{
+		Interface->ProtectionAndEndpoints.ReadEndpoints16[i].Callback = NULL;
+		Interface->ProtectionAndEndpoints.ReadEndpoints16[i].Name = 0;
+		Interface->ProtectionAndEndpoints.ReadEndpoints16[i].Initialized = FALSE;
+	}
 
-	for(i = 0; i < (xCCI_MAX_WRITE_ENDPOINTS + 1); ++i)
+	for(i = 0; i < (xCCI_MAX_WRITE_ENDPOINTS); ++i)
 		Interface->ProtectionAndEndpoints.WriteEndpoints16[i] = NULL;
 
-	for(i = 0; i < (xCCI_MAX_READ_ENDPOINTS + 1); ++i)
+	for(i = 0; i < (xCCI_MAX_READ_ENDPOINTS); ++i)
 		Interface->ProtectionAndEndpoints.ReadEndpointsFloat[i] = NULL;
 
 	// Save parameters
@@ -663,14 +665,18 @@ void SCCI_HandleReadBlock16(pSCCI_Interface Interface, Boolean Repeat)
 {
 	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U epnt = Interface->MessageBuffer[2] >> 8;
+	Int16U epnt_index;
 
 	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt])
+		if(xCCI_EndpointIndex(&Interface->ProtectionAndEndpoints, epnt, &epnt_index))
 		{
 			pInt16U src;
-			Int16U length = Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt](epnt, &src, FALSE, Repeat,
-															Interface->ArgForEPCallback, SCCI_BLOCK_MAX_VAL_16_R);
+
+			xCCI_FUNC_CallbackReadEndpoint16 Callback =
+				(xCCI_FUNC_CallbackReadEndpoint16)Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt_index].Callback;
+			Int16U length = Callback(epnt, &src, FALSE, Repeat, Interface->ArgForEPCallback, SCCI_BLOCK_MAX_VAL_16_R);
+
 			MemZero16(&Interface->MessageBuffer[3], SCCI_BLOCK_MAX_VAL_16_R);
 
 			if(!length || (length > SCCI_BLOCK_MAX_VAL_16_R))
@@ -752,14 +758,18 @@ void SCCI_HandleReadBlockFast16(pSCCI_Interface Interface, Boolean Repeat)
 {
 	Int16U node = Interface->MessageBuffer[0] & 0xFF;
 	Int16U epnt = Interface->MessageBuffer[2] >> 8;
+	Int16U epnt_index;
 
 	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt])
+		if(xCCI_EndpointIndex(&Interface->ProtectionAndEndpoints, epnt, &epnt_index))
 		{
 			pInt16U src;
-			Int16U length = Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt](epnt, &src, TRUE, Repeat,
-																			Interface->ArgForEPCallback, 0);
+
+			xCCI_FUNC_CallbackReadEndpoint16 Callback =
+				(xCCI_FUNC_CallbackReadEndpoint16)Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt_index].Callback;
+			Int16U length = Callback(epnt, &src, FALSE, Repeat, Interface->ArgForEPCallback, SCCI_BLOCK_MAX_VAL_16_R);
+
 			Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
 
 			if(!length || (length > xCCI_BLOCK_STM_MAX_VAL))
@@ -804,7 +814,7 @@ void SCCI_HandleReadBlockFastFloat(pSCCI_Interface Interface)
 
 	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt])
+		if((epnt < xCCI_MAX_READ_ENDPOINTS) && Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt])
 		{
 			Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
 

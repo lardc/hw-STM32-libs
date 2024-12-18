@@ -87,8 +87,12 @@ void BCCI_InitWithNodeID(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxC
 	Interface->ProtectionAndEndpoints.ProtectedAreasUsed = 0;
 	
 	Int16U i;
-	for(i = 0; i < (xCCI_MAX_READ_ENDPOINTS + 1); ++i)
-		Interface->ProtectionAndEndpoints.ReadEndpoints16[i] = NULL;
+	for(i = 0; i < (xCCI_MAX_READ_ENDPOINTS); ++i)
+	{
+		Interface->ProtectionAndEndpoints.ReadEndpoints16[i].Callback = NULL;
+		Interface->ProtectionAndEndpoints.ReadEndpoints16[i].Name = 0;
+		Interface->ProtectionAndEndpoints.ReadEndpoints16[i].Initialized = FALSE;
+	}
 	
 	for(i = 0; i < (xCCI_MAX_WRITE_ENDPOINTS + 1); ++i)
 		Interface->ProtectionAndEndpoints.WriteEndpoints16[i] = NULL;
@@ -384,18 +388,19 @@ void BCCI_HandleCall(pBCCI_Interface Interface)
 void BCCI_HandleReadBlock16(pBCCI_Interface Interface)
 {
 	pInt16U src;
-	Int16U epnt;
+	Int16U epnt, epnt_index;
 	CANMessage CANInput;
 	
 	Interface->IOConfig->IO_GetMessage(Slave_MBOX_RB_16, &CANInput);
 	epnt = CANInput.HIGH.WORD.WORD_0;
 	
-	if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt])
+	if(xCCI_EndpointIndex(&Interface->ProtectionAndEndpoints, epnt, &epnt_index))
 	{
 		CANMessage CANOutput = CANInput;
-		
-		Int16U length = Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt](epnt, &src, FALSE, FALSE,
-				Interface->ArgForEPCallback, 4);
+
+		xCCI_FUNC_CallbackReadEndpoint16 Callback =
+				(xCCI_FUNC_CallbackReadEndpoint16)Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt_index].Callback;
+		Int16U length = Callback(epnt, &src, FALSE, FALSE, Interface->ArgForEPCallback, 4);
 		
 		switch(length)
 		{
@@ -425,7 +430,7 @@ void BCCI_HandleReadBlockFloat(pBCCI_Interface Interface)
 	Interface->IOConfig->IO_GetMessage(Slave_MBOX_RB_F, &CANInput);
 
 	Int16U epnt = CANInput.HIGH.WORD.WORD_0;
-	if((epnt < xCCI_MAX_READ_ENDPOINTS + 1) && Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt])
+	if((epnt < xCCI_MAX_READ_ENDPOINTS) && Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt])
 	{
 		pInt32U src;
 		CANMessage CANOutput = CANInput;
