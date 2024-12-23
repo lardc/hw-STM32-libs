@@ -76,7 +76,7 @@ Boolean xCCI_RegisterReadEndpoint16(pxCCI_ProtectionAndEndpoints PAE, Int16U End
 Boolean xCCI_RegisterReadEndpointFloat(pxCCI_ProtectionAndEndpoints PAE, Int16U Endpoint,
 								    xCCI_FUNC_CallbackReadEndpointFloat ReadCallback)
 {
-	if(Endpoint < (xCCI_MAX_READ_ENDPOINTS))
+	if(Endpoint < xCCI_MAX_READ_ENDPOINTS)
 	{
 		PAE->ReadEndpointsFloat[Endpoint] = ReadCallback;
 		return TRUE;

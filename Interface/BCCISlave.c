@@ -87,7 +87,7 @@ void BCCI_InitWithNodeID(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxC
 	Interface->ProtectionAndEndpoints.ProtectedAreasUsed = 0;
 	
 	Int16U i;
-	for(i = 0; i < (xCCI_MAX_READ_ENDPOINTS); ++i)
+	for(i = 0; i < xCCI_MAX_READ_ENDPOINTS; ++i)
 	{
 		Interface->ProtectionAndEndpoints.ReadEndpoints16[i].Callback = NULL;
 		Interface->ProtectionAndEndpoints.ReadEndpoints16[i].Name = 0;
@@ -398,9 +398,11 @@ void BCCI_HandleReadBlock16(pBCCI_Interface Interface)
 	{
 		CANMessage CANOutput = CANInput;
 
+		DataTable[232] = 14;
+
 		xCCI_FUNC_CallbackReadEndpoint16 Callback =
 				(xCCI_FUNC_CallbackReadEndpoint16)Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt_index].Callback;
-		Int16U length = Callback(epnt, &src, FALSE, FALSE, Interface->ArgForEPCallback, 4);
+		Int16U length = Callback(epnt_index, &src, FALSE, FALSE, Interface->ArgForEPCallback, 4);
 		
 		switch(length)
 		{

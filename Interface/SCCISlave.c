@@ -96,7 +96,7 @@ void SCCI_Init(pSCCI_Interface Interface, pSCCI_IOConfig IOConfig, pxCCI_Service
 	for(i = 0; i < xCCI_BUFFER_SIZE; ++i)
 		Interface->MessageBuffer[i] = 0;
 
-	for(i = 0; i < (xCCI_MAX_READ_ENDPOINTS); ++i)
+	for(i = 0; i < xCCI_MAX_READ_ENDPOINTS; ++i)
 	{
 		Interface->ProtectionAndEndpoints.ReadEndpoints16[i].Callback = NULL;
 		Interface->ProtectionAndEndpoints.ReadEndpoints16[i].Name = 0;
@@ -106,7 +106,7 @@ void SCCI_Init(pSCCI_Interface Interface, pSCCI_IOConfig IOConfig, pxCCI_Service
 	for(i = 0; i < (xCCI_MAX_WRITE_ENDPOINTS); ++i)
 		Interface->ProtectionAndEndpoints.WriteEndpoints16[i] = NULL;
 
-	for(i = 0; i < (xCCI_MAX_READ_ENDPOINTS); ++i)
+	for(i = 0; i < xCCI_MAX_READ_ENDPOINTS; ++i)
 		Interface->ProtectionAndEndpoints.ReadEndpointsFloat[i] = NULL;
 
 	// Save parameters
@@ -675,7 +675,7 @@ void SCCI_HandleReadBlock16(pSCCI_Interface Interface, Boolean Repeat)
 
 			xCCI_FUNC_CallbackReadEndpoint16 Callback =
 				(xCCI_FUNC_CallbackReadEndpoint16)Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt_index].Callback;
-			Int16U length = Callback(epnt, &src, FALSE, Repeat, Interface->ArgForEPCallback, SCCI_BLOCK_MAX_VAL_16_R);
+			Int16U length = Callback(epnt_index, &src, FALSE, Repeat, Interface->ArgForEPCallback, SCCI_BLOCK_MAX_VAL_16_R);
 
 			MemZero16(&Interface->MessageBuffer[3], SCCI_BLOCK_MAX_VAL_16_R);
 
@@ -768,7 +768,7 @@ void SCCI_HandleReadBlockFast16(pSCCI_Interface Interface, Boolean Repeat)
 
 			xCCI_FUNC_CallbackReadEndpoint16 Callback =
 				(xCCI_FUNC_CallbackReadEndpoint16)Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt_index].Callback;
-			Int16U length = Callback(epnt, &src, FALSE, Repeat, Interface->ArgForEPCallback, SCCI_BLOCK_MAX_VAL_16_R);
+			Int16U length = Callback(epnt_index, &src, TRUE, Repeat, Interface->ArgForEPCallback, 0);
 
 			Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
 
