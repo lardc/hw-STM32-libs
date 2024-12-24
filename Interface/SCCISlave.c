@@ -675,7 +675,9 @@ void SCCI_HandleReadBlock16(pSCCI_Interface Interface, Boolean Repeat)
 
 			xCCI_FUNC_CallbackReadEndpoint16 Callback =
 				(xCCI_FUNC_CallbackReadEndpoint16)Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt_index].Callback;
-			Int16U length = Callback(epnt_index, &src, FALSE, Repeat, Interface->ArgForEPCallback, SCCI_BLOCK_MAX_VAL_16_R);
+
+			// epnt_index + 1 - для совместимости с текущей реализацией в DeviceProfile.c
+			Int16U length = Callback(epnt_index + 1, &src, FALSE, Repeat, Interface->ArgForEPCallback, SCCI_BLOCK_MAX_VAL_16_R);
 
 			MemZero16(&Interface->MessageBuffer[3], SCCI_BLOCK_MAX_VAL_16_R);
 
@@ -765,10 +767,13 @@ void SCCI_HandleReadBlockFast16(pSCCI_Interface Interface, Boolean Repeat)
 		if(xCCI_EndpointIndex(&Interface->ProtectionAndEndpoints, epnt, &epnt_index))
 		{
 			pInt16U src;
+			DataTable[10] = epnt_index;
 
 			xCCI_FUNC_CallbackReadEndpoint16 Callback =
 				(xCCI_FUNC_CallbackReadEndpoint16)Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt_index].Callback;
-			Int16U length = Callback(epnt_index, &src, TRUE, Repeat, Interface->ArgForEPCallback, 0);
+
+			// epnt_index + 1 - для совместимости с текущей реализацией в DeviceProfile.c
+			Int16U length = Callback(epnt_index + 1, &src, TRUE, Repeat, Interface->ArgForEPCallback, 0);
 
 			Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
 

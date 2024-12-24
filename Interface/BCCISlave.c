@@ -402,7 +402,9 @@ void BCCI_HandleReadBlock16(pBCCI_Interface Interface)
 
 		xCCI_FUNC_CallbackReadEndpoint16 Callback =
 				(xCCI_FUNC_CallbackReadEndpoint16)Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt_index].Callback;
-		Int16U length = Callback(epnt_index, &src, FALSE, FALSE, Interface->ArgForEPCallback, 4);
+
+		// epnt_index + 1 - для совместимости с текущей реализацией в DeviceProfile.c
+		Int16U length = Callback(epnt_index + 1, &src, FALSE, FALSE, Interface->ArgForEPCallback, 4);
 		
 		switch(length)
 		{
