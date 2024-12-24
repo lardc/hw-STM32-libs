@@ -398,8 +398,6 @@ void BCCI_HandleReadBlock16(pBCCI_Interface Interface)
 	{
 		CANMessage CANOutput = CANInput;
 
-		DataTable[232] = 14;
-
 		xCCI_FUNC_CallbackReadEndpoint16 Callback =
 				(xCCI_FUNC_CallbackReadEndpoint16)Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt_index].Callback;
 
