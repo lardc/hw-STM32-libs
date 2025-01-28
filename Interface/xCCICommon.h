@@ -47,7 +47,7 @@ typedef struct __xCCI_ProtectionAndEndpoints
 	xCCI_ProtectedArea ProtectedAreas[xCCI_MAX_PROTECTED_AREAS];
 	xCCI_EndopointData ReadEndpoints16[xCCI_MAX_READ_ENDPOINTS];
 	xCCI_FUNC_CallbackWriteEndpoint16 WriteEndpoints16[xCCI_MAX_WRITE_ENDPOINTS + 1];
-	xCCI_FUNC_CallbackReadEndpointFloat ReadEndpointsFloat[xCCI_MAX_READ_ENDPOINTS];
+	xCCI_EndopointData ReadEndpointsFloat[xCCI_MAX_READ_ENDPOINTS];
 } xCCI_ProtectionAndEndpoints, *pxCCI_ProtectionAndEndpoints;
 
 // Constants
@@ -102,7 +102,7 @@ Int16U xCCI_AddProtectedArea(pxCCI_ProtectionAndEndpoints PAE, Int16U StartAddre
 // Remove protected area
 Boolean xCCI_RemoveProtectedArea(pxCCI_ProtectionAndEndpoints PAE, Int16U AreaIndex);
 // Get Enpoint index by name
-Boolean xCCI_EndpointIndex(pxCCI_ProtectionAndEndpoints PAE, Int16U Name, pInt16U Index);
+Boolean xCCI_EndpointIndex(pxCCI_EndopointData pEPData, Int16U Name, pInt16U Index);
 // Register read endpoint 16-bit source callback
 Boolean xCCI_RegisterReadEndpoint16(pxCCI_ProtectionAndEndpoints PAE, Int16U Endpoint, xCCI_FUNC_CallbackReadEndpoint16 ReadCallback);
 // Register read endpoint float source callback

@@ -97,6 +97,13 @@ void BCCI_InitWithNodeID(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxC
 	for(i = 0; i < (xCCI_MAX_WRITE_ENDPOINTS + 1); ++i)
 		Interface->ProtectionAndEndpoints.WriteEndpoints16[i] = NULL;
 	
+	for(i = 0; i < xCCI_MAX_READ_ENDPOINTS; ++i)
+	{
+		Interface->ProtectionAndEndpoints.ReadEndpointsFloat[i].Callback = NULL;
+		Interface->ProtectionAndEndpoints.ReadEndpointsFloat[i].Name = 0;
+		Interface->ProtectionAndEndpoints.ReadEndpointsFloat[i].Initialized = FALSE;
+	}
+
 	// Save parameters
 	Interface->IOConfig = IOConfig;
 	Interface->ServiceConfig = ServiceConfig;
@@ -393,14 +400,13 @@ void BCCI_HandleReadBlock16(pBCCI_Interface Interface)
 	
 	Interface->IOConfig->IO_GetMessage(Slave_MBOX_RB_16, &CANInput);
 	epnt = CANInput.HIGH.WORD.WORD_0;
+	pxCCI_EndopointData pEPData = Interface->ProtectionAndEndpoints.ReadEndpoints16;
 	
-	if(xCCI_EndpointIndex(&Interface->ProtectionAndEndpoints, epnt, &epnt_index))
+	if(xCCI_EndpointIndex(pEPData, epnt, &epnt_index))
 	{
 		CANMessage CANOutput = CANInput;
 
-		xCCI_FUNC_CallbackReadEndpoint16 Callback =
-				(xCCI_FUNC_CallbackReadEndpoint16)Interface->ProtectionAndEndpoints.ReadEndpoints16[epnt_index].Callback;
-
+		xCCI_FUNC_CallbackReadEndpoint16 Callback = (xCCI_FUNC_CallbackReadEndpoint16)pEPData[epnt_index].Callback;
 		// epnt_index + 1 - для совместимости с текущей реализацией в DeviceProfile.c
 		Int16U length = Callback(epnt_index + 1, &src, FALSE, FALSE, Interface->ArgForEPCallback, 4);
 		
@@ -429,16 +435,21 @@ void BCCI_HandleReadBlock16(pBCCI_Interface Interface)
 void BCCI_HandleReadBlockFloat(pBCCI_Interface Interface)
 {
 	CANMessage CANInput;
-	Interface->IOConfig->IO_GetMessage(Slave_MBOX_RB_F, &CANInput);
+	Int16U epnt, epnt_index;
 
-	Int16U epnt = CANInput.HIGH.WORD.WORD_0;
-	if((epnt < xCCI_MAX_READ_ENDPOINTS) && Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt])
+	Interface->IOConfig->IO_GetMessage(Slave_MBOX_RB_F, &CANInput);
+	epnt = CANInput.HIGH.WORD.WORD_0;
+	pxCCI_EndopointData pEPData = Interface->ProtectionAndEndpoints.ReadEndpointsFloat;
+
+	if(xCCI_EndpointIndex(pEPData, epnt, &epnt_index))
 	{
 		pInt32U src;
 		CANMessage CANOutput = CANInput;
 
-		Int16U length = Interface->ProtectionAndEndpoints.ReadEndpointsFloat[epnt](epnt, (float**)&src,
-				Interface->ArgForEPCallback, 2);
+		xCCI_FUNC_CallbackReadEndpointFloat Callback = (xCCI_FUNC_CallbackReadEndpointFloat)pEPData[epnt_index].Callback;
+		
+		// epnt_index + 1 - для совместимости с текущей реализацией в DeviceProfile.c
+		Int16U length = Callback(epnt_index + 1, (float**)&src, Interface->ArgForEPCallback, 2);
 
 		switch(length)
 		{
