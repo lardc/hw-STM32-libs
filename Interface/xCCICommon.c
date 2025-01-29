@@ -57,9 +57,9 @@ Boolean xCCI_RegisterReadEndpoint16(pxCCI_ProtectionAndEndpoints PAE, Int16U End
 								    xCCI_FUNC_CallbackReadEndpoint16 ReadCallback)
 {
 	Int16U i;
-	for (i = 0; i < xCCI_MAX_READ_ENDPOINTS; ++i)
+	for(i = 0; i < xCCI_MAX_READ_ENDPOINTS; ++i)
 	{
-		if (!PAE->ReadEndpoints16[i].Initialized)
+		if(!(PAE->ReadEndpoints16[i].Initialized))
 		{
 			PAE->ReadEndpoints16[i].Callback = ReadCallback;
 			PAE->ReadEndpoints16[i].Name = Endpoint;
@@ -79,7 +79,7 @@ Boolean xCCI_RegisterReadEndpointFloat(pxCCI_ProtectionAndEndpoints PAE, Int16U 
 	Int16U i;
 	for (i = 0; i < xCCI_MAX_READ_ENDPOINTS; ++i)
 	{
-		if (!PAE->ReadEndpointsFloat[i].Initialized)
+		if (!(PAE->ReadEndpointsFloat[i].Initialized))
 		{
 			PAE->ReadEndpointsFloat[i].Callback = ReadCallback;
 			PAE->ReadEndpointsFloat[i].Name = Endpoint;
