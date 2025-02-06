@@ -97,6 +97,7 @@ Int32U STF_ShiftStorageEnd()
 
 void STF_EraseDataSector()
 {
+	NFLASH_Unlock();
 	NFLASH_ErasePages(FLASH_DIAG_START_ADDR, FLASH_DIAG_END_ADDR);
 }
 // ----------------------------------------
