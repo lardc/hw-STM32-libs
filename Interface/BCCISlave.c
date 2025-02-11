@@ -37,6 +37,8 @@ typedef void (*xProcessFunction)(pBCCI_Interface Interface);
 #define Slave_MBOX_RB_F_A			36
 #define Slave_MBOX_RLIM_F			37
 #define Slave_MBOX_RLIM_F_A			38
+#define Slave_MBOX_BP				42
+#define Slave_MBOX_BP_A				43
 
 // Forward functions
 //
@@ -55,6 +57,7 @@ void BCCI_HandleCall(pBCCI_Interface Interface);
 void BCCI_HandleReadBlock16(pBCCI_Interface Interface);
 void BCCI_HandleReadBlockFloat(pBCCI_Interface Interface);
 void BCCI_HandleWriteBlock16(pBCCI_Interface Interface);
+void BCCI_HandleBroadcastPing(pBCCI_Interface Interface);
 
 // Functions
 //
@@ -99,26 +102,28 @@ void BCCI_InitWithNodeID(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxC
 	
 	// Setup messages
 	Int32U SlaveFilterID = (Int32U)NodeID << CAN_SLAVE_NID_MPY;
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_16,		SlaveFilterID + CAN_ID_W_16,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_16_A,	SlaveFilterID + CAN_ID_W_16 + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_16, 		SlaveFilterID + CAN_ID_R_16,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_16_A, 	SlaveFilterID + CAN_ID_R_16 + 1,	4);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_C, 		SlaveFilterID + CAN_ID_CALL,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_C_A, 		SlaveFilterID + CAN_ID_CALL + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_ERR_A, 	SlaveFilterID + CAN_ID_ERR,			4);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_WB_16, 	SlaveFilterID + CAN_ID_WB_16,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_WB_16_A, 	SlaveFilterID + CAN_ID_WB_16 + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16, 	SlaveFilterID + CAN_ID_RB_16,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16_A, 	SlaveFilterID + CAN_ID_RB_16 + 1,	8);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_16,		SlaveFilterID + CAN_ID_W_16,		4, CAN_MBOX_RX, CAN_SLAVE_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_16_A,	SlaveFilterID + CAN_ID_W_16 + 1,	2, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_16, 		SlaveFilterID + CAN_ID_R_16,		2, CAN_MBOX_RX, CAN_SLAVE_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_16_A, 	SlaveFilterID + CAN_ID_R_16 + 1,	4, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_C, 		SlaveFilterID + CAN_ID_CALL,		2, CAN_MBOX_RX, CAN_SLAVE_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_C_A, 		SlaveFilterID + CAN_ID_CALL + 1,	2, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_ERR_A, 	SlaveFilterID + CAN_ID_ERR,			4, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_WB_16, 	SlaveFilterID + CAN_ID_WB_16,		4, CAN_MBOX_RX, CAN_SLAVE_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_WB_16_A, 	SlaveFilterID + CAN_ID_WB_16 + 1,	2, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16, 	SlaveFilterID + CAN_ID_RB_16,		2, CAN_MBOX_RX, CAN_SLAVE_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_16_A, 	SlaveFilterID + CAN_ID_RB_16 + 1,	8, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_BP,		CAN_ID_R_BP,						0, CAN_MBOX_RX, CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_BP_A,		SlaveFilterID + CAN_ID_A_BP,		0, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
 #ifdef USE_FLOAT_DT
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F,		SlaveFilterID + CAN_ID_W_F,			6);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F_A,		SlaveFilterID + CAN_ID_W_F + 1,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F, 		SlaveFilterID + CAN_ID_R_F,			2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F_A, 	SlaveFilterID + CAN_ID_R_F + 1,		6);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_F,	 	SlaveFilterID + CAN_ID_RB_F,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_F_A, 	SlaveFilterID + CAN_ID_RB_F + 1,	8);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F, 	SlaveFilterID + CAN_ID_RLIM_F,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F_A, 	SlaveFilterID + CAN_ID_RLIM_F + 1, 	6);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F,		SlaveFilterID + CAN_ID_W_F,			6, CAN_MBOX_RX, CAN_SLAVE_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_W_F_A,		SlaveFilterID + CAN_ID_W_F + 1,		2, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F, 		SlaveFilterID + CAN_ID_R_F,			2, CAN_MBOX_RX, CAN_SLAVE_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_R_F_A, 	SlaveFilterID + CAN_ID_R_F + 1,		6, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_F,	 	SlaveFilterID + CAN_ID_RB_F,		2, CAN_MBOX_RX, CAN_SLAVE_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RB_F_A, 	SlaveFilterID + CAN_ID_RB_F + 1,	8, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F, 	SlaveFilterID + CAN_ID_RLIM_F,		4, CAN_MBOX_RX, CAN_SLAVE_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Slave_MBOX_RLIM_F_A, 	SlaveFilterID + CAN_ID_RLIM_F + 1, 	6, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
 #endif
 }
 // ----------------------------------------
@@ -139,7 +144,10 @@ void BCCI_Process(pBCCI_Interface Interface, Boolean MaskStateChangeOperations)
 
 	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_WB_16, BCCI_HandleWriteBlock16))
 		return;
-	
+
+	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_BP, BCCI_HandleBroadcastPing))
+		return;
+
 #ifdef USE_FLOAT_DT
 	if(BCCI_ProcessX(Interface, MaskStateChangeOperations, Slave_MBOX_W_F, BCCI_HandleWriteFloat))
 		return;
@@ -474,6 +482,14 @@ void BCCI_HandleWriteBlock16(pBCCI_Interface Interface)
 	}
 	else
 		BCCI_SendErrorFrame(Interface, CANInput, ERR_ILLEGAL_SIZE, length);
+}
+// ----------------------------------------
+
+void BCCI_HandleBroadcastPing(pBCCI_Interface Interface)
+{
+	CANMessage message;
+	Interface->IOConfig->IO_GetMessage(Slave_MBOX_BP, &message);
+	BCCI_SendResponseFrame(Interface, Slave_MBOX_BP_A, &message);
 }
 // ----------------------------------------
 

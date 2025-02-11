@@ -33,6 +33,8 @@
 #define Master_MBOX_RB_F_A			16
 #define Master_MBOX_RLIM_F			17
 #define Master_MBOX_RLIM_F_A		18
+#define Master_MBOX_BP				40
+#define Master_MBOX_BP_A			41
 
 #define MIN(a, b) 					(((a) < (b)) ? (a) : (b))
 
@@ -43,6 +45,7 @@ void BCCIM_ReadBlock16Subfunction(pBCCIM_Interface Interface, Int16U Node, Int16
 Boolean BCCIM_HandleReadBlock16(pBCCIM_Interface Interface);
 void BCCIM_ReadBlockFloatSubfunction(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoint, Boolean Start);
 Boolean BCCIM_HandleReadBlockFloat(pBCCIM_Interface Interface);
+void BCCIM_WaitBroadcastResponse(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize);
 
 // Variables
 Int16U BCCIM_ReadBlockBufferCounter;
@@ -89,26 +92,28 @@ void BCCIM_InitWithNodeID(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, I
 	Interface->pTimerCounter = pTimer;
 
 	// Setup messages
-	Int32U MasterFilterID = (Int32U)NodeID << CAN_MASTER_NID_MPY;
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16,		MasterFilterID + CAN_ID_R_16,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16_A,	MasterFilterID + CAN_ID_R_16 + 1,	4);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16,		MasterFilterID + CAN_ID_W_16,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16_A,	MasterFilterID + CAN_ID_W_16 + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C,		MasterFilterID + CAN_ID_CALL,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C_A,		MasterFilterID + CAN_ID_CALL + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_ERR_A,	MasterFilterID + CAN_ID_ERR,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16,	MasterFilterID + CAN_ID_RB_16,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16_A,	MasterFilterID + CAN_ID_RB_16 + 1,	8);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_WB_16,	MasterFilterID + CAN_ID_WB_16,		8);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_WB_16_A,	MasterFilterID + CAN_ID_WB_16 + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F,		MasterFilterID + CAN_ID_R_F,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F_A,	MasterFilterID + CAN_ID_R_F + 1,	6);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F,		MasterFilterID + CAN_ID_W_F,		6);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F_A,	MasterFilterID + CAN_ID_W_F + 1,	2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F,	 	MasterFilterID + CAN_ID_RB_F,		2);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F_A, 	MasterFilterID + CAN_ID_RB_F + 1,	8);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F, 	MasterFilterID + CAN_ID_RLIM_F,		4);
-	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F_A,	MasterFilterID + CAN_ID_RLIM_F + 1, 6);
+	const Int32U MasterFilterID = (Int32U)NodeID << CAN_MASTER_NID_MPY;
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16,		MasterFilterID + CAN_ID_R_16,		2, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_16_A,	MasterFilterID + CAN_ID_R_16 + 1,	4, CAN_MBOX_RX, CAN_MASTER_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16,		MasterFilterID + CAN_ID_W_16,		4, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_16_A,	MasterFilterID + CAN_ID_W_16 + 1,	2, CAN_MBOX_RX, CAN_MASTER_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C,		MasterFilterID + CAN_ID_CALL,		2, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_C_A,		MasterFilterID + CAN_ID_CALL + 1,	2, CAN_MBOX_RX, CAN_MASTER_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_ERR_A,	MasterFilterID + CAN_ID_ERR,		4, CAN_MBOX_RX, CAN_MASTER_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16,	MasterFilterID + CAN_ID_RB_16,		2, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_16_A,	MasterFilterID + CAN_ID_RB_16 + 1,	8, CAN_MBOX_RX, CAN_MASTER_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_WB_16,	MasterFilterID + CAN_ID_WB_16,		8, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_WB_16_A,	MasterFilterID + CAN_ID_WB_16 + 1,	2, CAN_MBOX_RX, CAN_MASTER_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F,		MasterFilterID + CAN_ID_R_F,		2, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_R_F_A,	MasterFilterID + CAN_ID_R_F + 1,	6, CAN_MBOX_RX, CAN_MASTER_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F,		MasterFilterID + CAN_ID_W_F,		6, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_W_F_A,	MasterFilterID + CAN_ID_W_F + 1,	2, CAN_MBOX_RX, CAN_MASTER_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F,	 	MasterFilterID + CAN_ID_RB_F,		2, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RB_F_A, 	MasterFilterID + CAN_ID_RB_F + 1,	8, CAN_MBOX_RX, CAN_MASTER_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F, 	MasterFilterID + CAN_ID_RLIM_F,		4, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_RLIM_F_A,	MasterFilterID + CAN_ID_RLIM_F + 1, 6, CAN_MBOX_RX, CAN_MASTER_NID_MASK | CAN_FUNC_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_BP,		MasterFilterID + CAN_ID_R_BP,		0, CAN_MBOX_TX, CAN_MASTER_NID_MASK);
+	Interface->IOConfig->IO_ConfigMailbox(Master_MBOX_BP_A,		MasterFilterID + CAN_ID_A_BP,		0, CAN_MBOX_RX, CAN_MASTER_NID_MASK | CAN_FUNC_MASK);
 }
 // ----------------------------------------
 
@@ -538,6 +543,20 @@ void BCCIM_SendFrame(pBCCIM_Interface Interface, Int16U Mailbox, pCANMessage Mes
 // ----------------------------------------
 
 /**
+ * @brief Отправка широковещательного запроса
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @param NodeArray - Указатель на массив в который будут записаны полученные Node ID узлов, ответивших на запрос
+ * @param NodeArraySize - Указатель на переменную, в которую будет записан размер массива, после записи всех Node ID
+*/
+void BCCIM_SendBroadcastPing(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize)
+{
+	CANMessage message;
+	Interface->IOConfig->IO_SendMessageEx(Master_MBOX_BP, &message, FALSE, FALSE);
+	BCCIM_WaitBroadcastResponse(Interface, NodeArray, NodeArraySize);
+}
+// ----------------------------------------
+
+/**
  * @brief Ожидание ответа от узла, полученного по мейлбоксу Mailbox.
  * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
  * @param Mailbox - ID мейлбокса внутри узла, с которым собираемся общаться, в который будет отправлено сообщение.
@@ -568,6 +587,35 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 	}
 
 	return ERR_TIMEOUT;
+}
+// ----------------------------------------
+
+/**
+ * @brief Ожидание ответа на широковещательный запрос
+ * @param Interface - Указатель на структуру, хранящую параметры CAN-интерфейса (таймаут и функции обратного вызова).
+ * @param NodeArray - Указатель на массив в который будут записаны полученные Node ID узлов, ответивших на запрос
+ * @param NodeArraySize - Указатель на переменную, в которую будет записан размер массива, после записи всех Node ID
+*/
+void BCCIM_WaitBroadcastResponse(pBCCIM_Interface Interface, pInt16U NodeArray, pInt16U NodeArraySize)
+{
+	Int64U timeout;
+	CANMessage message;
+	Int16U currentNodeCount = 0;
+
+	timeout = BR_TIMEOUT + *(Interface->pTimerCounter);
+
+	while (*(Interface->pTimerCounter) < timeout)
+	{
+		if (Interface->IOConfig->IO_IsMessageReceived(Master_MBOX_BP_A, NULL))
+		{
+			Interface->IOConfig->IO_GetMessage(Master_MBOX_BP_A, &message);
+
+			NodeArray[currentNodeCount++] = (message.MsgID.all & CAN_SLAVE_NID_MASK) >> 10;
+
+			timeout = *(Interface->pTimerCounter) + BR_TIMEOUT;
+		}
+	}
+	*NodeArraySize = currentNodeCount;
 }
 // ----------------------------------------
 
