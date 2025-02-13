@@ -1,4 +1,5 @@
 #include "FormatOutputJSON.h"
+#include "DataTable.h"
 #include "stdinc.h"
 
 typedef enum __JSONReadStateMachine
@@ -12,6 +13,9 @@ char Parameter[PARAMETER_SIZE];
 Int16U TemplatePosition;
 Int16U ParameterPosition;
 Int16U Index;
+
+// Forward functions
+Int16U JSON_GetIntByPointer(void *Pointer);
 
 // Functions
 //
@@ -38,7 +42,7 @@ Int16U JSON_ReadSymbol()
 				TemplatePosition++;
 
 				ParameterPosition = 0;
-				itoa(Parameter, *(pInt16U)JSONPointers[Index++]);
+				itoa(Parameter, JSON_GetIntByPointer(JSONPointers[Index++]));
 			}
 			else
 				return TemplateJSON[TemplatePosition++];
@@ -51,6 +55,16 @@ Int16U JSON_ReadSymbol()
 		default:
 			return 0;
 	}
+}
+// ----------------------------------------
+
+Int16U JSON_GetIntByPointer(void *Pointer)
+{
+#ifdef USE_FLOAT_DT
+	return (Int16U)(*((pFloat32)Pointer));
+#else
+	return *((pInt16U)Pointer));
+#endif
 }
 // ----------------------------------------
 
