@@ -1,6 +1,11 @@
+#include "JSONDescription.h"
 #include "FormatOutputJSON.h"
 #include "DataTable.h"
 #include "stdinc.h"
+
+// Definitions
+#define PARAMETER_SIZE			32
+#define JSON_POINTERS_SIZE		32
 
 typedef enum __JSONReadStateMachine
 {
@@ -8,14 +13,15 @@ typedef enum __JSONReadStateMachine
 	JRSM_Replace
 } JSONReadStateMachine;
 
-JSONReadStateMachine CurrentState = JRSM_Read;
-char Parameter[PARAMETER_SIZE];
-Int16U TemplatePosition;
-Int16U ParameterPosition;
-Int16U Index;
+// Variables
+static JSONReadStateMachine CurrentState = JRSM_Read;
+static char Parameter[PARAMETER_SIZE];
+static Int16U TemplatePosition, ParameterPosition, Index;
+static void* JSONPointers[JSON_POINTERS_SIZE] = {0};
 
 // Forward functions
 Int16U JSON_GetIntByPointer(void *Pointer);
+Int16U itoa(char* dest, Int16U i);
 
 // Functions
 //
@@ -91,3 +97,9 @@ Int16U itoa(char *dest, Int16U i)
 }
 // ----------------------------------------
 
+void JSON_AssignPointer(Int16U Index, void* Pointer)
+{
+	if (Index < JSON_POINTERS_SIZE)
+		JSONPointers[Index] = Pointer;
+}
+// ----------------------------------------
