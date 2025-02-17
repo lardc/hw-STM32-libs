@@ -63,7 +63,7 @@ Int16U JSON_GetIntByPointer(void *Pointer)
 #ifdef USE_FLOAT_DT
 	return (Int16U)(*((pFloat32)Pointer));
 #else
-	return *((pInt16U)Pointer));
+	return *((pInt16U)Pointer);
 #endif
 }
 // ----------------------------------------
