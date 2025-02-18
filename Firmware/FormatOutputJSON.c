@@ -76,9 +76,6 @@ Int16U JSON_GetIntByPointer(void *Pointer)
 
 Int16U itoa(char *dest, Int16U i)
 {
-	if (i < 0)
-		return 0;
-
 	char *start = dest;
 	char buffer[12];
 	char *p = buffer;
