@@ -24,9 +24,9 @@
 
 // REGISTERS
 //
+#define REG_NODE_ID					0	// Выставление CAN NodeID
 // No NVRAM section
 //
-#define REG_NODE_ID					0	// Выставление CAN NodeID
 #define REG_DUMMY					2	// Compatibility register
 #define REG_XOR_PC					3	// PC calculated XOR value
 //
