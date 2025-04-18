@@ -9,7 +9,7 @@
 
 // Constants
 //
-#define DT_EPROM_ADDRESS	0x0801F800
+#define DT_EPROM_ADDRESS	0x08007800
 
 // Variables
 //
@@ -22,8 +22,13 @@ void DT_Init(EPROMServiceConfig EPROMService, Boolean NoRestore)
 {
 	Int16U i;
 
+	EPROMServiceCfg = EPROMService;
+
 	for(i = 0; i < DATA_TABLE_SIZE; ++i)
 		DataTable[i] = 0;
+
+	if(!NoRestore)
+		DT_RestoreNVPartFromEPROM();
 }
 // ----------------------------------------
 

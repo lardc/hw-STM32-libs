@@ -11,6 +11,7 @@
 #include "DataTable.h"
 #include "SCCISlave.h"
 #include "DeviceProfile.h"
+#include "BCCIxParams.h"
 
 // Definitions
 //
@@ -40,6 +41,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U UserError);
 void CONTROL_MainProgramStart();
 void CONTROL_EraseFlash();
 void CONTROL_ResetToDefault();
+void CONTROL_ConfigCAN(Int16U NodeID);
 
 
 // Functions
@@ -51,11 +53,14 @@ void CONTROL_Init()
 	pInt16U EPWriteCounters[EP_WRITE_COUNT] = { (pInt16U)&MEMBUF_ValuesWrite_Counter };
 	pInt16U EPWriteDatas[EP_WRITE_COUNT] = { MEMBUF_Values_Write };
 
-	// Data-table EPROM service configuration
-	EPROMServiceConfig EPROMService = { NULL, NULL };
+	// Конфигурация сервиса работы DataTable и EPROM
+	EPROMServiceConfig EPROMService = {(FUNC_EPROM_WriteValues)&NFLASH_WriteDT, (FUNC_EPROM_ReadValues)&NFLASH_ReadDT};
+	// Инициализация DataTable
+	DT_Init(EPROMService, false);
 
-	// Init data table
-	DT_Init(EPROMService, FALSE);
+	// Инициализация функций связанных с CAN NodeID
+	Int16U NodeID = DataTable[REG_NODE_ID] ? DataTable[REG_NODE_ID] : CAN_SLAVE_NID;
+	CONTROL_ConfigCAN(NodeID);
 
 	// Device profile initialization
 	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive);
@@ -176,4 +181,13 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U UserError)
 }
 // ----------------------------------------
 
-
+void CONTROL_ConfigCAN(Int16U NodeID)
+{
+	Int32U Mask = ((Int32U)NodeID) << CAN_SLAVE_NID_MPY;
+	RCC_CAN_Clk_EN(CAN_1_ClkEN);
+	NCAN_Init(SYSCLK, CAN_BAUDRATE, false);
+	NCAN_FIFOInterrupt(true);
+	NCAN_FilterInit(0, Mask, Mask);
+	NCAN_InterruptSetPriority(0);
+}
+//------------------------------------------------------------------------------

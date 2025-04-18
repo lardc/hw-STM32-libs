@@ -50,6 +50,7 @@ static volatile Boolean *MaskChangesFlag;
 // Forward functions
 //
 static void DEVPROFILE_FillWRPartDefault();
+static void DEVPROFILE_FillNVPartDefault(void);
 static Boolean DEVPROFILE_Validate16(Int16U Address, Int16U Data);
 static Boolean DEVPROFILE_DispatchAction(Int16U ActionID, pInt16U UserError);
 static Int16U DEVPROFILE_CallbackReadX(Int16U Endpoint, pInt16U *Buffer, Boolean Streamed,
@@ -210,6 +211,16 @@ static void DEVPROFILE_FillWRPartDefault()
 }
 // ----------------------------------------
 
+void DEVPROFILE_FillNVPartDefault(void)
+{
+	Int16U i;
+
+	// Write default values to data table
+	for (i = 0; i < DATA_TABLE_NV_SIZE; ++i)
+		DataTable[DATA_TABLE_NV_START + i] = NVConstraint[i].Default;
+}
+// ----------------------------------------
+
 static Boolean DEVPROFILE_Validate16(Int16U Address, Int16U Data)
 {
 	if(ENABLE_LOCKING && !UnlockedForNVWrite && (Address < DATA_TABLE_WR_START))
@@ -242,7 +253,37 @@ static Boolean DEVPROFILE_Validate16(Int16U Address, Int16U Data)
 
 static Boolean DEVPROFILE_DispatchAction(Int16U ActionID, pInt16U UserError)
 {
-	return (ControllerDispatchFunction) ? ControllerDispatchFunction(ActionID, UserError) : FALSE;
+	switch(ActionID)
+	{
+		case ACT_SAVE_TO_ROM:
+			{
+				if(ENABLE_LOCKING && !UnlockedForNVWrite)
+					*UserError = ERR_WRONG_PWD;
+				else
+					DT_SaveNVPartToEPROM();
+			}
+			break;
+		case ACT_RESTORE_FROM_ROM:
+			{
+				if(ENABLE_LOCKING && !UnlockedForNVWrite)
+					*UserError = ERR_WRONG_PWD;
+				else
+					DT_RestoreNVPartFromEPROM();
+			}
+			break;
+		case ACT_RESET_TO_DEFAULT:
+			{
+				if(ENABLE_LOCKING && !UnlockedForNVWrite)
+					*UserError = ERR_WRONG_PWD;
+				else
+					DT_ResetNVPart(&DEVPROFILE_FillNVPartDefault);
+			}
+			break;
+		default:
+			return (ControllerDispatchFunction) ? ControllerDispatchFunction(ActionID, UserError) : FALSE;
+	}
+
+	return TRUE;
 }
 // ----------------------------------------
 
