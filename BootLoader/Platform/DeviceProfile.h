@@ -15,7 +15,7 @@
 // Functions
 //
 // Initialize device profile engine
-void DEVPROFILE_Init(xCCI_FUNC_CallbackAction SpecializedDispatch, volatile Boolean *MaskChanges);
+void DEVPROFILE_Init(xCCI_FUNC_CallbackAction SpecializedDispatch, volatile Boolean *MaskChanges, Int16U NodeID);
 // Initialize endpoint service
 void DEVPROFILE_InitEPReadService(pInt16U Indexes, pInt16U Sizes, pInt16U *Counters, pInt16U *Datas);
 void DEVPROFILE_InitEPWriteService(pInt16U Indexes, pInt16U Sizes, pInt16U *Counters, pInt16U *Datas);

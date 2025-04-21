@@ -63,7 +63,7 @@ void CONTROL_Init()
 	CONTROL_ConfigCAN(NodeID);
 
 	// Device profile initialization
-	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive);
+	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive, NodeID);
 	DEVPROFILE_InitEPWriteService(EPWriteIndexes, EPWriteSized, EPWriteCounters, EPWriteDatas);
 	// Reset control values
 	DEVPROFILE_ResetControlSection();
