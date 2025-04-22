@@ -59,7 +59,11 @@ void CONTROL_Init()
 	DT_Init(EPROMService, false);
 
 	// Инициализация функций связанных с CAN NodeID
-	Int16U NodeID = DataTable[REG_NODE_ID] ? DataTable[REG_NODE_ID] : CAN_SLAVE_NID;
+	Int16U NodeID;
+	if((DataTable[REG_NODE_ID] == 0)||(DataTable[REG_NODE_ID] == 65535))
+		NodeID = CAN_SLAVE_NID;
+	else
+		NodeID = DataTable[REG_NODE_ID];
 	CONTROL_ConfigCAN(NodeID);
 
 	// Device profile initialization
