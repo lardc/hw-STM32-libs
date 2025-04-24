@@ -50,7 +50,7 @@ static volatile Boolean *MaskChangesFlag;
 // Forward functions
 //
 static void DEVPROFILE_FillWRPartDefault();
-static void DEVPROFILE_FillNVPartDefault(void);
+static void DEVPROFILE_FillNVPartDefault();
 static Boolean DEVPROFILE_Validate16(Int16U Address, Int16U Data);
 static Boolean DEVPROFILE_DispatchAction(Int16U ActionID, pInt16U UserError);
 static Int16U DEVPROFILE_CallbackReadX(Int16U Endpoint, pInt16U *Buffer, Boolean Streamed,
@@ -211,7 +211,7 @@ static void DEVPROFILE_FillWRPartDefault()
 }
 // ----------------------------------------
 
-void DEVPROFILE_FillNVPartDefault(void)
+void DEVPROFILE_FillNVPartDefault()
 {
 	Int16U i;
 
