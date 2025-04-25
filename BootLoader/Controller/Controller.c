@@ -59,7 +59,18 @@ void CONTROL_Init()
 	DT_Init(EPROMService, false);
 
 	// Инициализация функций связанных с CAN NodeID
-	Int16U NodeID = ((DataTable[REG_NODE_ID] == 0)||(DataTable[REG_NODE_ID] == INT16U_MAX)) ? CAN_SLAVE_NID : DataTable[REG_NODE_ID];
+	// Получение значений из define или использование значения 99 по умолчанию
+	Int16U NodeID = 99;
+#ifdef CAN_SLAVE_NID
+	NodeID = CAN_SLAVE_NID;
+#else
+	#ifdef CAN_SALVE_NID
+		NodeID = CAN_SALVE_NID;
+	#endif
+#endif
+	// Попытка чтения значения из DT
+	if(DataTable[REG_NODE_ID] != 0 && DataTable[REG_NODE_ID] != INT16U_MAX)
+		NodeID = DataTable[REG_NODE_ID];
 	CONTROL_ConfigCAN(NodeID);
 
 	// Device profile initialization
