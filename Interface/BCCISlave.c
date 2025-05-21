@@ -64,16 +64,12 @@ void BCCI_HandleBroadcastPing(pBCCI_Interface Interface);
 void BCCI_Init(pBCCI_Interface Interface, pBCCI_IOConfig IOConfig, pxCCI_ServiceConfig ServiceConfig, pInt16U DataTable,
 		Int16U DataTableSize, void *ArgumentForCallback)
 {
-#ifdef CAN_NID
-	const Int16U NodeID = CAN_NID;
-#else
-
-#ifdef CAN_SALVE_NID	// Патч косячного именования
-	const Int16U NodeID = CAN_SALVE_NID;
-#else
+#ifdef CAN_SLAVE_NID
 	const Int16U NodeID = CAN_SLAVE_NID;
-#endif
-
+#elif defined(CAN_SALVE_NID)
+	const Int16U NodeID = CAN_SALVE_NID;
+#elif defined(CAN_NID)
+	const Int16U NodeID = CAN_NID;
 #endif
 
 	BCCI_InitWithNodeID(Interface, IOConfig, ServiceConfig, DataTable, DataTableSize, ArgumentForCallback, NodeID);

@@ -65,10 +65,14 @@ static Int16U SavedErrorDetails = 0;
 void BCCIM_Init(pBCCIM_Interface Interface, pBCCI_IOConfig IOConfig, Int32U MessageTimeoutTicks,
 		volatile Int64U *pTimer)
 {
-#ifdef CAN_NID
-	const Int16U NodeID = CAN_NID;
-#else
+#ifdef CAN_MASTER_NID
 	const Int16U NodeID = CAN_MASTER_NID;
+#elif defined(CAN_SLAVE_NID)
+	const Int16U NodeID = CAN_SLAVE_NID;
+#elif defined(CAN_SALVE_NID)
+	const Int16U NodeID = CAN_SALVE_NID;
+#elif defined(CAN_NID)
+	const Int16U NodeID = CAN_NID;
 #endif
 
 	BCCIM_InitWithNodeID(Interface, IOConfig, MessageTimeoutTicks, pTimer, NodeID);

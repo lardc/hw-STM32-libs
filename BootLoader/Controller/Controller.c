@@ -63,10 +63,8 @@ void CONTROL_Init()
 	Int16U NodeID = 99;
 #ifdef CAN_SLAVE_NID
 	NodeID = CAN_SLAVE_NID;
-#else
-	#ifdef CAN_SALVE_NID
-		NodeID = CAN_SALVE_NID;
-	#endif
+#elif defined(CAN_SALVE_NID)
+	NodeID = CAN_SALVE_NID;
 #endif
 	// Попытка чтения значения из DT
 	if(DataTable[REG_NODE_ID] != 0 && DataTable[REG_NODE_ID] != INT16U_MAX)
