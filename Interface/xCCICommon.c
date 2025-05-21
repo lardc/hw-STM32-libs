@@ -39,8 +39,10 @@ Boolean xCCI_RemoveProtectedArea(pxCCI_ProtectionAndEndpoints PAE, Int16U AreaIn
 
 Boolean xCCI_EndpointIndex(pxCCI_EndopointData pEPData, Int16U Name, pInt16U Index)
 {
-	Int16U i;
-	for(i = 0; i < xCCI_MAX_READ_ENDPOINTS; ++i)
+	if(Name == 0)
+		return FALSE;
+
+	for(Int16U i = 0; i < xCCI_MAX_READ_ENDPOINTS; ++i)
 	{
 		if(pEPData[i].Name == Name)
 		{
@@ -48,7 +50,6 @@ Boolean xCCI_EndpointIndex(pxCCI_EndopointData pEPData, Int16U Name, pInt16U Ind
 			return TRUE;
 		}
 	}
-
 	return FALSE;
 }
 // ----------------------------------------
