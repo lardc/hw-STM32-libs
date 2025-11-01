@@ -29,6 +29,7 @@ ReadCountersStateMachine CurrentState = RCSM_DescriptionType;
 Int16U LineNumber;
 Int16U DataPosition;
 Int32U FlashPosition;
+static Boolean SubstituteZeroForErased = FALSE;
 
 // Функции для работы со счётчиками
 #ifdef FLASH_COUNTER_START_ADDR
@@ -37,6 +38,7 @@ void STF_ResetStateMachine()
 	CurrentState = RCSM_DescriptionType;
 	LineNumber = 0;
 	DataPosition = 0;
+	SubstituteZeroForErased = FALSE;
 	FlashPosition = STF_ShiftCounterStorageEnd();
 	if(FlashPosition != FLASH_COUNTER_START_ADDR)
 		FlashPosition -= CounterStorageSize * 4;
@@ -82,15 +84,29 @@ Int16U STF_ReadCounter()
 			break;
 
 		case RCSM_Data:
-			RetVal = NFLASH_ReadWord16(FlashPosition);
-
-			FlashPosition += 2;
-			DataPosition++;
-
-			if (DataPosition == 2)
 			{
-				CurrentState = RCSM_DescriptionType;
-				LineNumber++;
+				if(DataPosition == 0)
+				{
+					Int16U Low = NFLASH_ReadWord16(FlashPosition);
+					Int16U HighPeek = NFLASH_ReadWord16(FlashPosition + 2);
+					SubstituteZeroForErased = (Low == 0xFFFF) && (HighPeek == 0xFFFF);
+					RetVal = SubstituteZeroForErased ? 0 : Low;
+				}
+				else
+				{
+					Int16U High = NFLASH_ReadWord16(FlashPosition);
+					RetVal = SubstituteZeroForErased ? 0 : High;
+				}
+
+				FlashPosition += 2;
+				DataPosition++;
+
+				if(DataPosition == 2)
+				{
+					CurrentState = RCSM_DescriptionType;
+					LineNumber++;
+					SubstituteZeroForErased = FALSE;
+				}
 			}
 			break;
 	}
