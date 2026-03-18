@@ -29,10 +29,10 @@ ReadCountersStateMachine CurrentState = RCSM_DescriptionType;
 Int16U LineNumber;
 Int16U DataPosition;
 Int32U FlashPosition;
+#ifdef FLASH_COUNTER_START_ADDR
 static Boolean SubstituteZeroForErased = FALSE;
 
 // Функции для работы со счётчиками
-#ifdef FLASH_COUNTER_START_ADDR
 void STF_ResetStateMachine()
 {
 	CurrentState = RCSM_DescriptionType;
