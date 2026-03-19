@@ -198,8 +198,17 @@ void ADC_ChannelSet_SampleTime(ADC_TypeDef* ADCx, uint32_t Channel, uint32_t Tim
 void ADC_DMAConfig(ADC_TypeDef* ADCx)
 {
 	ADC_WaitEndOfOperation(ADCx);
-
 	ADCx->CFGR |= ADC_CFGR_DMACFG;
+	ADCx->CFGR |= ADC_CFGR_DMAEN;
+}
+//-----------------------------------------------
+
+void ADC_DMAConfigWithAutDLY(ADC_TypeDef* ADCx)
+{
+	ADC_WaitEndOfOperation(ADCx);
+	ADCx->CFGR |= ADC_CFGR_DMACFG;
+	// Automatic OVR reset
+	ADCx->CFGR |= ADC_CFGR_AUTDLY;
 	ADCx->CFGR |= ADC_CFGR_DMAEN;
 }
 //-----------------------------------------------
