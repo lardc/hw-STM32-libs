@@ -97,7 +97,12 @@ void CONTROL_Idle()
 void CONTROL_EraseFlash()
 {
 	NFLASH_Unlock();
-	NFLASH_ErasePages(BOOT_LOADER_ERASE_FIRST_PAGE, BOOT_LOADER_ERASE_LAST_PAGE);
+#ifdef BOOT_LOADER_ERASE_CUSTOM_LAST_PAGE
+	const Int32U LastPage = BOOT_LOADER_ERASE_CUSTOM_LAST_PAGE;
+#else
+	const Int32U LastPage = BOOT_LOADER_ERASE_LAST_PAGE;
+#endif
+	NFLASH_ErasePages(BOOT_LOADER_ERASE_FIRST_PAGE, LastPage);
 }
 // ----------------------------------------
 
