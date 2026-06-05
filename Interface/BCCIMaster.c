@@ -585,11 +585,15 @@ Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 			return message.HIGH.WORD.WORD_0;
 		}
 		else if (Interface->IOConfig->IO_IsMessageReceived(Mailbox, NULL))
+		{
+			SavedErrorDetails = 0;
 			return ERR_NO_ERROR;
+		}
 
 		IWDG_Refresh();
 	}
 
+	SavedErrorDetails = xCCI_TIMEOUT_TICKS;
 	return ERR_TIMEOUT;
 }
 // ----------------------------------------
