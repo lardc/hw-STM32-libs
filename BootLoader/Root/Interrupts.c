@@ -7,9 +7,34 @@
 #include "BoardConfig.h"
 #include "SysConfig.h"
 
-
 // Functions
 //
+#ifdef CONFIG_USE_USART3
+
+void USART3_IRQHandler()
+{
+	if(USARTx_RecieveCheck(USART3))
+	{
+		USARTx_RegisterToFIFO(USART3);
+		USARTx_RecieveFlagClear(USART3);
+	}
+}
+//--------------------------------------------
+
+#elif defined(CONFIG_USE_USART2)
+
+void USART2_IRQHandler()
+{
+	if(USARTx_RecieveCheck(USART2))
+	{
+		USARTx_RegisterToFIFO(USART2);
+		USARTx_RecieveFlagClear(USART2);
+	}
+}
+//--------------------------------------------
+
+#else
+
 void USART1_IRQHandler()
 {
 	if (ZwSCI_RecieveCheck(USART1))
@@ -19,6 +44,8 @@ void USART1_IRQHandler()
 	}
 }
 //--------------------------------------------
+
+#endif
 
 void TIM2_IRQHandler()
 {
