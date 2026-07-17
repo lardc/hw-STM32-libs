@@ -10,7 +10,6 @@
 
 // Forward functions
 //
-uint16_t NFLASH_ReadWord16(uint32_t Address);
 uint32_t NFLASH_Swap32(uint32_t Data);
 
 
