@@ -169,6 +169,7 @@ void STF_SaveCounterData()
 	for (i = 0; i < CounterStorageSize; ++i)
 	{
 		NFLASH_WriteArray16(ShiftedAddress, (pInt16U)CounterTablePointers[i].Address, 2);
+		CounterTablePointers[i].Value = *(pInt32U)CounterTablePointers[i].Address;
 		ShiftedAddress += 4;
 	}
 }
