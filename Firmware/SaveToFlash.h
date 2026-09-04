@@ -38,15 +38,19 @@ typedef struct __CounterDescription
 {
 	char Description[MAX_DESCRIPTION_LEN];
 } CounterDescription;
+
 // Functions
+void STF_AssignPointer(Int16U Index, Int32U Pointer);
+void STF_SaveDiagData();
+void STF_EraseDataSector();
+
+#ifdef FLASH_COUNTER_START_ADDR
 Int16U STF_ReadCounter();
 void STF_ResetStateMachine();
-void STF_AssignPointer(Int16U Index, Int32U Pointer);
 void STF_AssignCounterPointer(Int16U Index, Int32U Pointer);
-void STF_SaveDiagData();
 void STF_SaveCounterData();
-void STF_EraseDataSector();
 void STF_EraseCounterDataSector();
 void STF_LoadCounters();
+#endif
 
 #endif // __SAVE_TO_FLASH_H
