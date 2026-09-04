@@ -36,6 +36,11 @@ enum DispID
 
 // Variables
 const Int16U ZeroBuffer[xCCI_BUFFER_SIZE] = {0};
+#ifdef USE_FLOAT_DT
+	const Boolean FloatDT = TRUE;
+#else
+	const Boolean FloatDT = FALSE;
+#endif
 
 // Forward functions
 //
@@ -256,13 +261,11 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						Interface->State = SCCI_STATE_WAIT_BODY;
 						Interface->DispID = DISP_W_16;	
 						break;
-#ifdef USE_FLOAT_DT
 					case SFUNC_FLOAT:
 						Interface->ExpectedBodyLength = 4;
 						Interface->State = SCCI_STATE_WAIT_BODY;
 						Interface->DispID = DISP_W_F;
 						break;
-#endif
 					default:
 						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, sfunc);
 						break;
@@ -276,13 +279,11 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						Interface->State = SCCI_STATE_WAIT_BODY;	
 						Interface->DispID = DISP_R_16;	
 						break;
-#ifdef USE_FLOAT_DT
 					case SFUNC_FLOAT:
 						Interface->ExpectedBodyLength = 2;
 						Interface->State = SCCI_STATE_WAIT_BODY;
 						Interface->DispID = DISP_R_F;
 						break;
-#endif
 					default:
 						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, sfunc);
 						break;
@@ -332,13 +333,11 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 						Interface->State = SCCI_STATE_WAIT_BODY;
 						Interface->DispID = DISP_RBF_16;
 						break;
-#ifdef USE_FLOAT_DT
 					case SFUNC_FLOAT:
 						Interface->ExpectedBodyLength = 2;
 						Interface->State = SCCI_STATE_WAIT_BODY;
 						Interface->DispID = DISP_RBF_F;
 						break;
-#endif
 					default:
 						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, sfunc);
 						break;
@@ -347,13 +346,11 @@ void SCCI_DispatchHeader(pSCCI_Interface Interface)
 			case FUNCTION_GET_LIMIT:
 				switch(sfunc)
 				{
-#ifdef USE_FLOAT_DT
 					case SFUNC_FLOAT:
 						Interface->ExpectedBodyLength = 3;
 						Interface->State = SCCI_STATE_WAIT_BODY;
 						Interface->DispID = DISP_RLIM_F;
 						break;
-#endif
 					default:
 						SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, sfunc);
 						break;
@@ -447,12 +444,15 @@ void SCCI_HandleRead16(pSCCI_Interface Interface)
 		}
 		else
 		{
-#ifdef USE_FLOAT_DT
-			Int32S t_data = (Int32S)(((float *)Interface->DataTableAddress)[addr]);
-			Int16U data = (Int16U)((Int16S)t_data);
-#else
-			Int16U data = Interface->DataTableAddress[addr];
-#endif
+			Int16U data;
+			if(FloatDT)
+			{
+				Int32S t_data = (Int32S)(((float *)Interface->DataTableAddress)[addr]);
+				data = (Int16U)((Int16S)t_data);
+			}
+			else
+				data = Interface->DataTableAddress[addr];
+
 			Interface->MessageBuffer[3] = data;
 			SCCI_SendResponseFrame(Interface, 5);
 		}
@@ -485,7 +485,9 @@ void SCCI_HandleReadFloat(pSCCI_Interface Interface)
 
 	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		if(addr >= Interface->DataTableSize)
+		if(!FloatDT)
+			SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, addr);
+		else if(addr >= Interface->DataTableSize)
 		{
 			SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
 		}
@@ -527,7 +529,9 @@ void SCCI_HandleReadLimitFloat(pSCCI_Interface Interface)
 
 	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		if(addr >= Interface->DataTableSize)
+		if(!FloatDT)
+			SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, addr);
+		else if(addr >= Interface->DataTableSize)
 		{
 			SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
 		}
@@ -588,11 +592,11 @@ void SCCI_HandleWrite16(pSCCI_Interface Interface)
 		}
 		else
 		{
-#ifdef USE_FLOAT_DT
-			((float *)Interface->DataTableAddress)[addr] = (float)data;
-#else
-			Interface->DataTableAddress[addr] = data;
-#endif
+			if(FloatDT)
+				((float *)Interface->DataTableAddress)[addr] = (float)data;
+			else
+				Interface->DataTableAddress[addr] = data;
+
 			SCCI_SendResponseFrame(Interface, 4);
 		}
 	}
@@ -626,7 +630,9 @@ void SCCI_HandleWriteFloat(pSCCI_Interface Interface)
 
 	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		if(addr >= Interface->DataTableSize)
+		if(!FloatDT)
+			SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, addr);
+		else if(addr >= Interface->DataTableSize)
 		{
 			SCCI_SendErrorFrame(Interface, ERR_INVALID_ADDESS, addr);
 		}
@@ -822,7 +828,9 @@ void SCCI_HandleReadBlockFastFloat(pSCCI_Interface Interface)
 
 	if(node == DEVICE_SCCI_ADDRESS)
 	{
-		if(xCCI_EndpointIndex(pEPData, epnt, &epnt_index))
+		if(!FloatDT)
+			SCCI_SendErrorFrame(Interface, ERR_NOT_SUPPORTED, epnt);
+		else if(xCCI_EndpointIndex(pEPData, epnt, &epnt_index))
 		{
 			Interface->MessageBuffer[2] = (epnt << 8) | (SCCI_USE_CRC_IN_STREAM ? 1 : 0);
 
