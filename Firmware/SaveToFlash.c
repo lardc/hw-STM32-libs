@@ -51,13 +51,11 @@ Int16U STF_ReadCounter()
 	switch(CurrentState)
 	{
 		case RCSM_DescriptionType:
+			if(LineNumber == CounterStorageSize)
+				return 0xFFFF;
 			RetVal = DT_Char;
 			CurrentState = RCSM_DescriptionLength;
 			DataPosition++;
-
-			if (LineNumber == CounterStorageSize)
-				return 0xFFFF;
-
 			break;
 
 		case RCSM_DescriptionLength:
@@ -117,6 +115,7 @@ Int16U STF_ReadCounter()
 
 void STF_EraseCounterDataSector()
 {
+	NFLASH_Unlock();
 	NFLASH_ErasePages(FLASH_COUNTER_START_ADDR, FLASH_COUNTER_END_ADDR);
 }
 // ----------------------------------------
