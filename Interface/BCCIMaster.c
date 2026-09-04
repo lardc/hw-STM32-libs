@@ -570,26 +570,28 @@ void BCCIM_SendBroadcastPing(pBCCIM_Interface Interface, pInt16U NodeArray, pInt
 */
 Int16U BCCIM_WaitResponse(pBCCIM_Interface Interface, Int16U Mailbox)
 {
-	Int64U timeout;
-	CANMessage message;
-
-	// Wait for response
-	timeout = Interface->TimeoutValueTicks + *(Interface->pTimerCounter);
-	while(*(Interface->pTimerCounter) < timeout)
+	Int64U StartTime = *(Interface->pTimerCounter);
+	Int64U Timeout = StartTime + Interface->TimeoutValueTicks;
+	while(*(Interface->pTimerCounter) < Timeout)
 	{
 		// In case of error
 		if (Interface->IOConfig->IO_IsMessageReceived(Master_MBOX_ERR_A, NULL))
 		{
+			CANMessage message;
 			Interface->IOConfig->IO_GetMessage(Master_MBOX_ERR_A, &message);
 			SavedErrorDetails = message.HIGH.WORD.WORD_1;
 			return message.HIGH.WORD.WORD_0;
 		}
 		else if (Interface->IOConfig->IO_IsMessageReceived(Mailbox, NULL))
+		{
+			SavedErrorDetails = 0;
 			return ERR_NO_ERROR;
+		}
 
 		IWDG_Refresh();
 	}
 
+	SavedErrorDetails = *(Interface->pTimerCounter) - StartTime;
 	return ERR_TIMEOUT;
 }
 // ----------------------------------------

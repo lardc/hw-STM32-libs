@@ -100,6 +100,7 @@ void ADC_ChannelSet_Sequence1_4(ADC_TypeDef *ADCx, uint32_t Channel, uint32_t Se
 void ADC_ChannelSet_Sequence(ADC_TypeDef* ADCx, uint32_t Channel, uint32_t Sequence);
 void ADC_ChannelSet_SampleTime(ADC_TypeDef* ADCx, uint32_t Channel, uint32_t Time);
 void ADC_DMAConfig(ADC_TypeDef *ADCx);
+void ADC_DMAConfigWithAutDLY(ADC_TypeDef* ADCx);
 void ADC_DMAEnable(ADC_TypeDef* ADCx, bool Enable);
 void ADC_Enable(ADC_TypeDef *ADCx);
 void ADC_Disable(ADC_TypeDef* ADCx);

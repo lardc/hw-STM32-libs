@@ -2,6 +2,7 @@
 #include "SaveToFlash.h"
 
 // Includes
+#include "ZwNFLASH.h"
 #include "SysConfig.h"
 #include "StorageDescription.h"
 #include "Global.h"
@@ -10,17 +11,190 @@
 Int16U STF_StartAddressShift(Int16U Index);
 Int16U STF_GetTypeLength(DataType CurrentType);
 Int32U STF_ShiftStorageEnd();
+Int32U STF_ShiftCounterStorageEnd();
+Int32U STF_ReadCounter32(Int32U Address);
 Int16U StrLen(const char* string);
 
-// Functions
-//
-void STF_AssignPointer(Int16U Index, Int32U Pointer)
+typedef enum __ReadCountersStateMachine
 {
-	if(Index < StorageSize)
-		TablePointers[Index] = Pointer;
+	RCSM_DescriptionType = 0,
+	RCSM_DescriptionLength,
+	RCSM_Description,
+	RCSM_DataType,
+	RCSM_DataLength,
+	RCSM_Data,
+} ReadCountersStateMachine;
+
+ReadCountersStateMachine CurrentState = RCSM_DescriptionType;
+Int16U LineNumber;
+Int16U DataPosition;
+Int32U FlashPosition;
+#ifdef FLASH_COUNTER_START_ADDR
+static Boolean SubstituteZeroForErased = FALSE;
+
+// Функции для работы со счётчиками
+void STF_ResetStateMachine()
+{
+	CurrentState = RCSM_DescriptionType;
+	LineNumber = 0;
+	DataPosition = 0;
+	SubstituteZeroForErased = FALSE;
+	FlashPosition = STF_ShiftCounterStorageEnd();
+	if(FlashPosition != FLASH_COUNTER_START_ADDR)
+		FlashPosition -= CounterStorageSize * 4;
 }
 // ----------------------------------------
 
+Int16U STF_ReadCounter()
+{
+	Int16U RetVal = 0;
+	switch(CurrentState)
+	{
+		case RCSM_DescriptionType:
+			if(LineNumber == CounterStorageSize)
+				return 0xFFFF;
+			RetVal = DT_Char;
+			CurrentState = RCSM_DescriptionLength;
+			DataPosition++;
+			break;
+
+		case RCSM_DescriptionLength:
+			RetVal = StrLen(CounterStorageDescription[LineNumber].Description);
+			CurrentState = RCSM_Description;
+			DataPosition = 0;
+			break;
+
+		case RCSM_Description:
+			RetVal = CounterStorageDescription[LineNumber].Description[DataPosition++];
+			if (CounterStorageDescription[LineNumber].Description[DataPosition] == '\0')
+				CurrentState = RCSM_DataType;
+			break;
+
+		case RCSM_DataType:
+			RetVal = DT_Int32U;
+			CurrentState = RCSM_DataLength;
+			break;
+
+		case RCSM_DataLength:
+			RetVal = 1;
+			CurrentState = RCSM_Data;
+			DataPosition = 0;
+			break;
+
+		case RCSM_Data:
+			{
+				if(DataPosition == 0)
+				{
+					Int16U Low = NFLASH_ReadWord16(FlashPosition);
+					Int16U HighPeek = NFLASH_ReadWord16(FlashPosition + 2);
+					SubstituteZeroForErased = (Low == 0xFFFF) && (HighPeek == 0xFFFF);
+					RetVal = SubstituteZeroForErased ? 0 : Low;
+				}
+				else
+				{
+					Int16U High = NFLASH_ReadWord16(FlashPosition);
+					RetVal = SubstituteZeroForErased ? 0 : High;
+				}
+
+				FlashPosition += 2;
+				DataPosition++;
+
+				if(DataPosition == 2)
+				{
+					CurrentState = RCSM_DescriptionType;
+					LineNumber++;
+					SubstituteZeroForErased = FALSE;
+				}
+			}
+			break;
+	}
+
+	return RetVal;
+}
+// ----------------------------------------
+
+void STF_EraseCounterDataSector()
+{
+	NFLASH_Unlock();
+	NFLASH_ErasePages(FLASH_COUNTER_START_ADDR, FLASH_COUNTER_END_ADDR);
+}
+// ----------------------------------------
+
+void STF_LoadCounters()
+{
+	Int32U StoragePointer = STF_ShiftCounterStorageEnd();
+	bool SavedData = StoragePointer != FLASH_COUNTER_START_ADDR;
+
+	if(SavedData)
+		StoragePointer -= CounterStorageSize * 4;
+
+	for (Int16U i = 0; i < CounterStorageSize; ++i)
+	{
+		CounterTablePointers[i].Value = *(pInt32U)CounterTablePointers[i].Address = SavedData ? STF_ReadCounter32(StoragePointer) : 0;
+		StoragePointer += 4;
+	}
+}
+// ----------------------------------------
+
+void STF_AssignCounterPointer(Int16U Index, Int32U Pointer)
+{
+	if (Index < CounterStorageSize)
+		CounterTablePointers[Index] = (CounterData){0, Pointer};
+}
+// ----------------------------------------
+
+void STF_SaveCounterData()
+{
+	// Проверка на то, изменились ли данные с момента последней записи
+	Int16U i;
+	for (i = 0; i < CounterStorageSize; ++i)
+	{
+		if (CounterTablePointers[i].Value != *(pInt32U)CounterTablePointers[i].Address)
+			break;
+	}
+	if (i == CounterStorageSize)
+		return;
+
+	NFLASH_Unlock();
+	Int32U ShiftedAddress = STF_ShiftCounterStorageEnd();
+
+	// Проверка на свободное место в памяти
+	if (ShiftedAddress + CounterStorageSize * 4 > FLASH_COUNTER_END_ADDR)
+	{
+		STF_EraseCounterDataSector();
+		ShiftedAddress = FLASH_COUNTER_START_ADDR;
+	}
+
+	for (i = 0; i < CounterStorageSize; ++i)
+	{
+		NFLASH_WriteArray16(ShiftedAddress, (pInt16U)CounterTablePointers[i].Address, 2);
+		CounterTablePointers[i].Value = *(pInt32U)CounterTablePointers[i].Address;
+		ShiftedAddress += 4;
+	}
+}
+// ----------------------------------------
+
+Int32U STF_ShiftCounterStorageEnd()
+{
+	for (Int32U i = FLASH_COUNTER_START_ADDR; i < FLASH_COUNTER_END_ADDR; i += 4)
+	{
+		if(STF_ReadCounter32(i) == 0xFFFFFFFF)
+			return i;
+	}
+	return FLASH_COUNTER_END_ADDR;
+}
+// ----------------------------------------
+
+Int32U STF_ReadCounter32(Int32U Address)
+{
+	Int16U LOW = NFLASH_ReadWord16(Address);
+	Int16U HIGH = NFLASH_ReadWord16(Address + 2);
+	return ((Int32U)HIGH << 16) | LOW;
+}
+// ----------------------------------------
+#endif
+
+// Функции для работы с диагностическими данными
 void STF_SaveDiagData()
 {
 	Int32U ShiftedAddress = STF_ShiftStorageEnd();
@@ -69,6 +243,13 @@ void STF_SaveDiagData()
 }
 // ----------------------------------------
 
+void STF_AssignPointer(Int16U Index, Int32U Pointer)
+{
+	if(Index < StorageSize)
+		TablePointers[Index] = Pointer;
+}
+// ----------------------------------------
+
 Int16U STF_GetTypeLength(DataType CurrentType)
 {
 	return (CurrentType == DT_Int32U || CurrentType == DT_Int32S || CurrentType == DT_Float) ? 2 : 1;
@@ -109,3 +290,4 @@ Int16U StrLen(const char* string)
 	do n++; while (*s++);
 	return n;
 }
+// ----------------------------------------

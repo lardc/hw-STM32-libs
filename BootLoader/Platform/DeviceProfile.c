@@ -67,10 +67,22 @@ void DEVPROFILE_Init(xCCI_FUNC_CallbackAction SpecializedDispatch, volatile Bool
 	MaskChangesFlag = MaskChanges;
 
 	// Init interface
+#ifdef CONFIG_USE_USART3
+	RS232_IOConfig.IO_SendArray16 = &USART3_SendArray16;
+	RS232_IOConfig.IO_ReceiveArray16 = &USART3_ReceiveArray16;
+	RS232_IOConfig.IO_GetBytesToReceive = &USART3_GetBytesToReceive;
+	RS232_IOConfig.IO_ReceiveByte = &USART3_ReceiveChar;
+#elif defined(CONFIG_USE_USART2)
+	RS232_IOConfig.IO_SendArray16 = &USART2_SendArray16;
+	RS232_IOConfig.IO_ReceiveArray16 = &USART2_ReceiveArray16;
+	RS232_IOConfig.IO_GetBytesToReceive = &USART2_GetBytesToReceive;
+	RS232_IOConfig.IO_ReceiveByte = &USART2_ReceiveChar;
+#else
 	RS232_IOConfig.IO_SendArray16 = &ZwSCI_SendArray16;
 	RS232_IOConfig.IO_ReceiveArray16 = &ZwSCI_ReceiveArray16;
 	RS232_IOConfig.IO_GetBytesToReceive = &ZwSCI_GetBytesToReceive;
 	RS232_IOConfig.IO_ReceiveByte = &ZwSCI_ReceiveChar;
+#endif
 	CAN_IOConfig.IO_SendMessage = &NCAN_SendMessage;
 	CAN_IOConfig.IO_SendMessageEx = &NCAN_SendMessageEx;
 	CAN_IOConfig.IO_GetMessage = &NCAN_GetMessage;
