@@ -330,6 +330,8 @@ Int16U BCCIM_ReadBlock16(pBCCIM_Interface Interface, Int16U Node, Int16U Endpoin
 		}
 		else
 			return ret;
+
+		IWDG_Refresh();
 	}
 
 	return ERR_TIMEOUT;
@@ -458,6 +460,8 @@ Int16U BCCIM_ReadBlockFloat(pBCCIM_Interface Interface, Int16U Node, Int16U Endp
 		}
 		else
 			return ret;
+
+		IWDG_Refresh();
 	}
 
 	return ERR_TIMEOUT;
