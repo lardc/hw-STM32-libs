@@ -106,9 +106,9 @@ void NCAN_FilterInit(uint16_t FilterNumber, uint32_t FilterExtID, uint32_t Filte
 	else
 		FilterNumberBit = 1 << FilterNumber;
 
-	// Сдвиг старших бит ID, маски и добавление бита IDE
-	FilterExtID		= ((FilterExtID		& 0x0003FFFF) << 3) | CAN_TI0R_IDE;
-	FilterExtIDMask	= ((FilterExtIDMask	& 0x0003FFFF) << 3) | CAN_TI0R_IDE;
+	// Полный 29-битный ID: биты 18–28 попадают в поле STID регистра фильтра
+	FilterExtID		= (FilterExtID		<< 3) | CAN_TI0R_IDE;
+	FilterExtIDMask	= (FilterExtIDMask	<< 3) | CAN_TI0R_IDE;
 
 	CAN1->FMR |= CAN_FMR_FINIT;			// Разблокировать инициализацию фильтров
 	CAN1->FA1R &= ~FilterNumberBit;		// Деактивация выбранного фильтра
@@ -189,6 +189,8 @@ void NCAN_SendMessageX(Int16U mBox, pCANMessage Data, Boolean AlterMessageID, Bo
 	CAN1->sTxMailBox[0].TDLR = NCAN_WordSwap(Data->HIGH.DWORD_0);
 	CAN1->sTxMailBox[0].TDHR = NCAN_WordSwap(Data->LOW.DWORD_1);
 
+	// Запись 1 в RQCP0 сбрасывает TXOK0, ALST0 и TERR0 прошлой передачи
+	CAN1->TSR |= CAN_TSR_RQCP0;
 	CAN1->sTxMailBox[0].TIR |= CAN_TI0R_TXRQ;
 
 	uint32_t TxTimeout = 1000;
@@ -198,6 +200,8 @@ void NCAN_SendMessageX(Int16U mBox, pCANMessage Data, Boolean AlterMessageID, Bo
 			break;
 		DELAY_US(1);
 	}
+
+	CAN1->TSR |= CAN_TSR_RQCP0;
 }
 //-----------------------------------------------
 
